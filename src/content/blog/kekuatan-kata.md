@@ -2,7 +2,7 @@
 title: "Kekuatan Kata-kata dalam Kehidupan"
 pubDate: 2026-01-20
 description: "Kata-kata memiliki kekuatan luar biasa. Gunakan kata-kata untuk membangun, bukan menghancurkan."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Mindful Writing", "Inspirasi"]
 category: "Mindful Writing"
 ---

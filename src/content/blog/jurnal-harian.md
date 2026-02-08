@@ -2,7 +2,7 @@
 title: "Jurnal Harian: Teman Setia di Masa Sulit"
 pubDate: 2026-01-25
 description: "Jurnal harian adalah terapi murah dan efektif. Tuangkan semua perasaan tanpa takut ditolak."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Mindful Writing", "Tips dan Trik"]
 category: "Mindful Writing"
 ---

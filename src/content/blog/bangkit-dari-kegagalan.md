@@ -2,7 +2,7 @@
 title: "Bangkit dari Kegagalan"
 pubDate: 2026-02-01
 description: "Kegagalan adalah bagian tak terpisahkan dari kesuksesan. Pelajari bagaimana bangkit dan tumbuh dari kegagalan."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Inspirasi", "Kebijaksanaan"]
 category: "Inspirasi"
 ---

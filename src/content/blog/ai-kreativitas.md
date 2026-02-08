@@ -2,7 +2,7 @@
 title: "AI dan Masa Depan Kreativitas"
 pubDate: 2026-01-22
 description: "AI bukan ancaman, tapi peluang. Masa depan kreativitas adalah kolaborasi antara manusia dan AI."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Teknologi", "Kreativitas"]
 category: "Teknologi"
 ---

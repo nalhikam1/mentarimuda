@@ -2,7 +2,7 @@
 title: "Review: Atomic Habits oleh James Clear"
 pubDate: 2026-01-26
 description: "Buku yang mengubah cara pandang tentang kebiasaan. Perubahan kecil menghasilkan hasil luar biasa. Rating 5/5."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Review", "Pengembangan Diri"]
 category: "Review"
 ---

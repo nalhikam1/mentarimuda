@@ -2,7 +2,7 @@
 title: "Menemukan Makna dalam Kesederhanaan"
 pubDate: 2026-01-21
 description: "Hidup bermakna tidak selalu dari hal besar. Makna terdalam ditemukan dalam momen-momen sederhana."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Kebijaksanaan", "Mindful Writing"]
 category: "Kebijaksanaan"
 ---

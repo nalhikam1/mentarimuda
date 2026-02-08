@@ -2,7 +2,7 @@
 title: "Membaca Tulisan Sendiri"
 pubDate: "2026-01-30"
 description: "Proses membaca kembali tulisan kita sendiri adalah cerminan dari perjalanan berpikir yang telah kita lalui."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 image: "/images/blog/membaca-tulisan.jpg"
 tags: ["Mindful Writing"]
 ---

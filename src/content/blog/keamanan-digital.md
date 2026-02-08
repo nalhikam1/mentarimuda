@@ -2,7 +2,7 @@
 title: "Keamanan Digital untuk Pemula"
 pubDate: 2026-01-28
 description: "Panduan dasar keamanan digital: password kuat, two-factor authentication, dan menghindari phishing."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Teknologi", "Tips dan Trik"]
 category: "Teknologi"
 ---

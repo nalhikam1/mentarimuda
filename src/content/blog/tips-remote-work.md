@@ -2,7 +2,7 @@
 title: "5 Tips Manajemen Waktu untuk Pekerja Remote"
 pubDate: 2026-01-29
 description: "Tips praktis manajemen waktu untuk tetap produktif saat bekerja dari rumah. Work-life balance adalah kunci."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Tips dan Trik", "Produktivitas"]
 category: "Tips dan Trik"
 ---

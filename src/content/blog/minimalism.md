@@ -2,7 +2,7 @@
 title: "Minimalism: Hidup dengan Lebih Sedikit"
 pubDate: 2026-01-16
 description: "Minimalism bukan tentang memiliki sesedikit mungkin, tetapi memiliki cukup untuk hidup bahagia dan bermakna."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Pengembangan Diri", "Kebijaksanaan"]
 category: "Pengembangan Diri"
 ---

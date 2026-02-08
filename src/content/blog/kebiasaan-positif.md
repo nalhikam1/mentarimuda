@@ -2,7 +2,7 @@
 title: "Membangun Kebiasaan Positif"
 pubDate: 2026-01-19
 description: "Kebiasaan adalah fondasi kesuksesan. Perubahan kecil yang konsisten menghasilkan hasil luar biasa."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Pengembangan Diri", "Tips dan Trik"]
 category: "Pengembangan Diri"
 ---

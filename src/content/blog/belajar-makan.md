@@ -2,7 +2,7 @@
 title: "Belajar Makan dengan Penuh Kesadaran"
 pubDate: "2026-01-15"
 description: "Makan bukan hanya tentang mengisi perut, tetapi tentang menghargai setiap suapan dengan penuh kesadaran."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 image: "/images/blog/belajar-makan.jpg"
 tags: ["Kreativitas", "Kesehatan"]
 ---

@@ -2,7 +2,7 @@
 title: "Menemukan Passion di Tengah Kesibukan"
 pubDate: 2026-01-31
 description: "Passion tidak hilang, hanya tertimbun oleh kesibukan. Temukan kembali apa yang membuat hatimu bersemangat."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Inspirasi", "Pengembangan Diri"]
 category: "Inspirasi"
 ---

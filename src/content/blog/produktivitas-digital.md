@@ -2,7 +2,7 @@
 title: "Produktivitas di Era Digital"
 pubDate: 2026-01-18
 description: "Mengelola teknologi dengan bijak. Gunakan teknologi sebagai alat, bukan sebagai tuan."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Teknologi", "Tips dan Trik"]
 category: "Teknologi"
 ---

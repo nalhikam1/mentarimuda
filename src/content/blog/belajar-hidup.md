@@ -2,7 +2,7 @@
 title: "Belajar Menikmati Hidup"
 pubDate: "2026-01-20"
 description: "Hidup adalah tentang menemukan kebahagiaan dalam hal-hal sederhana yang sering kita lewatkan."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 image: "/images/blog/belajar-hidup.jpg"
 tags: ["Pengembangan Diri", "Mindfulness"]
 ---

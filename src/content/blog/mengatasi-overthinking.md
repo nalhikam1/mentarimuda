@@ -2,7 +2,7 @@
 title: "Mengatasi Overthinking"
 pubDate: 2026-01-23
 description: "Overthinking adalah musuh produktivitas. Praktikkan mindfulness dan fokus pada tindakan, bukan pikiran."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Pengembangan Diri", "Kesehatan Mental"]
 category: "Pengembangan Diri"
 ---

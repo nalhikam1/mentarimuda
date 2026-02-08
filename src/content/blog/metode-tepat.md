@@ -2,7 +2,7 @@
 title: "Metode yang Tepat untuk Menjadi Manusia yang Lebih Baik"
 pubDate: "2026-01-15"
 description: "Menemukan metode pengembangan diri yang pas bukanlah tentang meniru orang lain, tapi mengenali diri sendiri."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 image: "/images/blog/metode-tepat.jpg"
 tags: ["Kreativitas", "Self Growth"]
 ---

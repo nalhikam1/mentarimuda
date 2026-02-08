@@ -2,7 +2,7 @@
 title: "Seni Mendengarkan dengan Empati"
 pubDate: 2026-01-17
 description: "Mendengarkan adalah seni yang langka. Dengarkan bukan hanya dengan telinga, tetapi juga dengan hati."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Kebijaksanaan", "Inspirasi"]
 category: "Kebijaksanaan"
 ---

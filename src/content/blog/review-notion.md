@@ -2,7 +2,7 @@
 title: "Review: Notion untuk Produktivitas"
 pubDate: 2026-01-27
 description: "Review jujur Notion setelah 6 bulan penggunaan. Fleksibel tapi ada learning curve yang cukup tinggi."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Review", "Teknologi", "Tips dan Trik"]
 category: "Review"
 ---

@@ -2,7 +2,7 @@
 title: "Menulis untuk Menemukan Diri"
 pubDate: 2026-01-15
 description: "Menulis bukan hanya merangkai kata, tetapi juga menemukan siapa diri kita sebenarnya."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Mindful Writing", "Kreativitas"]
 category: "Mindful Writing"
 ---

@@ -2,7 +2,7 @@
 title: "Tujuan Menulis"
 pubDate: "2026-01-15"
 description: "Menulis bukan hanya tentang merangkai kata, tetapi tentang menemukan makna dalam setiap kalimat yang kita tulis."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 image: "/images/blog/tujuan-menulis.jpg"
 tags: ["Kreativitas", "Writing"]
 ---

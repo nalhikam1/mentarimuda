@@ -2,7 +2,7 @@
 title: "Cara Efektif Belajar Skill Baru"
 pubDate: 2026-01-30
 description: "Strategi praktis untuk belajar skill baru dengan lebih efektif dan menyenangkan. Konsistensi adalah kunci."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Tips dan Trik", "Pengembangan Diri"]
 category: "Tips dan Trik"
 ---

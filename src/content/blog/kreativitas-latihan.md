@@ -2,7 +2,7 @@
 title: "Kreativitas: Bukan Bakat, Tapi Latihan"
 pubDate: 2026-01-24
 description: "Kreativitas adalah skill yang bisa dilatih. Setiap orang memiliki potensi kreatif yang bisa dikembangkan."
-author: "Mentari"
+author: "Naufal Muhammad Al Hikam"
 tags: ["Kreativitas", "Inspirasi"]
 category: "Kreativitas"
 ---
