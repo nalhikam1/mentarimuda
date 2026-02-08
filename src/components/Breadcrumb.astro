@@ -18,7 +18,7 @@ const schemaData = {
       "@type": "ListItem",
       "position": 2,
       "name": category,
-      "item": Astro.site ? new URL(`/category/${slugify(category)}`, Astro.site).toString() : `/category/${slugify(category)}`
+      "item": Astro.site ? new URL(`/kategori/${slugify(category)}`, Astro.site).toString() : `/kategori/${slugify(category)}`
     }] : []),
     {
       "@type": "ListItem",
@@ -38,7 +38,7 @@ const schemaData = {
   
   {category && (
     <>
-      <a href={`/category/${slugify(category)}`} class="breadcrumb-link">{category}</a>
+      <a href={`/kategori/${slugify(category)}`} class="breadcrumb-link">{category}</a>
       <span class="separator">›</span>
     </>
   )}
