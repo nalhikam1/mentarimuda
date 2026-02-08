@@ -125,7 +125,7 @@ const topicTags = [
                 </div>
             </header>
             
-            <div class="content-wrapper">
+            <div class={`content-wrapper ${hideRightSidebar ? 'wide-content' : ''}`}>
                 {category && postTitle && (
                     <Breadcrumb category={category} title={postTitle} />
                 )}
@@ -418,6 +418,10 @@ const topicTags = [
     .content-wrapper {
         padding: 40px;
         max-width: 720px;
+    }
+
+    .content-wrapper.wide-content {
+        max-width: 1200px;
     }
 
     .sidebar-title {
