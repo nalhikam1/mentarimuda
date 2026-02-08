@@ -61,6 +61,10 @@ body {
     max-width: 100vw;
 }
 
+.app-container.no-right-sidebar {
+    grid-template-columns: 240px 1fr;
+}
+
 .left-sidebar {
     border-right: 1px solid var(--border);
     padding: 0;
@@ -71,6 +75,10 @@ body {
 .main-content {
     border-right: 1px solid var(--border);
     background: var(--bg);
+}
+
+.no-right-sidebar .main-content {
+    border-right: none;
 }
 
 .top-bar {
@@ -149,6 +157,10 @@ body {
 @media (max-width: 1200px) {
     .app-container {
         grid-template-columns: 200px 1fr 280px;
+    }
+
+    .app-container.no-right-sidebar {
+        grid-template-columns: 200px 1fr;
     }
 }
 
