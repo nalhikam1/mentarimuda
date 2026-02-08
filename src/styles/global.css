@@ -271,3 +271,18 @@ body {
     background: var(--accent);
     color: #fff;
 }
+
+/* Global Link Normalization (Anti-Purple) */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a:visited {
+    color: inherit;
+}
+
+a:hover {
+    color: var(--accent);
+}
