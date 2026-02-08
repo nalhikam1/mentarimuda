@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { slugify } from '../../utils/slugify';
 import MainLayout from '../../layouts/MainLayout.astro';
 import '../../styles/article.css';
 import SocialShare from '../../components/SocialShare.astro';
@@ -80,8 +81,8 @@ const relatedPosts = allPosts
           ))}
         </div>
         <div class="cta-box">
-          <p>Suka dengan topik <strong>{currentCategory}</strong>? Ikuti terus perjalanan belajar saya.</p>
-          <a href="/naufalmuhammadalhikam" class="cta-link">Tentang Penulis →</a>
+          <p>Suka dengan topik <a href={`/kategori/${slugify(currentCategory)}`}><strong>{currentCategory}</strong></a>? Ikuti terus perjalanan belajar saya.</p>
+          <a href="/naufalmuhammadalhikam" class="cta-link">Jika Anda punya kritik, saran, atau request, silakan hubungi penulis →</a>
         </div>
       </section>
     )}
@@ -162,6 +163,13 @@ const relatedPosts = allPosts
     font-size: 1rem;
     margin-bottom: 1rem;
     color: var(--text);
+  }
+
+  .cta-box p a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--accent);
   }
 
   .cta-link {

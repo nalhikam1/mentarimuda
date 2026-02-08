@@ -39,7 +39,8 @@ const topicTags = [
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     
     <ViewTransitions />
 
@@ -109,15 +110,15 @@ const topicTags = [
 
                 <!-- Search Component Desktop Only -->
                 <div class="search-wrapper desktop-search">
-                    <Search client:load />
+                    <Search client:idle />
                 </div>
 
                 <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
-                     <ThemeToggle client:load />
+                     <ThemeToggle client:idle />
                      {postTitle && postUrl ? (
-                        <Bookmark client:load postTitle={postTitle} postUrl={postUrl} showSaveButton={true} />
+                        <Bookmark client:idle postTitle={postTitle} postUrl={postUrl} showSaveButton={true} />
                     ) : (
-                        <Bookmark client:load showSaveButton={false} />
+                        <Bookmark client:idle showSaveButton={false} />
                     )}
                 </div>
             </header>
@@ -153,7 +154,7 @@ const topicTags = [
                 <button class="close-btn-mobile" id="close-search-btn">✕</button>
             </div>
             <div class="mobile-search-content">
-                <Search client:load />
+                <Search client:idle />
             </div>
         </div>
 
@@ -171,10 +172,10 @@ const topicTags = [
         });
 
         document.addEventListener('astro:page-load', () => {
-            // Beri jeda 1 detik agar animasi loader jam pasir terlihat lebih mantap
+            // Beri jeda 2 detik agar animasi loader jam pasir terlihat sangat mantap dan smooth
             setTimeout(() => {
                 document.documentElement.classList.remove('loader-visible');
-            }, 1000);
+            }, 2000);
         });
 
         // --- HANDLER FUNCTIONS ---
@@ -256,14 +257,21 @@ const topicTags = [
             closeSearchBtn?.addEventListener('click', closeAllHandler);
             backdrop?.addEventListener('click', closeAllHandler);
 
-            // Reading Progress Bar
+            // Reading Progress Bar - Optimized to avoid Forced Reflow
             const progressBar = document.getElementById('reading-progress-bar');
             if (progressBar) {
+                let ticking = false;
                 const scrollHandler = () => {
-                    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                    const scrollPercent = (scrollTop / scrollHeight) * 100;
-                    if(progressBar) progressBar.style.width = scrollPercent + '%';
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                            const scrollPercent = (scrollTop / scrollHeight) * 100;
+                            if(progressBar) progressBar.style.width = scrollPercent + '%';
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
                 };
                 window.addEventListener('scroll', scrollHandler, { passive: true });
             }
