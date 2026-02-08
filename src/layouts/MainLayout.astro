@@ -171,10 +171,10 @@ const topicTags = [
         });
 
         document.addEventListener('astro:page-load', () => {
-            // Beri sedikit delay agar transisi terasa mantap
+            // Beri jeda 1 detik agar animasi loader jam pasir terlihat lebih mantap
             setTimeout(() => {
                 document.documentElement.classList.remove('loader-visible');
-            }, 300);
+            }, 1000);
         });
 
         // --- HANDLER FUNCTIONS ---
