@@ -6,7 +6,7 @@ const blog = defineCollection({
         title: z.string(),
         description: z.string(),
         pubDate: z.coerce.date(),
-        author: z.string().default('Mentari'),
+        author: z.string().default('Naufal Muhammad Al Hikam'),
         image: z.string().optional(),
         tags: z.array(z.string()).optional(),
         category: z.string().optional(),
