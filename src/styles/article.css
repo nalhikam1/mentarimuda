@@ -1,25 +1,26 @@
-/* Base Golden Ratio Scale: 1.618 */
+/* 10/10 Vertical Rhythm & Proximity Styles */
 
 .article-content {
     max-width: 720px;
-    /* Slightly wider for better 75ch limit */
     margin: 0 auto;
 }
 
 .article-title {
-    font-size: 3rem;
-    /* 48px */
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.04em;
+    font-size: 3.25rem;
+    /* ~52px - Strong impact */
+    font-weight: 850;
+    /* Premium weight */
+    line-height: 1.1;
+    /* Rapat as requested for big titles */
+    margin-bottom: 2rem;
+    letter-spacing: -0.05em;
     color: var(--text);
 }
 
 .article-meta {
     display: flex;
     gap: 24px;
-    margin-bottom: 3.5rem;
+    margin-bottom: 4rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
@@ -40,89 +41,98 @@
 
 .article-body {
     font-size: 1.25rem;
-    /* 20px for high readability */
-    line-height: 1.7;
-    /* Golden ratio is ~1.618, 1.7 feels more airy */
+    /* ~20px - Ideal readability */
+    line-height: 1.75;
+    /* 10/10 Rule: Airy for body text */
     color: var(--text);
     font-weight: 400;
 }
 
 .lead {
-    font-size: 1.4rem;
-    /* 28px */
+    font-size: 1.45rem;
     line-height: 1.6;
     color: var(--text-secondary);
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
     font-weight: 400;
     border-left: 3px solid var(--accent);
-    padding-left: 24px;
+    padding-left: 28px;
+    font-style: italic;
 }
 
+/* --- ASYMMETRIC SPACING (THE 10/10 SECRET) --- */
+
 .article-body h2 {
-    font-size: 2rem;
-    /* 32px */
-    font-weight: 700;
-    margin-top: 3.5rem;
-    margin-bottom: 1.25rem;
-    letter-spacing: -0.02em;
+    font-size: 2.125rem;
+    font-weight: 800;
+    margin-top: 4rem;
+    /* Jarak Luas ke konten sebelumnya (Pemisah Topik) */
+    margin-bottom: 0.875rem;
+    /* Jarak Rapat ke konten di bawahnya (Mengikat) */
+    line-height: 1.2;
+    /* Rapat as requested */
+    letter-spacing: -0.03em;
     color: var(--text);
 }
 
 .article-body h3 {
-    font-size: 1.5rem;
-    /* 24px */
+    font-size: 1.625rem;
     font-weight: 700;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    letter-spacing: -0.01em;
+    margin-top: 3rem;
+    /* Jarak Luas */
+    margin-bottom: 0.75rem;
+    /* Jarak Rapat */
+    line-height: 1.25;
+    letter-spacing: -0.02em;
     color: var(--text);
 }
 
 .article-body p {
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.618rem;
+    /* Golden Ratio vertical rhythm */
 }
 
 .article-body blockquote {
-    margin: 3rem 0;
-    padding: 2rem 2.5rem;
-    border-radius: 12px;
+    margin: 3.5rem 0;
+    padding: 2.5rem 3rem;
+    border-radius: 16px;
     background: var(--code-bg);
     border-left: 4px solid var(--accent);
     font-style: italic;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     line-height: 1.6;
     color: var(--text);
     position: relative;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.02);
 }
 
 .article-body blockquote::before {
-    content: '"';
+    content: '“';
     position: absolute;
-    top: -10px;
+    top: -15px;
     left: 20px;
-    font-size: 4rem;
+    font-size: 5rem;
     color: var(--accent);
-    opacity: 0.2;
-    font-family: serif;
+    opacity: 0.15;
+    font-family: Georgia, serif;
 }
 
 .article-body ul,
 .article-body ol {
     margin: 2rem 0;
-    padding-left: 1.5rem;
+    padding-left: 1.75rem;
 }
 
 .article-body li {
-    margin-bottom: 0.75rem;
-    line-height: 1.6;
+    margin-bottom: 0.875rem;
+    line-height: 1.7;
 }
 
 .article-body img {
     max-width: 100%;
     height: auto;
-    border-radius: 16px;
-    margin: 2.5rem 0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    margin: 3.5rem 0;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
 }
 
 .article-body strong {
@@ -133,43 +143,48 @@
 .article-body a {
     color: var(--accent);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: all 0.2s;
+    background-image: linear-gradient(transparent 90%, var(--accent) 90%);
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    transition: background-size 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .article-body a:hover {
-    border-bottom-color: var(--accent);
-    background: rgba(255, 142, 83, 0.05);
+    background-size: 100% 100%;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .article-title {
-        font-size: 2.25rem;
-        letter-spacing: -0.02em;
+        font-size: 2.5rem;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.5rem;
     }
 
     .article-body {
         font-size: 1.125rem;
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
     .lead {
         font-size: 1.25rem;
-        padding-left: 16px;
+        padding-left: 20px;
+        margin-bottom: 2.5rem;
     }
 
     .article-body h2 {
         font-size: 1.75rem;
-        margin-top: 2.5rem;
+        margin-top: 3rem;
+        margin-bottom: 0.75rem;
     }
 
     .article-body h3 {
-        font-size: 1.35rem;
+        font-size: 1.4rem;
+        margin-top: 2.25rem;
     }
 
     .article-body blockquote {
-        padding: 1.5rem;
-        font-size: 1.2rem;
+        padding: 2rem 1.5rem;
+        font-size: 1.25rem;
     }
 }
