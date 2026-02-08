@@ -71,7 +71,7 @@ const relatedPosts = allPosts
     {relatedPosts.length > 0 && (
       <section class="related-section">
         <h3 class="related-title">Mungkin Kamu Suka</h3>
-        <p class="related-subtitle">Eksplorasi lebih dalam tentang <strong>{currentCategory}</strong> melalui tulisan lainnya:</p>
+        <p class="related-subtitle">Eksplorasi lebih dalam tentang <a href={`/kategori/${slugify(currentCategory)}`} class="category-cta-link"><strong>{currentCategory}</strong></a> melalui tulisan lainnya:</p>
         <div class="related-grid">
           {relatedPosts.map(post => (
             <a href={`/blog/${post.slug}`} class="related-card">
@@ -81,8 +81,8 @@ const relatedPosts = allPosts
           ))}
         </div>
         <div class="cta-box">
-          <p>Suka dengan topik <a href={`/kategori/${slugify(currentCategory)}`}><strong>{currentCategory}</strong></a>? Ikuti terus perjalanan belajar saya.</p>
-          <a href="/naufalmuhammadalhikam" class="cta-link">Jika Anda punya kritik, saran, atau request, silakan hubungi penulis →</a>
+          <p>Suka dengan topik <strong>{currentCategory}</strong>? Ikuti terus perjalanan belajar saya.</p>
+          <p class="contact-cta">Jika Anda punya kritik, saran, atau request, silakan <a href="/naufalmuhammadalhikam" class="cta-link-inline">Hubungi Penulis →</a></p>
         </div>
       </section>
     )}
@@ -151,6 +151,13 @@ const relatedPosts = allPosts
     color: var(--text);
   }
 
+  .related-subtitle a.category-cta-link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--accent);
+  }
+
   .cta-box {
     background: var(--code-bg);
     padding: 24px;
@@ -161,26 +168,25 @@ const relatedPosts = allPosts
 
   .cta-box p {
     font-size: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     color: var(--text);
   }
 
-  .cta-box p a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--accent);
+  .cta-box .contact-cta {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
   }
 
-  .cta-link {
-    display: inline-block;
+  .cta-link-inline {
     font-weight: 700;
     color: var(--accent);
+    text-decoration: none;
     transition: transform 0.2s ease;
+    display: inline-block;
   }
 
-  .cta-link:hover {
-    transform: translateX(5px);
+  .cta-link-inline:hover {
+    transform: translateX(3px);
   }
 
   @media (max-width: 640px) {
