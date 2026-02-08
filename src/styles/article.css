@@ -1,0 +1,136 @@
+.article-content {
+    max-width: 680px;
+}
+
+.article-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+    color: var(--text);
+}
+
+.article-meta {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.article-body {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--text);
+}
+
+.lead {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-weight: 400;
+}
+
+.article-body h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+}
+
+.article-body p {
+    margin-bottom: 24px;
+}
+
+.article-body blockquote {
+    margin: 40px 0;
+    padding: 24px 32px;
+    border-left: 4px solid var(--text);
+    background: var(--code-bg);
+    /* Use var for bg */
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.article-body ul {
+    margin: 24px 0;
+    padding-left: 24px;
+}
+
+.article-body li {
+    margin-bottom: 12px;
+    line-height: 1.7;
+    color: var(--text);
+}
+
+.article-body strong {
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    .article-title {
+        font-size: 1.75rem;
+        letter-spacing: -0.5px;
+        margin-bottom: 20px;
+    }
+
+    .article-meta {
+        gap: 12px;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+    }
+
+    .meta-item {
+        font-size: 0.8125rem;
+    }
+
+    .article-body {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .lead {
+        font-size: 1.125rem;
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+
+    .article-body h2 {
+        font-size: 1.375rem;
+        margin-top: 36px;
+        margin-bottom: 16px;
+    }
+
+    .article-body p {
+        margin-bottom: 20px;
+    }
+
+    .article-body blockquote {
+        margin: 32px 0;
+        padding: 20px 24px;
+        font-size: 1.125rem;
+    }
+
+    .article-body ul {
+        margin: 20px 0;
+        padding-left: 20px;
+    }
+
+    .article-body li {
+        margin-bottom: 10px;
+    }
+}

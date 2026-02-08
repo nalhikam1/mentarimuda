@@ -1,0 +1,57 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  article?: boolean;
+}
+
+const { title, description, image = '/default-og.png', article = false } = Astro.props;
+const siteUrl = Astro.site ? Astro.site.origin : 'https://mentarimuda.com';
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const socialImageURL = new URL(image, siteUrl);
+
+// Logika Judul Pintar
+const pathname = Astro.url.pathname;
+let metaTitle;
+
+if (pathname === '/' || title === 'Beranda') {
+    // Judul Khusus Homepage (Branding + Keyword Utama)
+    metaTitle = "Mentari Muda | Ruang Tumbuh & Mindful Writing";
+} else {
+    // Judul Halaman Lain (Judul Konten | Brand)
+    metaTitle = `${title} | Mentari Muda`;
+}
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{metaTitle}</title>
+<meta name="title" content={metaTitle} />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={metaTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={socialImageURL} />
+<meta property="og:site_name" content="Mentari Muda" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={metaTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={socialImageURL} />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#ffffff" />

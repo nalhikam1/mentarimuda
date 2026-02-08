@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mentarimuda.com/sitemap-index.xml

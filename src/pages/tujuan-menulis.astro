@@ -1,0 +1,66 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import '../styles/article.css';
+const currentTitle = "Tujuan Menulis";
+const currentUrl = "/tujuan-menulis";
+const category = "Kreativitas";
+---
+
+<MainLayout title={currentTitle} postTitle={currentTitle} postUrl={currentUrl} category={category}>
+  <article class="article-content">
+    <h1 class="article-title">{currentTitle}</h1>
+    
+    <div class="article-meta">
+      <span class="meta-item">📅 Jan 15, 2026</span>
+      <span class="meta-item">⏱️ 3 min read</span>
+      <span class="meta-item">✍️ Mentari</span>
+    </div>
+
+    <div class="article-body">
+      <p class="lead">
+        Makan bukan hanya tentang mengisi perut, tetapi tentang menghargai setiap suapan dengan penuh kesadaran. 
+        Dalam dunia yang serba cepat ini, kita sering melupakan pentingnya menikmati makanan kita.
+      </p>
+
+      <h2>Apa itu Mindful Eating?</h2>
+      <p>
+        Mindful eating adalah praktik memperhatikan makanan kita dengan semua indera kita. Ini bukan tentang 
+        diet atau pembatasan, tetapi tentang mengembangkan hubungan yang lebih sehat dengan makanan.
+      </p>
+
+      <h2>Mengapa Penting?</h2>
+      <p>
+        Ketika kita makan dengan penuh kesadaran, kita:
+      </p>
+      <ul>
+        <li>Lebih menghargai rasa dan tekstur makanan</li>
+        <li>Mengenali sinyal lapar dan kenyang tubuh kita</li>
+        <li>Mengurangi makan berlebihan</li>
+        <li>Meningkatkan pencernaan</li>
+        <li>Menemukan kebahagiaan dalam pengalaman makan</li>
+      </ul>
+
+      <blockquote>
+        "Ketika kita makan dengan kesadaran penuh, setiap suapan menjadi meditasi."
+      </blockquote>
+
+      <h2>Cara Memulai</h2>
+      <p>
+        Berikut beberapa langkah sederhana untuk memulai praktik mindful eating:
+      </p>
+      <ul>
+        <li><strong>Matikan distraksi</strong> - Jauhkan ponsel dan TV saat makan</li>
+        <li><strong>Perhatikan makanan</strong> - Lihat warna, bentuk, dan aroma sebelum makan</li>
+        <li><strong>Kunyah perlahan</strong> - Nikmati setiap gigitan dengan seksama</li>
+        <li><strong>Dengarkan tubuh</strong> - Berhenti saat merasa kenyang, bukan saat piring kosong</li>
+        <li><strong>Bersyukur</strong> - Hargai perjalanan makanan dari sumbernya ke piring Anda</li>
+      </ul>
+
+      <p>
+        Dengan praktik yang konsisten, mindful eating dapat mengubah cara kita berhubungan dengan makanan 
+        dan membawa lebih banyak kegembiraan ke dalam kehidupan sehari-hari kita.
+      </p>
+    </div>
+  </article>
+</MainLayout>
+

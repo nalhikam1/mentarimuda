@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import '../../styles/article.css';
+import SocialShare from '../../components/SocialShare.astro';
+import Comments from '../../components/Comments.astro';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { title, pubDate, author, category } = entry.data;
+
+// Format tanggal
+const formattedDate = pubDate.toLocaleDateString('id-ID', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<MainLayout 
+    title={title} 
+    postTitle={title} 
+    postUrl={`/blog/${entry.slug}`} 
+    category={category || (entry.data.tags && entry.data.tags[0]) || 'Umum'}
+>
+  <article class="article-content">
+    <h1 class="article-title">{title}</h1>
+    
+    <div class="article-meta">
+      <span class="meta-item">📅 {formattedDate}</span>
+      <span class="meta-item">⏱️ {Math.ceil(entry.body.split(' ').length / 200)} min read</span>
+      <span class="meta-item">✍️ {author}</span>
+    </div>
+
+    <div class="article-body">
+      <Content />
+    </div>
+
+    <SocialShare title={title} url={Astro.url.href} />
+    <Comments />
+  </article>
+</MainLayout>

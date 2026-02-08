@@ -1,0 +1,60 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import '../styles/article.css';
+const currentTitle = "Belajar Menikmati Hidup";
+const currentUrl = "/belajar-hidup";
+const category = "Pengembangan Diri";
+---
+
+<MainLayout title={currentTitle} postTitle={currentTitle} postUrl={currentUrl} category={category}>
+  <article class="article-content">
+    <h1 class="article-title">{currentTitle}</h1>
+    
+    <div class="article-meta">
+      <span class="meta-item">📅 Jan 20, 2026</span>
+      <span class="meta-item">⏱️ 4 min read</span>
+      <span class="meta-item">✍️ Mentari</span>
+    </div>
+
+    <div class="article-body">
+      <p class="lead">
+        Hidup adalah tentang menemukan kebahagiaan dalam hal-hal sederhana yang sering kita lewatkan. 
+        Terlalu sering kita terjebak dalam rutinitas dan lupa untuk benar-benar menikmati momen yang ada.
+      </p>
+
+      <h2>Kesadaran dalam Keseharian</h2>
+      <p>
+        Setiap hari kita dihadapkan pada berbagai pilihan dan situasi. Namun, seberapa sering kita 
+        benar-benar hadir dalam momen tersebut? Kesadaran penuh atau mindfulness mengajarkan kita 
+        untuk lebih menghargai setiap detik yang berlalu.
+      </p>
+
+      <h2>Menemukan Kebahagiaan Sederhana</h2>
+      <p>
+        Kebahagiaan tidak selalu datang dari pencapaian besar atau hal-hal materi. Seringkali, 
+        kebahagiaan sejati ada dalam hal-hal kecil: secangkir kopi di pagi hari, senyuman orang 
+        yang kita sayangi, atau matahari terbenam yang indah.
+      </p>
+
+      <blockquote>
+        "Hidup bukan tentang menunggu badai berlalu, tetapi belajar menari di tengah hujan."
+      </blockquote>
+
+      <h2>Praktik Harian</h2>
+      <p>
+        Untuk mulai menikmati hidup lebih dalam, cobalah beberapa praktik sederhana ini:
+      </p>
+      <ul>
+        <li>Luangkan 5 menit setiap pagi untuk meditasi atau refleksi</li>
+        <li>Catat 3 hal yang Anda syukuri setiap hari</li>
+        <li>Nikmati makanan dengan penuh kesadaran, tanpa distraksi</li>
+        <li>Habiskan waktu di alam, rasakan koneksi dengan lingkungan</li>
+      </ul>
+
+      <p>
+        Dengan praktik yang konsisten, kita akan mulai melihat perubahan dalam cara kita memandang 
+        dan menjalani hidup. Setiap momen menjadi lebih bermakna, dan kita menjadi lebih hadir.
+      </p>
+    </div>
+  </article>
+</MainLayout>

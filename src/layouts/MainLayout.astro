@@ -1,0 +1,645 @@
+---
+import "../styles/global.css";
+import Bookmark from '../components/Bookmark.svelte';
+import Breadcrumb from '../components/Breadcrumb.astro'; 
+import ThemeToggle from '../components/ThemeToggle.svelte';
+import Search from '../components/Search.svelte'; 
+import BottomNav from '../components/BottomNav.astro';
+import SEO from '../components/SEO.astro';
+
+import { ViewTransitions } from 'astro:transitions';
+
+const { title, postTitle, postUrl, category } = Astro.props;
+// Deskripsi default jika tidak ada konten spesifik
+const defaultDesc = "Ruang tumbuh untuk jiwa yang ingin belajar, menulis, dan memaknai hidup dengan lebih sadar. Temukan tulisan tentang self-growth dan mindfulness.";
+---
+<html lang="id">
+<head>
+    <SEO 
+        title={title} 
+        description={defaultDesc}
+        article={!!postTitle}
+    />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <ViewTransitions />
+
+    <!-- Script Anti-Kilatan (No-Flash) -->
+    <script is:inline>
+        function applyTheme() {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme();
+        // Jalankan ulang saat navigasi View Transitions
+        document.addEventListener('astro:after-swap', applyTheme);
+    </script>
+</head>
+<body>
+    <!-- Reading Progress Bar (Hanya muncul jika ada postTitle / Artikel) -->
+    {postTitle && (
+        <div id="reading-progress-container">
+            <div id="reading-progress-bar"></div>
+        </div>
+    )}
+
+    <div class="app-container">
+        <aside class="left-sidebar">
+            <div class="sticky-wrapper">
+                <div class="sidebar-header">
+                    <div class="logo">Mentari Muda</div>
+                    <p class="site-description">
+                        Ruang tumbuh untuk jiwa yang ingin belajar, menulis, dan memaknai hidup dengan lebih sadar.
+                    </p>
+                </div>
+                
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link active">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Beranda</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Tentang Saya</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span>Semua Tulisan</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    &copy; 2026 Mentari.
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <!-- Mobile Logo Link -->
+                <a href="/" class="mobile-logo-header">
+                    Mentari Muda
+                </a>
+
+                <!-- Search Component Desktop Only -->
+                <div class="search-wrapper desktop-search">
+                    <Search client:load />
+                </div>
+
+                <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
+                     <ThemeToggle client:load />
+                     {postTitle && postUrl ? (
+                        <Bookmark client:load postTitle={postTitle} postUrl={postUrl} showSaveButton={true} />
+                    ) : (
+                        <Bookmark client:load showSaveButton={false} />
+                    )}
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                {category && postTitle && (
+                    <Breadcrumb category={category} title={postTitle} />
+                )}
+                <slot />
+            </div>
+        </main>
+
+        <!-- Sidebar Topik (Desktop & Mobile Unified) -->
+        <aside class="right-sidebar mobile-bottom-sheet" id="topic-panel">
+            <div class="sticky-wrapper">
+                <div class="sidebar-header-mobile">
+                    <h3 class="sidebar-title">Topik Populer</h3>
+                    <button class="close-btn-mobile" id="close-topic-btn">✕</button>
+                </div>
+                <h3 class="sidebar-title desktop-only-title">Topik Populer</h3>
+                <div class="topic-tags">
+                    <a href="#" class="tag">Pengembangan Diri</a>
+                    <a href="#" class="tag">Mindful Writing</a>
+                    <a href="#" class="tag">Produktivitas</a>
+                    <a href="#" class="tag">Kreativitas</a>
+                    <a href="#" class="tag">Filosofi</a>
+                    <a href="#" class="tag">Teknologi</a>
+                    <a href="#" class="tag">Hidup Minimalis</a>
+                    <a href="#" class="tag">Buku & Resensi</a>
+                    <a href="#" class="tag">Psikologi</a>
+                    <a href="#" class="tag">Kesehatan Mental</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Search Panel (Bottom Sheet) -->
+        <div id="mobile-search-panel" class="mobile-bottom-sheet search-panel">
+            <div class="sidebar-header-mobile">
+                <h3 class="sidebar-title">Pencarian</h3>
+                <button class="close-btn-mobile" id="close-search-btn">✕</button>
+            </div>
+            <div class="mobile-search-content">
+                <Search client:load />
+            </div>
+        </div>
+
+        <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+        <BottomNav />
+    </div>
+
+    <script>
+        // --- HANDLER FUNCTIONS ---
+        
+        // Fungsi menutup Panel Layout (Search & Topik) saja
+        function closeLayoutPanelsOnly() {
+             const panels = document.querySelectorAll('.mobile-bottom-sheet');
+             const backdrop = document.getElementById('sidebar-backdrop');
+             
+             panels.forEach(p => p.classList.remove('show'));
+             backdrop?.classList.remove('show');
+        }
+
+        // Fungsi toggle Search
+        function toggleSearchHandler() {
+            const searchPanel = document.getElementById('mobile-search-panel');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const isOpen = searchPanel?.classList.contains('show');
+            const input = searchPanel?.querySelector('input');
+
+            // 1. Tutup panel layout lain (Topik)
+            closeLayoutPanelsOnly();
+            // 2. Tutup Bookmark (jika terbuka)
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+
+            // 3. Toggle Search Panel
+            if (!isOpen) {
+                searchPanel?.classList.add('show');
+                backdrop?.classList.add('show');
+                setTimeout(() => input?.focus(), 300);
+            }
+        }
+
+        // Fungsi toggle Topik
+        function toggleTopicHandler() {
+            const topicPanel = document.getElementById('topic-panel');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const isOpen = topicPanel?.classList.contains('show');
+
+            // 1. Tutup panel layout lain (Search)
+            closeLayoutPanelsOnly();
+            // 2. Tutup Bookmark
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+
+            // 3. Toggle Topic Panel
+            if (!isOpen) {
+                topicPanel?.classList.add('show');
+                backdrop?.classList.add('show');
+            }
+        }
+
+        // Handler saat tombol Bookmark di-klik
+        function openBookmarksHandler() {
+            // Cukup tutup panel layout (Search & Topik)
+            // JANGAN dispatch 'closeSavedBookmarks' karena akan menutup bookmark yang baru mau dibuka!
+            closeLayoutPanelsOnly();
+        }
+
+        // Handler tombol Close (X) dan Backdrop
+        function closeAllHandler() {
+            closeLayoutPanelsOnly();
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+        }
+
+        // --- GLOBAL LISTENERS ---
+        window.addEventListener('toggleSearch', toggleSearchHandler);
+        window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
+        window.addEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
+        window.addEventListener('openSavedBookmarks', openBookmarksHandler);
+
+        // --- PAGE LOAD LISTENERS ---
+        document.addEventListener('astro:page-load', () => {
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const closeTopicBtn = document.getElementById('close-topic-btn');
+            const closeSearchBtn = document.getElementById('close-search-btn');
+
+            // Listener elemen manual
+            closeTopicBtn?.addEventListener('click', closeAllHandler);
+            closeSearchBtn?.addEventListener('click', closeAllHandler);
+            backdrop?.addEventListener('click', closeAllHandler);
+
+            // Reading Progress Bar
+            const progressBar = document.getElementById('reading-progress-bar');
+            if (progressBar) {
+                const scrollHandler = () => {
+                    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrollPercent = (scrollTop / scrollHeight) * 100;
+                    if(progressBar) progressBar.style.width = scrollPercent + '%';
+                };
+                window.addEventListener('scroll', scrollHandler, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>
+
+<style>
+    /* Global Sidebar/Nav Link Styles */
+    .left-sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .sidebar-header {
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-weight: 800;
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+        color: #111;
+        background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    :global(html.dark) .logo {
+        /* Gradient remains */
+    }
+
+    .site-description {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        padding: 12px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+    }
+    
+    .nav-link svg {
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+
+    .nav-link:hover {
+        background: var(--sidebar-bg);
+        color: var(--text);
+    }
+    
+    .nav-link:hover svg {
+        opacity: 1;
+    }
+
+    .nav-link.active {
+        background: rgba(255, 107, 107, 0.08);
+        color: #d32f2f;
+        border-left-color: #d32f2f;
+        font-weight: 600;
+    }
+
+    :global(html.dark) .nav-link.active {
+        background: rgba(255, 142, 83, 0.15);
+        color: #FF8E53;
+        border-left-color: #FF8E53;
+    }
+
+    .nav-link.active svg {
+        opacity: 1;
+        stroke: currentColor;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+    }
+
+    /* Content Area */
+    .content-wrapper {
+        padding: 40px;
+        max-width: 720px;
+    }
+
+    .sidebar-title {
+        font-size: 1rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .topic-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        background: var(--card-bg);
+        border: 1px solid var(--border); 
+        border-radius: 20px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        white-space: nowrap;
+    }
+
+    .tag:hover {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Reading Progress CSS */
+    #reading-progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        z-index: 9999;
+        background: transparent;
+        pointer-events: none;
+    }
+
+    #reading-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+        width: 0%;
+        transition: width 0.1s linear;
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+
+    /* --- DESKTOP SPECIFIC --- */
+    .desktop-search {
+        display: block;
+        position: relative !important; /* Pastikan tidak fixed */
+    }
+    
+    /* Pastikan search container tidak muncul di tempat yang salah */
+    .search-container {
+        position: relative !important;
+    }
+    
+    .mobile-logo-header {
+        display: none;
+    }
+    
+    .mobile-bottom-sheet {
+         display: none; /* Sembunyikan default di desktop */
+    }
+
+    /* Di desktop, sidebar topik harus tetap muncul */
+    .right-sidebar.mobile-bottom-sheet {
+        display: block;
+    }
+
+    /* --- MOBILE RESPONSIVE --- */
+    @media (max-width: 968px) {
+        .top-bar {
+            padding: 12px 20px;
+        }
+
+        .desktop-search {
+            display: none !important;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+            padding-bottom: 80px;
+            max-width: 100%;
+        }
+
+        /* Unified Mobile Bottom Sheet */
+        .mobile-bottom-sheet {
+            display: none; /* Hidden default */
+            position: fixed;
+            bottom: 60px; /* Di atas Bottom Nav */
+            left: 0; 
+            right: 0;
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            z-index: 1001; 
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Override penting untuk Topic Panel yang punya class right-sidebar */
+        .right-sidebar.mobile-bottom-sheet {
+            top: auto;
+            height: auto;
+            border: none;
+            display: none; /* Override display flex dari desktop */
+        }
+
+        .mobile-bottom-sheet.show {
+            display: flex !important;
+        }
+        
+        /* Reset wrapper di dalam mobile sheet agar tidak ketinggian */
+        .mobile-bottom-sheet .sticky-wrapper {
+            height: auto !important;
+            padding: 0 !important;
+            position: static;
+            display: block;
+        }
+        
+        .sidebar-header-mobile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .close-btn-mobile {
+            display: flex !important; /* Override global.css display: none */
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .close-btn-mobile:hover {
+            background: var(--sidebar-bg);
+            border-color: var(--text);
+            transform: scale(1.05);
+        }
+        
+        .close-btn-mobile:active {
+            transform: scale(0.95);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .top-bar {
+            padding: 12px 16px;
+            flex-wrap: nowrap; 
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center; 
+            background: var(--header-bg);
+            backdrop-filter: none; 
+            -webkit-backdrop-filter: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .mobile-logo-header {
+            display: block;
+            margin-right: auto;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        
+        /* Search Box di dalam panel mobile */
+        .search-box input {
+            width: 100%;
+            max-width: 100%;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            height: 40px;
+            background: var(--code-bg);
+        }
+
+        .content-wrapper {
+            padding: 20px 16px; 
+            padding-bottom: 90px;
+        }
+
+
+        /* ... (style sebelumnya) ... */
+        
+        /* MODIFIKASI: Search Panel Fullscreen di Mobile */
+        #mobile-search-panel.mobile-bottom-sheet {
+            top: 0;       
+            bottom: 0;    
+            height: 100vh; 
+            max-height: 100vh; 
+            border-radius: 0; 
+            z-index: 2000;    
+            padding: 0; /* Reset padding agar header nempel */
+            background: var(--bg);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+
+        #mobile-search-panel .sidebar-header-mobile {
+            padding: 16px 20px;
+            margin-bottom: 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        #mobile-search-panel .mobile-search-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 100px; /* Space for bottom nav */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Override style Search Component di dalam panel mobile */
+        :global(#mobile-search-panel .search-container) {
+            max-width: 100% !important;
+            padding: 20px;
+        }
+
+        :global(#mobile-search-panel .search-results) {
+            position: static !important;
+            width: 100% !important;
+            box-shadow: none !important;
+            border: none !important;
+            background: transparent !important;
+            max-height: none !important;
+            margin-top: 20px;
+            padding: 0 !important;
+        }
+
+        :global(#mobile-search-panel .search-item) {
+            padding: 18px 0 !important;
+            border-bottom: 1px solid var(--border) !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+        }
+
+        :global(#mobile-search-panel .search-item-title) {
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            color: var(--text) !important;
+        }
+        
+        /* Pastikan input search terlihat lebih jelas */
+        :global(#mobile-search-panel .search-box input) {
+            background: var(--sidebar-bg) !important;
+            border: 1px solid var(--border) !important;
+            height: 48px !important;
+            font-size: 1rem !important;
+            border-radius: 12px !important;
+
+        /* ... (style lainnya) ... */
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+</style>
