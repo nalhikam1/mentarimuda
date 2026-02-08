@@ -1,0 +1,225 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('blog');
+    
+    // Ambil semua kategori unik dari field category dan tags
+    const categories = new Set();
+    allPosts.forEach(post => {
+        if (post.data.category) categories.add(post.data.category);
+        if (post.data.tags) {
+            post.data.tags.forEach(tag => categories.add(tag));
+        }
+    });
+
+    return Array.from(categories).map(cat => ({
+        params: { category: slugify(cat) },
+        props: { categoryName: cat }
+    }));
+}
+
+const { category: slug } = Astro.params;
+const { categoryName } = Astro.props;
+
+const allPosts = await getCollection('blog');
+
+// Filter artikel berdasarkan kategori/tag
+const filteredPosts = allPosts
+    .filter(post => {
+        const postTags = post.data.tags?.map(t => slugify(t)) || [];
+        const postCat = post.data.category ? slugify(post.data.category) : "";
+        return postCat === slug || postTags.includes(slug);
+    })
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const displayPosts = filteredPosts.map(post => ({
+    title: post.data.title,
+    description: post.data.description,
+    date: post.data.pubDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+    read: `${Math.ceil(post.body.split(' ').length / 200)} min read`,
+    slug: `blog/${post.slug}`,
+    author: post.data.author,
+    category: post.data.category || (post.data.tags && post.data.tags[0]) || 'Umum'
+}));
+---
+
+<MainLayout title={`${categoryName} - Mentari Muda`}>
+  <div class="category-header">
+    <a href="/" class="back-link">← Kembali ke Beranda</a>
+    <h1 class="category-title">Topik: <span>{categoryName}</span></h1>
+    <p class="category-count">{displayPosts.length} Tulisan ditemukan</p>
+  </div>
+
+  <div class="post-grid">
+    {displayPosts.map(post => (
+      <article class="post-card">
+        <div class="post-header">
+          <span class="post-category">{post.category}</span>
+          <span class="post-meta">{post.date} · {post.read}</span>
+        </div>
+        <a href={`/${post.slug}`} class="post-link">
+          <h2 class="post-title">{post.title}</h2>
+          <p class="post-description">{post.description}</p>
+        </a>
+        <div class="post-footer">
+          <span class="post-author">Oleh {post.author}</span>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  {displayPosts.length === 0 && (
+    <div class="empty-state">
+      <p>Belum ada tulisan di kategori ini.</p>
+    </div>
+  )}
+</MainLayout>
+
+<style>
+  .category-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .category-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .category-title span {
+      background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+  }
+
+  .category-count {
+    font-size: 1rem;
+    color: var(--text-secondary);
+  }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
+  }
+
+  .post-card { 
+    padding: 24px; 
+    border: 1px solid var(--card-border); 
+    border-radius: 16px; 
+    transition: all 0.3s ease;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .post-card:hover { 
+    border-color: var(--text-secondary); 
+    transform: translateY(-4px); 
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .post-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text);
+    background: var(--sidebar-bg);
+    padding: 4px 12px;
+    border-radius: 12px;
+  }
+  
+  .post-meta { 
+    font-size: 0.75rem; 
+    color: var(--text-secondary); 
+  }
+
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .post-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0;
+    color: var(--text);
+    transition: color 0.2s ease;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--text-secondary);
+  }
+
+  .post-description {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-footer {
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-author {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .category-title {
+      font-size: 2rem;
+    }
+    
+    .post-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+</style>

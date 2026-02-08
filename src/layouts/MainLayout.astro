@@ -6,12 +6,26 @@ import ThemeToggle from '../components/ThemeToggle.svelte';
 import Search from '../components/Search.svelte'; 
 import BottomNav from '../components/BottomNav.astro';
 import SEO from '../components/SEO.astro';
+import { slugify } from '../utils/slugify';
 
 import { ViewTransitions } from 'astro:transitions';
 
 const { title, postTitle, postUrl, category } = Astro.props;
 // Deskripsi default jika tidak ada konten spesifik
 const defaultDesc = "Ruang tumbuh untuk jiwa yang ingin belajar, menulis, dan memaknai hidup dengan lebih sadar. Temukan tulisan tentang self-growth dan mindfulness.";
+
+const topicTags = [
+    "Pengembangan Diri",
+    "Mindful Writing",
+    "Produktivitas",
+    "Kreativitas",
+    "Filosofi",
+    "Teknologi",
+    "Hidup Minimalis",
+    "Buku & Resensi",
+    "Psikologi",
+    "Kesehatan Mental"
+];
 ---
 <html lang="id">
 <head>
@@ -122,16 +136,9 @@ const defaultDesc = "Ruang tumbuh untuk jiwa yang ingin belajar, menulis, dan me
                 </div>
                 <h3 class="sidebar-title desktop-only-title">Topik Populer</h3>
                 <div class="topic-tags">
-                    <a href="#" class="tag">Pengembangan Diri</a>
-                    <a href="#" class="tag">Mindful Writing</a>
-                    <a href="#" class="tag">Produktivitas</a>
-                    <a href="#" class="tag">Kreativitas</a>
-                    <a href="#" class="tag">Filosofi</a>
-                    <a href="#" class="tag">Teknologi</a>
-                    <a href="#" class="tag">Hidup Minimalis</a>
-                    <a href="#" class="tag">Buku & Resensi</a>
-                    <a href="#" class="tag">Psikologi</a>
-                    <a href="#" class="tag">Kesehatan Mental</a>
+                    {topicTags.map(tag => (
+                        <a href={`/category/${slugify(tag)}`} class="tag">{tag}</a>
+                    ))}
                 </div>
             </div>
         </aside>

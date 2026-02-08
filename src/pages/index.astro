@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 import ViewToggle from '../components/ViewToggle.svelte';
+import { slugify } from '../utils/slugify';
 
 // Ambil semua artikel
 const allPosts = await getCollection('blog');
@@ -46,6 +47,7 @@ const categories = [
 // Map categories ke artikel dan filter yang kosong
 const articles = categories.map(cat => ({
     category: cat,
+    slug: slugify(cat),
     items: getPostsByCategory(cat).slice(0, 6) // Demo: 6 artikel per kategori
 })).filter(section => section.items.length > 0);
 ---
@@ -67,14 +69,14 @@ const articles = categories.map(cat => ({
     <section class="category-section">
       <div class="section-header">
         <h2 class="section-title">{section.category}</h2>
-        <a href={`/?search=${encodeURIComponent(section.category)}`} class="see-all">Lihat Semua →</a>
+        <a href={`/category/${section.slug}`} class="see-all">Lihat Semua →</a>
       </div>
       
       <div class="post-container" data-view-container>
         {section.items.map(post => (
           <article class="post-card">
             <div class="post-header">
-              <span class="post-category">{section.category}</span>
+              <a href={`/category/${section.slug}`} class="post-category">{section.category}</a>
               <span class="post-meta">{post.date} · {post.read}</span>
             </div>
             <a href={`/${post.slug}`} class="post-link">
@@ -291,6 +293,13 @@ const articles = categories.map(cat => ({
     padding: 4px 12px;
     border-radius: 12px;
     white-space: nowrap;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .post-category:hover {
+    background: var(--text);
+    color: var(--bg);
   }
   
   .post-meta { 

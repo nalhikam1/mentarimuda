@@ -1,4 +1,5 @@
----
+import { slugify } from '../utils/slugify';
+
 const { category, title } = Astro.props;
 
 // Schema.org JSON-LD Generation
@@ -16,7 +17,7 @@ const schemaData = {
       "@type": "ListItem",
       "position": 2,
       "name": category,
-      "item": Astro.site ? new URL(`/?search=${encodeURIComponent(category)}`, Astro.site).toString() : `/?search=${encodeURIComponent(category)}`
+      "item": Astro.site ? new URL(`/category/${slugify(category)}`, Astro.site).toString() : `/category/${slugify(category)}`
     }] : []),
     {
       "@type": "ListItem",
@@ -36,7 +37,7 @@ const schemaData = {
   
   {category && (
     <>
-      <a href={`/?search=${category}`} class="breadcrumb-link">{category}</a>
+      <a href={`/category/${slugify(category)}`} class="breadcrumb-link">{category}</a>
       <span class="separator">›</span>
     </>
   )}
