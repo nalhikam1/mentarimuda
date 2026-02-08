@@ -1,190 +1,170 @@
-/* 10/10 Vertical Rhythm & Proximity Styles */
+/* Clean & Balanced Readability - Anti-Lebay Version */
 
 .article-content {
-    max-width: 720px;
+    max-width: 680px;
+    /* Classic readability standard */
     margin: 0 auto;
 }
 
 .article-title {
-    font-size: 3.25rem;
-    /* ~52px - Strong impact */
-    font-weight: 850;
-    /* Premium weight */
-    line-height: 1.1;
-    /* Rapat as requested for big titles */
-    margin-bottom: 2rem;
-    letter-spacing: -0.05em;
+    font-size: 2.5rem;
+    /* 40px - Bold but not oversized */
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
     color: var(--text);
 }
 
 .article-meta {
     display: flex;
-    gap: 24px;
-    margin-bottom: 4rem;
-    padding-bottom: 1.5rem;
+    gap: 16px;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
 }
 
 .meta-item {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 500;
+    gap: 6px;
 }
 
 .meta-item svg {
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 .article-body {
-    font-size: 1.25rem;
-    /* ~20px - Ideal readability */
-    line-height: 1.75;
-    /* 10/10 Rule: Airy for body text */
+    font-size: 1.125rem;
+    /* 18px - Standard professional reading size */
+    line-height: 1.65;
+    /* Balanced vertical space */
     color: var(--text);
     font-weight: 400;
 }
 
 .lead {
-    font-size: 1.45rem;
+    font-size: 1.25rem;
     line-height: 1.6;
     color: var(--text-secondary);
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     font-weight: 400;
-    border-left: 3px solid var(--accent);
-    padding-left: 28px;
-    font-style: italic;
 }
 
-/* --- ASYMMETRIC SPACING (THE 10/10 SECRET) --- */
+/* --- BALANCED PROXIMITY --- */
 
 .article-body h2 {
-    font-size: 2.125rem;
-    font-weight: 800;
-    margin-top: 4rem;
-    /* Jarak Luas ke konten sebelumnya (Pemisah Topik) */
-    margin-bottom: 0.875rem;
-    /* Jarak Rapat ke konten di bawahnya (Mengikat) */
+    font-size: 1.75rem;
+    /* 28px */
+    font-weight: 750;
+    margin-top: 2.5rem;
+    /* Clear separation from previous section */
+    margin-bottom: 0.5rem;
+    /* Close binding to its paragraph */
     line-height: 1.2;
-    /* Rapat as requested */
-    letter-spacing: -0.03em;
-    color: var(--text);
-}
-
-.article-body h3 {
-    font-size: 1.625rem;
-    font-weight: 700;
-    margin-top: 3rem;
-    /* Jarak Luas */
-    margin-bottom: 0.75rem;
-    /* Jarak Rapat */
-    line-height: 1.25;
     letter-spacing: -0.02em;
     color: var(--text);
 }
 
+.article-body h3 {
+    font-size: 1.35rem;
+    /* 22px */
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.25;
+    color: var(--text);
+}
+
 .article-body p {
-    margin-bottom: 1.618rem;
-    /* Golden Ratio vertical rhythm */
+    margin-bottom: 1.25rem;
+    /* Clean paragraph gap */
 }
 
 .article-body blockquote {
-    margin: 3.5rem 0;
-    padding: 2.5rem 3rem;
-    border-radius: 16px;
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
     background: var(--code-bg);
     border-left: 4px solid var(--accent);
     font-style: italic;
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     line-height: 1.6;
     color: var(--text);
-    position: relative;
-    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.02);
-}
-
-.article-body blockquote::before {
-    content: '“';
-    position: absolute;
-    top: -15px;
-    left: 20px;
-    font-size: 5rem;
-    color: var(--accent);
-    opacity: 0.15;
-    font-family: Georgia, serif;
 }
 
 .article-body ul,
 .article-body ol {
-    margin: 2rem 0;
-    padding-left: 1.75rem;
+    margin: 1.25rem 0;
+    padding-left: 1.25rem;
 }
 
 .article-body li {
-    margin-bottom: 0.875rem;
-    line-height: 1.7;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
 }
 
 .article-body img {
     max-width: 100%;
     height: auto;
-    border-radius: 20px;
-    margin: 3.5rem 0;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    margin: 2rem 0;
 }
 
 .article-body strong {
     font-weight: 700;
-    color: var(--text);
 }
 
 .article-body a {
     color: var(--accent);
     text-decoration: none;
-    background-image: linear-gradient(transparent 90%, var(--accent) 90%);
-    background-repeat: no-repeat;
-    background-size: 0% 100%;
-    transition: background-size 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    border-bottom: 1px solid rgba(255, 142, 83, 0.2);
+    transition: all 0.2s;
 }
 
 .article-body a:hover {
-    background-size: 100% 100%;
+    border-bottom-color: var(--accent);
+    background: rgba(255, 142, 83, 0.05);
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 640px) {
     .article-title {
-        font-size: 2.5rem;
-        letter-spacing: -0.03em;
-        margin-bottom: 1.5rem;
+        font-size: 1.85rem;
+        /* 30px */
+        margin-bottom: 0.5rem;
+    }
+
+    .article-meta {
+        margin-bottom: 1.75rem;
+        gap: 12px;
     }
 
     .article-body {
-        font-size: 1.125rem;
-        line-height: 1.7;
+        font-size: 1.05rem;
+        /* ~17px */
+        line-height: 1.6;
     }
 
     .lead {
-        font-size: 1.25rem;
-        padding-left: 20px;
-        margin-bottom: 2.5rem;
+        font-size: 1.15rem;
+        margin-bottom: 1.75rem;
     }
 
     .article-body h2 {
-        font-size: 1.75rem;
-        margin-top: 3rem;
-        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+        margin-top: 2.25rem;
+        margin-bottom: 0.4rem;
     }
 
     .article-body h3 {
-        font-size: 1.4rem;
-        margin-top: 2.25rem;
+        font-size: 1.25rem;
     }
 
-    .article-body blockquote {
-        padding: 2rem 1.5rem;
-        font-size: 1.25rem;
+    .article-body p {
+        margin-bottom: 1.1rem;
     }
 }
