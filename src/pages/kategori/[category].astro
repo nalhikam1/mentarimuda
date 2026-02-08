@@ -46,7 +46,11 @@ const displayPosts = filteredPosts.map(post => ({
 }));
 ---
 
-<MainLayout title={`${categoryName} - Mentari Muda`}>
+<MainLayout 
+  title={`Kategori ${categoryName} - Muda`}
+  description={`Kumpulan tulisan dan inspirasi seputar topik ${categoryName} di Mentari Muda.`}
+  keywords={`${categoryName}, blog ${categoryName}, mentari muda`}
+>
   <div class="category-header">
     <a href="/" class="back-link">← Kembali ke Beranda</a>
     <h1 class="category-title">Topik: <span>{categoryName}</span></h1>
@@ -64,7 +68,7 @@ const displayPosts = filteredPosts.map(post => ({
           <h2 class="post-title">{post.title}</h2>
         </a>
         <div class="post-footer">
-          <span class="post-author">Oleh {post.author}</span>
+          <span class="post-author">Oleh <a href="/naufalmuhammadalhikam">{post.author}</a></span>
         </div>
       </article>
     ))}

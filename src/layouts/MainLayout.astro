@@ -10,7 +10,7 @@ import { slugify } from '../utils/slugify';
 
 import { ViewTransitions } from 'astro:transitions';
 
-const { title, postTitle, postUrl, category } = Astro.props;
+const { title, postTitle, postUrl, category, description, keywords } = Astro.props;
 // Deskripsi default jika tidak ada konten spesifik
 const defaultDesc = "Ruang tumbuh untuk jiwa yang ingin belajar, menulis, dan memaknai hidup dengan lebih sadar. Temukan tulisan tentang self-growth dan mindfulness.";
 
@@ -31,8 +31,9 @@ const topicTags = [
 <head>
     <SEO 
         title={title} 
-        description={defaultDesc}
+        description={description || defaultDesc}
         article={!!postTitle}
+        keywords={keywords}
     />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +82,7 @@ const topicTags = [
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                         <span>Beranda</span>
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="/naufalmuhammadalhikam" class="nav-link">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         <span>Tentang Saya</span>
                     </a>

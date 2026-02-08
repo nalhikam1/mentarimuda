@@ -4,9 +4,10 @@ export interface Props {
   description: string;
   image?: string;
   article?: boolean;
+  keywords?: string;
 }
 
-const { title, description, image = '/default-og.png', article = false } = Astro.props;
+const { title, description, image = '/default-og.png', article = false, keywords } = Astro.props;
 const siteUrl = Astro.site ? Astro.site.origin : 'https://mentarimuda.com';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl);
 const socialImageURL = new URL(image, siteUrl);
@@ -16,11 +17,11 @@ const pathname = Astro.url.pathname;
 let metaTitle;
 
 if (pathname === '/' || title === 'Beranda') {
-    // Judul Khusus Homepage (Branding + Keyword Utama)
-    metaTitle = "Mentari Muda | Ruang Tumbuh & Mindful Writing";
+    // Judul Khusus Homepage (Brand: Slogan)
+    metaTitle = "Mentarimuda: Belajar, Pahami, dan Terapkan Kebaikan";
 } else {
-    // Judul Halaman Lain (Judul Konten | Brand)
-    metaTitle = `${title} | Mentari Muda`;
+    // Judul Halaman Lain (Judul Konten - Brand)
+    metaTitle = `${title} - Mentari Muda`;
 }
 ---
 
@@ -36,6 +37,7 @@ if (pathname === '/' || title === 'Beranda') {
 <title>{metaTitle}</title>
 <meta name="title" content={metaTitle} />
 <meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={article ? 'article' : 'website'} />

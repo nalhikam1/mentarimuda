@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const { title, pubDate, author, category } = entry.data;
+const { title, pubDate, author, category, description, tags } = entry.data;
 
 // Format tanggal
 const formattedDate = pubDate.toLocaleDateString('id-ID', {
@@ -29,6 +29,8 @@ const formattedDate = pubDate.toLocaleDateString('id-ID', {
     postTitle={title} 
     postUrl={`/blog/${entry.slug}`} 
     category={category || (entry.data.tags && entry.data.tags[0]) || 'Umum'}
+    description={description}
+    keywords={tags?.join(', ')}
 >
   <article class="article-content">
     <h1 class="article-title">{title}</h1>
@@ -44,7 +46,7 @@ const formattedDate = pubDate.toLocaleDateString('id-ID', {
       </span>
       <span class="meta-item">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        {author}
+        <a href="/naufalmuhammadalhikam" class="author-link">{author}</a>
       </span>
     </div>
 
