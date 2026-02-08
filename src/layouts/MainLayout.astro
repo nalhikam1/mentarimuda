@@ -6,6 +6,7 @@ import ThemeToggle from '../components/ThemeToggle.svelte';
 import Search from '../components/Search.svelte'; 
 import BottomNav from '../components/BottomNav.astro';
 import SEO from '../components/SEO.astro';
+import Loader from '../components/Loader.svelte';
 import { slugify } from '../utils/slugify';
 
 import { ViewTransitions } from 'astro:transitions';
@@ -161,7 +162,21 @@ const topicTags = [
         <BottomNav />
     </div>
 
+    <Loader client:load />
+
     <script>
+        // --- GLOBAL LOADER HANDLER ---
+        document.addEventListener('astro:before-preparation', () => {
+            document.documentElement.classList.add('loader-visible');
+        });
+
+        document.addEventListener('astro:page-load', () => {
+            // Beri sedikit delay agar transisi terasa mantap
+            setTimeout(() => {
+                document.documentElement.classList.remove('loader-visible');
+            }, 300);
+        });
+
         // --- HANDLER FUNCTIONS ---
         
         // Fungsi menutup Panel Layout (Search & Topik) saja
