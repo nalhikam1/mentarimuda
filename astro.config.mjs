@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://mentarimuda.com',
   base: '/',
-  integrations: [svelte(), sitemap()],
+  integrations: [svelte()],
   output: 'static',
   prefetch: {
     prefetchAll: true,
