@@ -1,0 +1,40 @@
+/* Non-Critical CSS - Lazy Loaded */
+
+/* Animasi dan Transisi (tidak critical untuk initial render) */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Selection Styling */
+::selection {
+    background: var(--accent);
+    color: #fff;
+}
+
+::-moz-selection {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Global Link Normalization */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a:visited {
+    color: inherit;
+}
+
+a:hover {
+    color: var(--accent);
+}

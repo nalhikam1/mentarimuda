@@ -4,6 +4,10 @@
     animation-duration: 200ms !important;
 }
 
+/* Import Shared Components */
+@import './components.css';
+
+
 :root {
     /* Light Mode (Default) */
     --bg: #ffffff;
@@ -273,30 +277,4 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-}
-
-/* Selection */
-::selection {
-    background: var(--accent);
-    color: #fff;
-}
-
-::-moz-selection {
-    background: var(--accent);
-    color: #fff;
-}
-
-/* Global Link Normalization (Anti-Purple) */
-a {
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.2s ease, opacity 0.2s ease;
-}
-
-a:visited {
-    color: inherit;
-}
-
-a:hover {
-    color: var(--accent);
 }
