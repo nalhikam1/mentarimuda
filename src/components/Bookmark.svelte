@@ -33,6 +33,15 @@
     };
   });
 
+  // Sinkronisasi ke BottomNav (Mobile) via Custom Event
+  $: {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('bookmarksChanged', { 
+        detail: { count: bookmarks.length } 
+      }));
+    }
+  }
+
   // LOGIKA PENTING: Svelte akan mengecek ulang status ini 
   // setiap kali postTitle atau bookmarks berubah.
   $: isSaved = bookmarks.some(b => b.title === postTitle);
