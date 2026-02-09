@@ -14,6 +14,13 @@ import { ViewTransitions } from 'astro:transitions';
 const { title, postTitle, postUrl, category, description, keywords, hideRightSidebar = false } = Astro.props;
 
 const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
+
+// SEO Title Logic
+const seoTitle = isHome 
+    ? "Mentari Muda: Ruang Tumbuh, Refleksi, dan Inspirasi" 
+    : `${title} - Mentari Muda`;
+
 // Deskripsi default jika tidak ada konten spesifik
 const defaultDesc = "Mentari Muda adalah jurnal kontemplasi digital yang merangkai hikmah dari setiap perjalanan belajar. Temukan inspirasi pengembangan diri, refleksi filosofis, dan eksplorasi teknologi untuk menemanimu bertumbuh.";
 
@@ -34,15 +41,15 @@ const topicTags = [
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="title" content={title} />
+    <title>{seoTitle}</title>
+    <meta name="title" content={seoTitle} />
     <meta name="description" content={description || defaultDesc} />
     {keywords && <meta name="keywords" content={keywords} />}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={!!postTitle ? 'article' : 'website'} />
     <meta property="og:url" content={Astro.url.href} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={seoTitle} />
     <meta property="og:description" content={description || defaultDesc} />
     <meta property="og:image" content={Astro.url.origin + '/social-card.png'} />
     <meta property="og:site_name" content="Mentari Muda" />
@@ -50,7 +57,7 @@ const topicTags = [
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={Astro.url.href} />
-    <meta property="twitter:title" content={title} />
+    <meta property="twitter:title" content={seoTitle} />
     <meta property="twitter:description" content={description || defaultDesc} />
     <meta property="twitter:image" content={Astro.url.origin + '/social-card.png'} />
 
