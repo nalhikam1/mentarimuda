@@ -111,8 +111,8 @@ const articles = categories.map(cat => ({
   }
 
   // Wait for DOM to be ready
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing view mode');
+  document.addEventListener('astro:page-load', () => {
+    console.log('Page loaded, initializing view mode');
     
     // Load initial view mode
     const savedMode = localStorage.getItem('mentari-view-mode') || 'grid';
