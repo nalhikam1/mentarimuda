@@ -1,27 +1,39 @@
 // Utility untuk View Mode Toggle
+const VIEW_MODE_KEY = 'mentari-view-mode';
+let isInitialized = false;
+
+function applyViewMode(mode) {
+    const containers = document.querySelectorAll('[data-view-container]');
+    containers.forEach(container => {
+        // Hapus class lama
+        container.classList.remove('grid-view', 'list-view');
+        // Tambah class baru
+        container.classList.add(`${mode}-view`);
+    });
+}
+
 export function initViewMode() {
-    function updateViewMode(mode) {
-        const containers = document.querySelectorAll('[data-view-container]');
+    if (isInitialized) return;
 
-        containers.forEach(container => {
-            if (mode === 'list') {
-                container.classList.add('list-view');
-                container.classList.remove('grid-view');
-            } else {
-                container.classList.add('grid-view');
-                container.classList.remove('list-view');
-            }
-        });
-    }
+    // 1. Initial Load Handler
+    const handlePageLoad = () => {
+        const savedMode = localStorage.getItem(VIEW_MODE_KEY) || 'grid';
+        applyViewMode(savedMode);
+    };
 
-    // Load initial view mode
-    document.addEventListener('astro:page-load', () => {
-        const savedMode = localStorage.getItem('mentari-view-mode') || 'grid';
-        updateViewMode(savedMode);
-    });
+    // 2. Change Event Handler
+    const handleChange = (e) => {
+        const newMode = e.detail;
+        applyViewMode(newMode);
+        localStorage.setItem(VIEW_MODE_KEY, newMode);
+    };
 
-    // Listen untuk perubahan
-    window.addEventListener('viewModeChange', (e) => {
-        updateViewMode(e.detail);
-    });
+    // Pasang listeners
+    document.addEventListener('astro:page-load', handlePageLoad);
+    window.addEventListener('viewModeChange', handleChange);
+
+    // Jalankan sekali saat init jika sudah di halaman (untuk SPA feel)
+    handlePageLoad();
+
+    isInitialized = true;
 }
