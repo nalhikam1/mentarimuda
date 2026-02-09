@@ -69,22 +69,14 @@ const topicTags = [
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
 
     <!-- Apple Touch Icon & PWA -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
     
-    <!-- DNS Prefetch & Preconnect untuk Google Fonts -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Preload Font CSS dengan fetchpriority high -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" fetchpriority="high">
-    
-    <!-- Load Font dengan swap untuk menghindari FOIT -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Inline Critical CSS untuk mengurangi render-blocking -->
     <style is:inline>
@@ -197,7 +189,6 @@ const topicTags = [
                 </div>
                 <h3 class="sidebar-title desktop-only-title">Topik Populer</h3>
                 <div class="topic-tags">
-                    <a href="/tulisan" class="tag tag-all">Semua</a>
                     {topicTags.map(tag => (
                         <a href={`/kategori/${slugify(tag)}`} class="tag">{tag}</a>
                     ))}

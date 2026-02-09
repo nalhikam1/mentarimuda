@@ -9,7 +9,6 @@
     const saved = localStorage.getItem('mentari-view-mode');
     if (saved) {
       currentMode = saved;
-      console.log('ViewToggle: Loaded saved mode:', saved);
     }
     
     // Dispatch initial event setelah mount
@@ -20,7 +19,6 @@
   });
   
   function toggleView(mode) {
-    console.log('ViewToggle: Switching to', mode);
     currentMode = mode;
     localStorage.setItem('mentari-view-mode', mode);
     
