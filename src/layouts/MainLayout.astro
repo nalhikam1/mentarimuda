@@ -80,8 +80,10 @@ const topicTags = [
         .see-all { font-size: 0.875rem; color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.2s ease; white-space: nowrap; }
         .see-all:hover { color: var(--text); }
 
-        /* Post Grid & List Views */
-        .post-container.grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        /* Post Grid (Default Layout) */
+        .post-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        
+        /* List View Override */
         .post-container.list-view { display: flex; flex-direction: column; gap: 12px; }
         .post-container.list-view .post-card { padding: 16px 20px; border-radius: 8px; flex-direction: row; align-items: center; gap: 16px; }
         .post-container.list-view .post-card:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); }
@@ -121,7 +123,7 @@ const topicTags = [
             .hero-title { font-size: 2rem; }
             .hero-subtitle { font-size: 1rem; }
             .section-title { font-size: 1.25rem; }
-            .post-container.grid-view { grid-template-columns: 1fr; }
+            .post-container { grid-template-columns: 1fr; }
             .filter-section { flex-direction: column; gap: 12px; }
             .filter-label { margin-top: 0; }
         }
