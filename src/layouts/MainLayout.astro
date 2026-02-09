@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/components.css";
 import Bookmark from '../components/Bookmark.svelte';
 import Breadcrumb from '../components/Breadcrumb.astro'; 
 import ThemeToggle from '../components/ThemeToggle.svelte';
@@ -39,9 +40,6 @@ const topicTags = [
         keywords={keywords}
     />
     
-    <!-- Preload Critical CSS -->
-    <link rel="preload" href="/src/styles/global.css" as="style">
-    
     
     <!-- DNS Prefetch & Preconnect untuk Google Fonts -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
@@ -70,10 +68,6 @@ const topicTags = [
     </style>
     
     <ViewTransitions />
-    
-    <!-- Defer Non-Critical CSS -->
-    <link rel="stylesheet" href="/src/styles/non-critical.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="/src/styles/non-critical.css"></noscript>
 
     <!-- Script Anti-Kilatan (No-Flash) -->
     <script is:inline>
