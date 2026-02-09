@@ -26,7 +26,7 @@ const totalPosts = sortedPosts.length;
 ---
 
 <MainLayout 
-  title="Semua Tulisan - Mentari Muda" 
+  title="Semua Tulisan" 
   hideRightSidebar={true}
   description="Kumpulan seluruh tulisan di Mentari Muda. Jelajahi berbagai topik mulai dari mindfulness hingga teknologi."
 >
@@ -102,100 +102,154 @@ const totalPosts = sortedPosts.length;
 
 <style>
   .archive-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 40px;
-    padding-bottom: 30px;
+    margin-bottom: 50px;
+    padding: 60px 0 40px;
     border-bottom: 1px solid var(--border);
-    gap: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative background element */
+  .archive-header::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(255, 142, 83, 0.05) 100%);
+    border-radius: 50%;
+    z-index: -1;
   }
 
   .archive-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 8px;
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 12px;
     color: var(--text);
+    line-height: 1;
+    background: linear-gradient(to bottom, var(--text) 60%, var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .archive-subtitle {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.6;
+    font-weight: 400;
   }
 
-  /* Filter Styling */
+  .archive-actions {
+    margin-top: 32px;
+  }
+
+  /* Filter Styling - Premium & App-like */
   .filter-section {
-    margin-bottom: 40px;
+    margin-bottom: 48px;
+    position: sticky;
+    top: 70px; /* Di bawah top bar */
+    z-index: 30;
+    background: var(--bg);
+    padding: 10px 0;
   }
 
   .filter-label {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 800;
     color: var(--text-secondary);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
   }
 
   .filter-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
 
   .filter-tag {
-    padding: 8px 18px;
+    padding: 10px 22px;
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 30px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    border-radius: 14px;
+    font-size: 0.9375rem;
+    font-weight: 600;
     color: var(--text-secondary);
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
   }
 
   .filter-tag:hover {
     border-color: var(--text);
     color: var(--text);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
   .filter-tag.active {
     background: var(--text);
     color: var(--bg);
     border-color: var(--text);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   }
 
-  /* Reuse Article Card Styles */
+  /* Grid View Enhancements */
   .post-container.grid-view { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-    gap: 24px; 
-  }
-
-  .post-container.list-view {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+    gap: 32px; 
   }
 
   .post-card { 
-    padding: 24px; 
+    padding: 32px; 
     border: 1px solid var(--card-border); 
-    border-radius: 16px; 
-    transition: all 0.3s ease;
+    border-radius: 24px; 
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     background: var(--card-bg);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .post-card:hover { 
-    border-color: var(--accent); 
-    transform: translateY(-4px); 
-    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    border-color: transparent;
+    transform: translateY(-8px); 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+
+  .post-card:hover::before {
+    opacity: 1;
   }
 
   .post-header {
@@ -207,92 +261,104 @@ const totalPosts = sortedPosts.length;
 
   .post-category {
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
     color: var(--accent);
     text-decoration: none;
+    letter-spacing: 0.05em;
   }
 
   .post-meta { 
-    font-size: 0.75rem; 
+    font-size: 0.8125rem; 
     color: var(--text-secondary); 
   }
 
-  .post-link { text-decoration: none; color: inherit; }
-
   .post-title { 
-    font-size: 1.25rem; 
-    line-height: 1.4; 
-    font-weight: 700;
+    font-size: 1.5rem; 
+    line-height: 1.3; 
+    font-weight: 800;
     color: var(--text);
+    letter-spacing: -0.5px;
   }
 
   .post-footer {
-    padding-top: 12px;
+    padding-top: 20px;
     margin-top: auto;
     border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .post-author {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
+    font-weight: 500;
   }
 
-  /* List View specifics */
-  .post-container.list-view .post-card {
-    flex-direction: row;
-    align-items: center;
-    padding: 16px 24px;
-    gap: 32px;
+  .post-author a {
+    color: var(--text);
+    font-weight: 700;
+    text-decoration: none;
   }
 
-  .post-container.list-view .post-link {
-    flex: 1;
-    order: 1;
-  }
-
-  .post-container.list-view .post-header {
-    width: 280px;
-    flex-shrink: 0;
-    order: 2;
-    border: none;
-    margin: 0;
-    padding: 0;
-    justify-content: flex-start;
-  }
-
-  .post-container.list-view .post-footer {
-    width: 200px;
-    flex-shrink: 0;
-    order: 3;
-    border: none;
-    margin: 0;
-    padding: 0;
-    text-align: right;
-  }
-
-  /* Mobile */
+  /* Mobile Optimization */
   @media (max-width: 968px) {
     .archive-header {
-      flex-direction: column;
-      align-items: flex-start;
+      padding: 40px 0 30px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .archive-title {
+      font-size: 2.75rem;
+    }
+
+    .archive-subtitle {
+      font-size: 1.1rem;
+      margin: 0 auto;
     }
 
     .archive-actions {
       display: none;
     }
 
-    .archive-title {
-      font-size: 2rem;
+    .filter-section {
+      top: 60px;
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 15px 20px;
     }
 
-    .post-container.list-view .post-card {
-      flex-direction: column;
-      align-items: flex-start;
+    .filter-tags {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Hidden scrollbar for clean look */
     }
 
-    .post-container.list-view .post-header {
-      width: 100%;
+    .filter-tags::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-tag {
+      padding: 8px 18px;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .post-container.grid-view {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .post-card {
+      padding: 24px;
+    }
+
+    .post-title {
+      font-size: 1.35rem;
     }
   }
 </style>
