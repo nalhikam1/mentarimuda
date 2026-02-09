@@ -80,28 +80,8 @@ const totalPosts = sortedPosts.length;
 </MainLayout>
 
 <script>
-  // Reuse logic view mode dari index.astro
-  function updateViewMode(mode) {
-    const containers = document.querySelectorAll('[data-view-container]');
-    containers.forEach(container => {
-      if (mode === 'list') {
-        container.classList.add('list-view');
-        container.classList.remove('grid-view');
-      } else {
-        container.classList.add('grid-view');
-        container.classList.remove('list-view');
-      }
-    });
-  }
-
-  document.addEventListener('astro:page-load', () => {
-    const savedMode = localStorage.getItem('mentari-view-mode') || 'grid';
-    updateViewMode(savedMode);
-  });
-
-  window.addEventListener('viewModeChange', (e) => {
-    updateViewMode(e.detail);
-  });
+  import { initViewMode } from '../../utils/viewMode.js';
+  initViewMode();
 </script>
 
 <style>
@@ -274,13 +254,11 @@ const totalPosts = sortedPosts.length;
   }
 
   .post-category {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--text-secondary);
     background: var(--code-bg);
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 6px;
     white-space: nowrap;
     text-decoration: none;

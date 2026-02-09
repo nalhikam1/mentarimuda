@@ -93,38 +93,8 @@ const articles = categories.map(cat => ({
 </MainLayout>
 
 <script>
-  // Listen untuk perubahan view mode
-  function updateViewMode(mode) {
-    console.log('Updating view mode to:', mode);
-    const containers = document.querySelectorAll('[data-view-container]');
-    console.log('Found containers:', containers.length);
-    
-    containers.forEach(container => {
-      if (mode === 'list') {
-        container.classList.add('list-view');
-        container.classList.remove('grid-view');
-      } else {
-        container.classList.add('grid-view');
-        container.classList.remove('list-view');
-      }
-    });
-  }
-
-  // Wait for DOM to be ready
-  document.addEventListener('astro:page-load', () => {
-    console.log('Page loaded, initializing view mode');
-    
-    // Load initial view mode
-    const savedMode = localStorage.getItem('mentari-view-mode') || 'grid';
-    console.log('Saved mode:', savedMode);
-    updateViewMode(savedMode);
-  });
-
-  // Listen untuk perubahan
-  window.addEventListener('viewModeChange', (e) => {
-    console.log('View mode change event:', e.detail);
-    updateViewMode(e.detail);
-  });
+  import { initViewMode } from '../utils/viewMode.js';
+  initViewMode();
 </script>
 
 <style>
@@ -284,13 +254,11 @@ const articles = categories.map(cat => ({
   }
 
   .post-category {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--text-secondary);
     background: var(--code-bg);
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 6px;
     white-space: nowrap;
     text-decoration: none;
