@@ -762,9 +762,6 @@ const topicTags = [
             max-width: 100% !important;
         }
 
-
-        /* ... (style sebelumnya) ... */
-        
         /* MODIFIKASI: Search Panel Fullscreen di Mobile */
         #mobile-search-panel.mobile-bottom-sheet {
             top: 0;       
@@ -773,7 +770,7 @@ const topicTags = [
             max-height: 100vh; 
             border-radius: 0; 
             z-index: 2000;    
-            padding: 0; /* Reset padding agar header nempel */
+            padding: 0; 
             background: var(--bg);
             overflow: hidden;
             display: none;
@@ -790,11 +787,10 @@ const topicTags = [
         #mobile-search-panel .mobile-search-content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 100px; /* Space for bottom nav */
+            padding-bottom: 100px; 
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Override style Search Component di dalam panel mobile */
         :global(#mobile-search-panel .search-container) {
             max-width: 100% !important;
             padding: 20px;
@@ -824,15 +820,13 @@ const topicTags = [
             color: var(--text) !important;
         }
         
-        /* Pastikan input search terlihat lebih jelas */
         :global(#mobile-search-panel .search-box input) {
             background: var(--sidebar-bg) !important;
             border: 1px solid var(--border) !important;
             height: 48px !important;
             font-size: 1rem !important;
             border-radius: 12px !important;
-
-        /* ... (style lainnya) ... */
+        }
     }
 
     @keyframes slideUp {
