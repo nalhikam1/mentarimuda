@@ -305,13 +305,14 @@ const totalPosts = sortedPosts.length;
   /* Mobile Optimization */
   @media (max-width: 968px) {
     .archive-header {
-      padding: 40px 0 30px;
+      padding: 40px 20px 30px;
       margin-bottom: 30px;
-      text-align: center;
+      text-align: left; /* Ganti ke kiri agar lebih natural di mobile */
     }
 
     .archive-title {
-      font-size: 2.75rem;
+      font-size: 2.25rem; /* Perkecil sedikit lagi agar tidak banyak wrapping */
+      letter-spacing: -1.5px;
     }
 
     .archive-subtitle {

@@ -165,8 +165,10 @@ body {
 }
 
 @media (max-width: 968px) {
-    .app-container {
-        grid-template-columns: 1fr;
+
+    .app-container,
+    .app-container.no-right-sidebar {
+        grid-template-columns: 1fr !important;
     }
 
     .left-sidebar,
