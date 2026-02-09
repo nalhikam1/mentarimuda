@@ -6,10 +6,6 @@ import { slugify } from '../utils/slugify';
 
 // Ambil semua artikel
 const allPosts = await getCollection('blog');
-console.log('Total posts:', allPosts.length);
-allPosts.forEach(p => {
-    console.log(`Post: ${p.data.title}, Tags: ${p.data.tags}, Category: ${p.data.category}`);
-});
 
 // Fungsi pembantu untuk mengelompokkan (case-insensitive)
 const getPostsByCategory = (catName) => {

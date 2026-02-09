@@ -316,7 +316,6 @@
       bottom: 0;    
       left: 0;
       right: 0;
-      width: 100%;
       height: 100vh; 
       max-height: 100vh;
       border-radius: 0; 
@@ -329,6 +328,7 @@
       flex-direction: column;
       padding: 0;
       overflow: hidden;
+      overflow-x: hidden;
     }
 
     .dropdown-header {

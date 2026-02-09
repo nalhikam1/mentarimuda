@@ -168,3 +168,72 @@
         margin-bottom: 1.1rem;
     }
 }
+
+/* --- PREMIUM TABLE STYLING --- */
+.article-body table {
+    width: 100%;
+    margin: 2.5rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--card-bg);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.article-body th {
+    background: var(--sidebar-bg);
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.article-body td {
+    padding: 16px 18px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.article-body tr:last-child td {
+    border-bottom: none;
+}
+
+.article-body tr:nth-child(even) td {
+    background: rgba(0, 0, 0, 0.01);
+}
+
+:global(html.dark) .article-body tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.article-body td strong {
+    color: var(--text);
+}
+
+/* Response Mobile untuk Tabel */
+@media (max-width: 768px) {
+    .article-body table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+    }
+
+    .article-body th,
+    .article-body td {
+        min-width: 140px;
+        /* Agar tidak terlalu menciut di mobile */
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+}

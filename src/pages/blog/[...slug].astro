@@ -5,6 +5,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import '../../styles/article.css';
 import SocialShare from '../../components/SocialShare.astro';
 import Comments from '../../components/Comments.astro';
+import Subscribe from '../../components/Subscribe.svelte';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -88,6 +89,11 @@ const relatedPosts = allPosts
     )}
 
     <SocialShare title={title} url={Astro.url.href} />
+    
+    <div class="article-subscribe">
+      <Subscribe client:load />
+    </div>
+
     <Comments />
   </article>
 </MainLayout>
@@ -187,6 +193,18 @@ const relatedPosts = allPosts
 
   .cta-link-inline:hover {
     transform: translateX(3px);
+  }
+
+  .article-subscribe {
+    margin: 4rem 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (min-width: 969px) {
+    .article-subscribe {
+      display: none;
+    }
   }
 
   @media (max-width: 640px) {
