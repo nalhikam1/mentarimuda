@@ -27,22 +27,23 @@ const totalPosts = sortedPosts.length;
 
 <MainLayout 
   title="Semua Tulisan" 
-  hideRightSidebar={true}
   description="Kumpulan seluruh tulisan di Mentari Muda. Jelajahi berbagai topik mulai dari mindfulness hingga teknologi."
 >
-  <div class="archive-header">
-    <div class="header-content">
-      <h1 class="archive-title">Semua Tulisan</h1>
-      <p class="archive-subtitle">Menampilkan {totalPosts} artikel pilihan untuk menemani proses bertumbuhmu.</p>
-    </div>
-    <div class="archive-actions">
-      <ViewToggle client:load />
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Semua Tulisan</h1>
+        <p class="hero-subtitle">Menampilkan {totalPosts} artikel pilihan untuk menemani proses bertumbuhmu.</p>
+      </div>
+      <div class="hero-actions">
+        <ViewToggle client:load />
+      </div>
     </div>
   </div>
 
   <!-- Filtering Section -->
   <div class="filter-section">
-    <div class="filter-label">Filter berdasarkan topik:</div>
+    <div class="filter-label">Filter:</div>
     <div class="filter-tags">
       <a href="/tulisan" class="filter-tag active">Semua</a>
       {categories.map(cat => (
@@ -54,6 +55,9 @@ const totalPosts = sortedPosts.length;
   <div class="post-container grid-view" data-view-container>
     {sortedPosts.map(post => {
       const category = post.data.category || (post.data.tags && post.data.tags[0]) || 'Umum';
+      const readTime = Math.ceil(post.body.split(' ').length / 200);
+      const dateStr = post.data.pubDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      
       return (
         <article class="post-card">
           <a href={`/blog/${post.slug}`} class="post-link">
@@ -62,8 +66,7 @@ const totalPosts = sortedPosts.length;
           <div class="post-header">
             <a href={`/kategori/${slugify(category)}`} class="post-category">{category}</a>
             <span class="post-meta">
-              {post.data.pubDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} · 
-              {Math.ceil(post.body.split(' ').length / 200)} min read
+              {dateStr} · {readTime} min read
             </span>
           </div>
           <div class="post-footer">
@@ -101,155 +104,164 @@ const totalPosts = sortedPosts.length;
 </script>
 
 <style>
-  .archive-header {
-    margin-bottom: 50px;
-    padding: 60px 0 40px;
+  /* Hero / Header Styling similar to Index */
+  .hero-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
     border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
   }
 
-  /* Decorative background element */
-  .archive-header::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 200px;
-    height: 200px;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(255, 142, 83, 0.05) 100%);
-    border-radius: 50%;
-    z-index: -1;
+  .hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
   }
 
-  .archive-title {
-    font-size: 3.5rem;
-    font-weight: 900;
-    letter-spacing: -2px;
+  .hero-text {
+    flex: 1;
+  }
+
+  .hero-actions {
+    flex-shrink: 0;
+    padding-top: 8px;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
     margin-bottom: 12px;
+    line-height: 1.2;
+    letter-spacing: -1px;
     color: var(--text);
-    line-height: 1;
-    background: linear-gradient(to bottom, var(--text) 60%, var(--text-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
 
-  .archive-subtitle {
-    font-size: 1.25rem;
+  .hero-subtitle {
+    font-size: 1.125rem;
     color: var(--text-secondary);
-    max-width: 600px;
     line-height: 1.6;
-    font-weight: 400;
+    max-width: 600px;
   }
 
-  .archive-actions {
-    margin-top: 32px;
-  }
-
-  /* Filter Styling - Premium & App-like */
+  /* Filter Section */
   .filter-section {
     margin-bottom: 48px;
-    position: sticky;
-    top: 70px; /* Di bawah top bar */
-    z-index: 30;
-    background: var(--bg);
-    padding: 10px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
   }
 
   .filter-label {
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--text-secondary);
-    margin-bottom: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .filter-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 10px;
+    white-space: nowrap;
   }
 
   .filter-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
   }
 
   .filter-tag {
-    padding: 10px 22px;
-    background: var(--card-bg);
+    padding: 8px 16px;
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    font-size: 0.9375rem;
-    font-weight: 600;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
     color: var(--text-secondary);
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: all 0.2s ease;
     text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
   }
 
   .filter-tag:hover {
     border-color: var(--text);
     color: var(--text);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
   .filter-tag.active {
     background: var(--text);
     color: var(--bg);
     border-color: var(--text);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   }
 
-  /* Grid View Enhancements */
+  /* Grid View (Default) - Matches Index */
   .post-container.grid-view { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-    gap: 32px; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 24px; 
   }
 
+  /* List View - Matches Index */
+  .post-container.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .post-container.list-view .post-card {
+    padding: 16px 20px;
+    border-radius: 8px;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .post-container.list-view .post-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+
+  .post-container.list-view .post-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    width: auto;
+  }
+
+  .post-container.list-view .post-link {
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+  }
+
+  .post-container.list-view .post-title {
+    font-size: 1.125rem;
+    margin: 0;
+  }
+
+  .post-container.list-view .post-footer {
+    border: none;
+    padding: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .post-container.list-view .post-meta {
+    display: none;
+  }
+  
+  /* Shared Post Card Styles - Matches Index */
   .post-card { 
-    padding: 32px; 
+    padding: 24px; 
     border: 1px solid var(--card-border); 
-    border-radius: 24px; 
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-radius: 16px; 
+    transition: all 0.3s ease;
     background: var(--card-bg);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    position: relative;
-    overflow: hidden;
+    gap: 12px;
   }
-
-  .post-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #FF6B6B, #FF8E53);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
+  
   .post-card:hover { 
-    border-color: transparent;
-    transform: translateY(-8px); 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-  }
-
-  .post-card:hover::before {
-    opacity: 1;
+    border-color: var(--text-secondary); 
+    transform: translateY(-4px); 
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
   }
 
   .post-header {
@@ -257,33 +269,58 @@ const totalPosts = sortedPosts.length;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
   }
 
   .post-category {
-    font-size: 0.75rem;
-    font-weight: 800;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--accent);
-    text-decoration: none;
     letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    background: var(--code-bg);
+    padding: 3px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: all 0.2s ease;
   }
 
+  .post-category:hover {
+    background: var(--text);
+    color: var(--bg);
+  }
+  
   .post-meta { 
-    font-size: 0.8125rem; 
+    font-size: 0.75rem; 
     color: var(--text-secondary); 
+  }
+  
+  .post-link { 
+    text-decoration: none; 
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1; /* Match list view requirement */
   }
 
   .post-title { 
-    font-size: 1.5rem; 
+    font-size: 1.15rem; 
     line-height: 1.3; 
-    font-weight: 800;
+    margin: 0; 
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    transition: color 0.2s ease;
     color: var(--text);
-    letter-spacing: -0.5px;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--text-secondary);
   }
 
   .post-footer {
-    padding-top: 20px;
-    margin-top: auto;
+    padding-top: 8px;
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -291,75 +328,119 @@ const totalPosts = sortedPosts.length;
   }
 
   .post-author {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
     font-weight: 500;
   }
 
   .post-author a {
-    color: var(--text);
-    font-weight: 700;
+    color: var(--text-secondary); /* Uniform with text */
     text-decoration: none;
+    font-weight: 700;
   }
 
-  /* Mobile Optimization */
+  .post-author a:hover {
+    text-decoration: underline;
+  }
+
+  /* Mobile Responsive */
   @media (max-width: 968px) {
-    .archive-header {
-      padding: 40px 20px 30px;
-      margin-bottom: 30px;
-      text-align: left; /* Ganti ke kiri agar lebih natural di mobile */
+    .hero-content {
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .archive-title {
-      font-size: 2.25rem; /* Perkecil sedikit lagi agar tidak banyak wrapping */
-      letter-spacing: -1.5px;
-    }
-
-    .archive-subtitle {
-      font-size: 1.1rem;
-      margin: 0 auto;
-    }
-
-    .archive-actions {
+    .hero-actions {
       display: none;
     }
 
-    .filter-section {
-      top: 60px;
-      margin-left: -20px;
-      margin-right: -20px;
-      padding: 15px 20px;
-    }
-
-    .filter-tags {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Hidden scrollbar for clean look */
-    }
-
-    .filter-tags::-webkit-scrollbar {
-      display: none;
-    }
-
-    .filter-tag {
-      padding: 8px 18px;
-      font-size: 0.875rem;
-      flex-shrink: 0;
+    .hero-title {
+      font-size: 2rem;
     }
 
     .post-container.grid-view {
       grid-template-columns: 1fr;
-      gap: 20px;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .filter-label {
+        margin-top: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: 1.75rem;
     }
 
-    .post-card {
-      padding: 24px;
+    .hero-subtitle {
+      font-size: 0.9375rem;
     }
 
-    .post-title {
-      font-size: 1.35rem;
+    .filter-tags {
+        gap: 8px;
+    }
+    
+    .filter-tag {
+        font-size: 0.75rem;
+        padding: 6px 14px;
+    }
+
+    /* List View Mobile Optimization - Matches Index */
+    .post-container.list-view {
+      gap: 0;
+    }
+
+    .post-container.list-view .post-card {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px 0;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      gap: 8px;
+    }
+
+    .post-container.list-view .post-card:last-child {
+      border-bottom: none;
+    }
+
+    .post-container.list-view .post-card:hover {
+      transform: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .post-container.list-view .post-header {
+      width: 100%;
+      margin-bottom: 4px;
+    }
+
+    .post-container.list-view .post-category {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      background: transparent;
+      padding-left: 0;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .post-container.list-view .post-meta {
+      display: inline-block;
+      font-size: 0.7rem;
+    }
+
+    .post-container.list-view .post-title {
+      font-size: 1.125rem;
+      line-height: 1.4;
+    }
+
+    .post-container.list-view .post-footer {
+      display: none;
     }
   }
 </style>
