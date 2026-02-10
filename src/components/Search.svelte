@@ -135,16 +135,17 @@
 
   .search-item {
     display: block;
-    padding: 12px 16px;
+    padding: 16px 20px;
     text-decoration: none;
     color: var(--text);
-    transition: background 0.1s;
-    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
   }
 
   .search-item:hover {
-    background: var(--sidebar-bg); /* Hint warna brand */
-    border-left-color: #FF6B6B;
+    background: var(--sidebar-bg);
+    border-left-color: var(--accent);
+    padding-left: 24px;
   }
 
   .search-item-title {

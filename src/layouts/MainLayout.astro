@@ -302,10 +302,30 @@ const topicTags = [
     <script>
         // Reading Progress & Loader Exit
         document.addEventListener('astro:page-load', () => {
+            // Loader handling
             setTimeout(() => {
                 document.documentElement.classList.remove('loader-visible');
             }, 500); 
 
+            // Toast Notif Simpan Artikel (Point to icon)
+            const articleTitle = document.querySelector('h1.article-title');
+            if (articleTitle) {
+                const toastId = 'toast_save_' + window.location.pathname;
+                if (!sessionStorage.getItem(toastId)) {
+                    setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('showToast', {
+                            detail: { 
+                                message: 'Suka tulisan ini? Simpan biar nggak hilang ya! 👆', 
+                                type: 'info',
+                                duration: 4000 
+                            }
+                        }));
+                        sessionStorage.setItem(toastId, 'true');
+                    }, 3000);
+                }
+            }
+
+            // Reading Progress Bar
             const progressBar = document.getElementById('reading-progress-bar');
             if (progressBar) {
                 let ticking = false;
@@ -808,10 +828,22 @@ const topicTags = [
         }
 
         :global(#mobile-search-panel .search-item) {
-            padding: 18px 0 !important;
-            border-bottom: 1px solid var(--border) !important;
-            border-radius: 0 !important;
-            background: transparent !important;
+            padding: 16px 20px !important;
+            border-bottom: 2px solid var(--border) !important;
+            border-radius: 12px !important;
+            background: var(--card-bg) !important;
+            margin-bottom: 12px;
+            display: block !important;
+            border-left: 4px solid transparent !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+        }
+
+        :global(#mobile-search-panel .search-item:active) {
+            background: var(--sidebar-bg) !important;
+            border-left-color: var(--accent) !important;
+            transform: scale(0.97);
+            box-shadow: none !important;
         }
 
         :global(#mobile-search-panel .search-item-title) {
