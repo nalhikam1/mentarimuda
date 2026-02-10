@@ -1,3 +1,4 @@
+<script>
   import { onMount } from 'svelte';
   import { addToast } from '../stores/toastStore';
   export let postTitle = "";

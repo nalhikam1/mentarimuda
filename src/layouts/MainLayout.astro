@@ -322,7 +322,7 @@ const topicTags = [
         window.addEventListener('openSavedBookmarks', openBookmarksHandler);
         
         // --- TOAST HANDLER ---
-        window.addEventListener('showToast', (e: any) => {
+        window.addEventListener('showToast', (e) => {
             const { message, type, duration } = e.detail;
             import('../stores/toastStore').then(({ addToast }) => {
                 addToast(message, type, duration);
