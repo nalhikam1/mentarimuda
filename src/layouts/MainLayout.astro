@@ -272,7 +272,7 @@ const topicTags = [
             const articleTitle = document.querySelector('h1.article-title');
             if (articleTitle) {
                 const currentPath = window.location.pathname;
-                const toastId = 'toast_v_final_' + currentPath;
+                const toastId = 'toast_v_ciamik_' + currentPath;
                 
                 // Prevent multiple executions on same page load
                 if (!sessionStorage.getItem(toastId)) {
@@ -284,7 +284,7 @@ const topicTags = [
                         if (window.location.pathname === currentPath && !sessionStorage.getItem(toastId)) {
                             window.dispatchEvent(new CustomEvent('showToast', {
                                 detail: { 
-                                    message: 'Happy Reading 😊, Simpan di sini ↗️', 
+                                    message: 'Simpan jika Suka ya😊', 
                                     type: 'bookmark',
                                     duration: 5000 
                                 }

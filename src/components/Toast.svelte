@@ -57,15 +57,29 @@
 <style>
   .toast-container {
     position: fixed;
-    top: 80px; /* Di bawah header */
+    top: 68px; /* Dekat dengan header */
     right: 24px;
     z-index: 10000;
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    max-width: 340px;
+    max-width: 320px;
     pointer-events: none;
+  }
+
+  @media (min-width: 1201px) {
+    .toast-container {
+      right: calc(50% - 150px); /* Usahakan lebih ke tengah untuk wide screen */
+    }
+  }
+
+  @media (min-width: 969px) {
+    .toast-container {
+      /* Di desktop, posisikan lebih ke arah tombol simpan di kolom tengah */
+      right: 340px; 
+      max-width: 280px;
+    }
   }
 
   .toast {
@@ -73,21 +87,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    border-radius: 12px;
+    padding: 10px 14px;
+    border-radius: 14px;
     color: white;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     width: 100%;
     backdrop-filter: blur(12px);
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 10001;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .toast:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.02);
   }
 
   .toast-content {
@@ -99,45 +114,53 @@
 
   .bg-success {
     background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .bg-error {
     background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .bg-info {
     background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .bg-bookmark {
     background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+    position: relative;
+  }
+
+  /* Triangle Arrow for Bookmark Toast on Desktop */
+  @media (min-width: 641px) {
+    .bg-bookmark::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      right: 40px;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 8px solid #FF7565; /* Match gradient top */
+    }
   }
 
   .bg-bookmark .icon-circle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background: white;
     color: #FF6B6B;
     border-radius: 50%;
     flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
 
   .bg-bookmark .close-btn {
     color: rgba(255, 255, 255, 0.8);
-  }
-
-  .bg-bookmark .close-btn:hover {
-    color: white;
   }
 
   .message {
@@ -153,11 +176,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
+    transition: all 0.2s;
   }
 
   .close-btn:hover {
     color: white;
+    transform: rotate(90deg);
   }
 
   @media (max-width: 640px) {
@@ -171,16 +195,16 @@
     
     .toast {
       padding: 10px 14px;
+      font-size: 0.85rem;
     }
   }
 
   .toast-bookmark {
-    animation: bounceInTop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: bounceInTop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   @keyframes bounceInTop {
-    0% { transform: translateY(-100%) opacity: 0; }
-    60% { transform: translateY(10%) opacity: 1; }
-    100% { transform: translateY(0); }
+    0% { transform: translateY(-30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
   }
 </style>
