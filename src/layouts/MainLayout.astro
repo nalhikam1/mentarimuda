@@ -240,7 +240,7 @@ const topicTags = [
         // --- MOBILE MENU & PANEL HANDLERS ---
         // Defined outside to keep reference stable across View Transitions
         
-        function closeLayoutPanelsOnly() {
+        window.closeLayoutPanelsOnly = function() {
             const panels = document.querySelectorAll('.mobile-bottom-sheet');
             const backdrop = document.getElementById('sidebar-backdrop');
             
@@ -249,29 +249,29 @@ const topicTags = [
             document.body.style.overflow = ''; // Restore scroll
         }
 
-        function toggleSearchHandler() {
+        window.toggleSearchHandler = function() {
             const searchPanel = document.getElementById('mobile-search-panel');
             const backdrop = document.getElementById('sidebar-backdrop');
             const isOpen = searchPanel?.classList.contains('show');
             const input = searchPanel?.querySelector('input');
 
-            closeLayoutPanelsOnly();
+            window.closeLayoutPanelsOnly();
             window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
 
             if (!isOpen) {
                 searchPanel?.classList.add('show');
                 backdrop?.classList.add('show');
-                document.body.style.overflow = 'hidden'; // Prevent background scroll
+                document.body.style.overflow = 'hidden'; 
                 setTimeout(() => input?.focus(), 300);
             }
         }
 
-        function toggleTopicHandler() {
+        window.toggleTopicHandler = function() {
             const topicPanel = document.getElementById('topic-panel');
             const backdrop = document.getElementById('sidebar-backdrop');
             const isOpen = topicPanel?.classList.contains('show');
 
-            closeLayoutPanelsOnly();
+            window.closeLayoutPanelsOnly();
             window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
 
             if (!isOpen) {
@@ -281,8 +281,8 @@ const topicTags = [
             }
         }
 
-        function closeAllHandler() {
-            closeLayoutPanelsOnly();
+        window.closeAllHandler = function() {
+            window.closeLayoutPanelsOnly();
             window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
         }
 
@@ -296,24 +296,24 @@ const topicTags = [
             // Remove existing to avoid duplicates if any
             backdrop?.replaceWith(backdrop.cloneNode(true));
             const newBackdrop = document.getElementById('sidebar-backdrop');
-            newBackdrop?.addEventListener('click', closeAllHandler);
+            newBackdrop?.addEventListener('click', window.closeAllHandler);
 
             closeTopicBtn?.replaceWith(closeTopicBtn.cloneNode(true));
             const newCloseTopicBtn = document.getElementById('close-topic-btn');
-            newCloseTopicBtn?.addEventListener('click', closeAllHandler);
+            newCloseTopicBtn?.addEventListener('click', window.closeAllHandler);
 
             closeSearchBtn?.replaceWith(closeSearchBtn.cloneNode(true));
             const newCloseSearchBtn = document.getElementById('close-search-btn');
-            newCloseSearchBtn?.addEventListener('click', closeAllHandler);
+            newCloseSearchBtn?.addEventListener('click', window.closeAllHandler);
 
             // Window-level events (added once)
             if (!window.hasGlobalMenuListeners) {
-                window.addEventListener('toggleSearch', toggleSearchHandler);
-                window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
+                window.addEventListener('toggleSearch', window.toggleSearchHandler);
+                window.addEventListener('toggleTopicSidebar', window.toggleTopicHandler);
                 window.addEventListener('openSavedBookmarks', () => {
-                    closeLayoutPanelsOnly();
+                    window.closeLayoutPanelsOnly();
                 });
-                window.addEventListener('closeTopicSidebar', closeAllHandler);
+                window.addEventListener('closeTopicSidebar', window.closeAllHandler);
                 window.hasGlobalMenuListeners = true;
             }
         }

@@ -10,6 +10,7 @@
 
   let bookmarks = [];
   let showPopup = false;
+  let showTip = false;
 
   onMount(() => {
     // Load existing bookmarks
@@ -18,6 +19,7 @@
 
     const handleOpenBookmark = () => {
       showPopup = !showPopup; 
+      if (showPopup) showTip = false;
     };
 
     const handleCloseBookmark = () => {
@@ -27,6 +29,23 @@
     window.addEventListener('openSavedBookmarks', handleOpenBookmark);
     window.addEventListener('closeSavedBookmarks', handleCloseBookmark);
     
+    // Show tip if applicable
+    if (showSaveButton && postTitle) {
+      const tipShown = localStorage.getItem('mentari_tip_shown_v3');
+      const isAlreadySaved = bookmarks.some(b => b.title === postTitle);
+      
+      if (!tipShown && !isAlreadySaved) {
+        setTimeout(() => {
+          showTip = true;
+          // Auto hide after 8s
+          setTimeout(() => {
+            showTip = false;
+            localStorage.setItem('mentari_tip_shown_v3', 'true');
+          }, 8000);
+        }, 1200);
+      }
+    }
+
     return () => {
       window.removeEventListener('openSavedBookmarks', handleOpenBookmark);
       window.removeEventListener('closeSavedBookmarks', handleCloseBookmark);
@@ -45,26 +64,35 @@
   $: isSaved = bookmarks.some(b => b.title === postTitle);
 
   function toggleBookmark() {
+    showTip = false;
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
       addToast('Artikel dihapus dari simpanan', 'info');
     } else {
       bookmarks = [...bookmarks, { title: postTitle, url: postUrl }];
       addToast('Artikel berhasil disimpan!', 'success');
+      localStorage.setItem('mentari_tip_shown_v3', 'true'); // Don't show tip again if already used
     }
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
-    bookmarks = [...bookmarks]; // Force Svelte update
+    bookmarks = [...bookmarks]; 
   }
 
   function removeBookmark(title) {
     bookmarks = bookmarks.filter(b => b.title !== title);
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
-    addToast('Hapus bookmark berhasil', 'info');
-    bookmarks = [...bookmarks]; // Force Svelte update
+    addToast('Bookmark berhasil dihapus', 'info');
+    bookmarks = [...bookmarks];
   }
 </script>
 
 <div class="bookmark-actions">
+  {#if showTip && showSaveButton}
+    <div class="save-tip" in:fly={{ y: 10, duration: 500 }} out:fade>
+       <span class="tip-icon">✨</span> Simpan artikel ini agar bisa dibaca nanti!
+       <div class="tip-arrow"></div>
+    </div>
+  {/if}
+
   {#if showSaveButton}
     <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
       <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -74,7 +102,7 @@
     </button>
   {/if}
   
-  <button on:click={() => { showPopup = !showPopup; }} class="btn-list" class:hide-mobile={hideListOnMobile} title="Bacaan Tersimpan">
+  <button on:click={() => { showPopup = !showPopup; showTip = false; }} class="btn-list" class:hide-mobile={hideListOnMobile} title="Bacaan Tersimpan">
     <div class="icon-wrapper">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -115,13 +143,45 @@
       {/if}
     </div>
     <!-- Backdrop for mobile -->
-    <div class="backdrop-blur" on:click={() => showPopup = false}></div>
+    <div class="backdrop-blur" on:click={() => showPopup = false} in:fade={{duration: 200}} out:fade={{duration: 200}}></div>
   {/if}
 </div>
 
 <style>
   .bookmark-actions { display: flex; gap: 8px; position: relative; align-items: center; }
   
+  .save-tip {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: #FF8E53;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 15px 35px rgba(255, 142, 83, 0.4);
+    z-index: 10005;
+    white-space: nowrap;
+    animation: floatTip 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .tip-arrow {
+    position: absolute;
+    top: -6px;
+    right: 32px;
+    width: 12px;
+    height: 12px;
+    background: #FF8E53;
+    transform: rotate(45deg);
+  }
+
+  @keyframes floatTip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
   .btn-save, .btn-list { 
     display: flex;
     align-items: center;
@@ -301,8 +361,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1000;
-    background: rgba(0,0,0,0.05);
+    z-index: 1999;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
   }
 
   .close-btn-mobile { display: none; }
@@ -318,12 +380,14 @@
       }
       
       .save-tip {
+        top: 55px;
         right: -10px;
         font-size: 0.75rem;
-        padding: 8px 12px;
+        padding: 8px 14px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       }
       .tip-arrow {
-        right: 24px;
+        right: 22px;
       }
 
       /* Mobile Fullscreen Bookmark List */
@@ -346,8 +410,7 @@
         cursor: pointer;
       }
       .backdrop-blur {
-        background: rgba(0,0,0,0.5);
-        backdrop-filter: blur(4px);
+        z-index: 1999;
       }
   }
 </style>
