@@ -40,7 +40,7 @@ export const POST: APIRoute = async ({ request }) => {
 
         // 2. Kirim email konfirmasi (Desain Premium Mentari Muda)
         const { data: resendData, error: resendError } = await resend.emails.send({
-            from: 'Mentari Muda <halo@mentarimuda.com>',
+            from: 'Mentari Muda <halo@mail.mentarimuda.com>',
             to: email,
             subject: 'Selamat Datang di Mentari Muda! ✨',
             html: `
