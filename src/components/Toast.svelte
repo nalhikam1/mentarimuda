@@ -7,7 +7,8 @@
   const typeStyles = {
     success: 'bg-success',
     error: 'bg-error',
-    info: 'bg-info'
+    info: 'bg-info',
+    bookmark: 'bg-bookmark'
   };
 
   onMount(() => {
@@ -31,7 +32,11 @@
       on:click={() => removeToast(toast.id)}
     >
       <div class="toast-content">
-        {#if toast.type === 'success'}
+        {#if toast.type === 'bookmark'}
+          <div class="icon-circle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+        {:else if toast.type === 'success'}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         {:else if toast.type === 'error'}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
@@ -103,6 +108,34 @@
   .bg-info {
     background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .bg-bookmark {
+    background: #ffffff;
+    color: #111111 !important;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(255, 142, 83, 0.2);
+  }
+
+  :global(html.dark) .bg-bookmark {
+    background: #1e1e1e;
+    color: #ffffff !important;
+  }
+
+  .bg-bookmark .icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .bg-bookmark .close-btn {
+    color: var(--text-secondary);
   }
 
   .message {

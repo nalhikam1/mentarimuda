@@ -272,19 +272,23 @@ const topicTags = [
             const articleTitle = document.querySelector('h1.article-title');
             if (articleTitle) {
                 const currentPath = window.location.pathname;
-                const toastId = 'toast_v8_' + currentPath;
-                if (!sessionStorage.getItem(toastId)) {
+                const toastId = 'toast_v11_' + currentPath;
+                
+                // Race condition check: prevent duplicate triggers within same transition/page-load cycle
+                if (!sessionStorage.getItem(toastId) && window.pendingToastPath !== currentPath) {
+                    window.pendingToastPath = currentPath;
                     setTimeout(() => {
-                        if (window.location.pathname === currentPath && !sessionStorage.getItem(toastId)) {
+                        if (window.location.pathname === currentPath) {
                             window.dispatchEvent(new CustomEvent('showToast', {
                                 detail: { 
-                                    message: 'Suka tulisan ini? Simpan biar nggak hilang ya! 👆', 
-                                    type: 'info',
-                                    duration: 3500 
+                                    message: 'Happy Reading 😊, Simpan jika suka', 
+                                    type: 'bookmark',
+                                    duration: 4500 
                                 }
                             }));
                             sessionStorage.setItem(toastId, 'true');
                         }
+                        window.pendingToastPath = null;
                     }, 1500);
                 }
             }
