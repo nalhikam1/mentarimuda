@@ -1,6 +1,6 @@
-<script>
   import { onMount } from 'svelte';
   import { addToast } from '../stores/toastStore';
+  import { fade } from 'svelte/transition';
   export let postTitle = "";
   export let postUrl = "";
   export let showSaveButton = true; // Kontrol apakah tombol simpan ditampilkan
@@ -8,16 +8,32 @@
 
   let bookmarks = [];
   let showPopup = false;
+  let showTip = false;
 
   // Mengambil data saat pertama kali komponen muncul
   onMount(() => {
     const saved = localStorage.getItem('mentari-bookmarks');
     if (saved) bookmarks = JSON.parse(saved);
 
+    // Tip untuk pengguna baru (hanya muncul di artikel)
+    if (variant === 'default' && postTitle) {
+      const tipShown = localStorage.getItem('mentari_tip_shown');
+      if (!tipShown) {
+        setTimeout(() => {
+          showTip = true;
+          setTimeout(() => {
+            showTip = false;
+            // Set shown after first successful view
+            localStorage.setItem('mentari_tip_shown', 'true');
+          }, 6000);
+        }, 2000);
+      }
+    }
+
     // Listen to custom event from BottomNav
     const handleOpenBookmark = () => {
       showPopup = !showPopup; 
-      // Hapus scroll ke atas agar user experience lebih baik di mobile
+      showTip = false; // Close tip if opening bookmarks
     };
 
     // Listen to event to close bookmarks (e.g. when Topic Sidebar opens)
@@ -49,6 +65,7 @@
   $: isSaved = bookmarks.some(b => b.title === postTitle);
 
   function toggleBookmark() {
+    showTip = false; // Tutup tip saat tombol diklik
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
       addToast('Artikel dihapus dari simpanan', 'info');
@@ -66,7 +83,14 @@
   }
 </script>
 
-<div class="bookmark-actions">
+<div class="bookmark-actions" class:is-footer={variant === 'footer'}>
+  {#if showTip && variant === 'default'}
+    <div class="save-tip" in:fade={{ duration: 400 }} out:fade={{ duration: 300 }}>
+       Simpan artikel ini yuk! 👆
+       <div class="tip-arrow"></div>
+    </div>
+  {/if}
+
   {#if showSaveButton}
     <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} class:btn-footer={variant === 'footer'} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
       {#if isSaved}
@@ -136,6 +160,7 @@
 
 <style>
   .bookmark-actions { display: flex; gap: 8px; position: relative; align-items: center; }
+  .bookmark-actions.is-footer { width: 100%; }
   
   .btn-save, .btn-list { 
     display: flex;
@@ -147,12 +172,44 @@
     border-radius: 20px; 
     cursor: pointer; 
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 500;
     color: var(--text-secondary);
     height: 40px; 
+    white-space: nowrap;
   }
   
+  .save-tip {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: #FF8E53;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(255, 142, 83, 0.3);
+    z-index: 1002;
+    white-space: nowrap;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .tip-arrow {
+    position: absolute;
+    top: -6px;
+    right: 32px;
+    width: 12px;
+    height: 12px;
+    background: #FF8E53;
+    transform: rotate(45deg);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
   .btn-save:hover, .btn-list:hover {
     background: var(--sidebar-bg);
     border-color: #ccc;
@@ -220,6 +277,19 @@
       border-color: var(--accent);
   }
   
+  @media (max-width: 640px) {
+    .save-tip {
+      right: -20px;
+      left: auto;
+      font-size: 0.75rem;
+      padding: 8px 12px;
+    }
+    
+    .tip-arrow {
+      right: 32px;
+    }
+  }
+
   /* Dropdown / Modal Style */
   .bookmark-dropdown {
     position: absolute; 

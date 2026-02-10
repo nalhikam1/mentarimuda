@@ -64,21 +64,21 @@ const encodedTitle = encodeURIComponent(title);
 </div>
 
 <script>
-  const copyBtn = document.getElementById('copyLinkBtn');
-  const feedback = document.getElementById('copyFeedback');
-
-  if (copyBtn) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        window.dispatchEvent(new CustomEvent('showToast', {
-          detail: { message: 'Link berhasil disalin!', type: 'success' }
-        }));
-      } catch (err) {
-        console.error('Gagal menyalin link:', err);
-      }
-    });
-  }
+  document.addEventListener('astro:page-load', () => {
+    const copyBtn = document.getElementById('copyLinkBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          window.dispatchEvent(new CustomEvent('showToast', {
+            detail: { message: 'Link berhasil disalin!', type: 'success' }
+          }));
+        } catch (err) {
+          console.error('Gagal menyalin link:', err);
+        }
+      });
+    }
+  });
 </script>
 
 <style>

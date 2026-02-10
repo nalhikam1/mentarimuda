@@ -165,12 +165,8 @@ const topicTags = [
                 </div>
 
                 <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
-                     <ThemeToggle client:idle />
-                     {postTitle && postUrl ? (
-                        <Bookmark client:idle postTitle={postTitle} postUrl={postUrl} showSaveButton={true} />
-                    ) : (
-                        <Bookmark client:idle showSaveButton={false} />
-                    )}
+                     <ThemeToggle client:load />
+                     <Bookmark client:load postTitle={postTitle} postUrl={postUrl} showSaveButton={!!postTitle} />
                 </div>
             </header>
             
@@ -320,14 +316,6 @@ const topicTags = [
         window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
         window.addEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
         window.addEventListener('openSavedBookmarks', openBookmarksHandler);
-        
-        // --- TOAST HANDLER ---
-        window.addEventListener('showToast', (e) => {
-            const { message, type, duration } = e.detail;
-            import('../stores/toastStore').then(({ addToast }) => {
-                addToast(message, type, duration);
-            });
-        });
 
         // --- PAGE LOAD LISTENERS ---
         document.addEventListener('astro:page-load', () => {
@@ -696,7 +684,8 @@ const topicTags = [
             display: none; /* Override display flex dari desktop */
         }
 
-        .mobile-bottom-sheet.show {
+        div.mobile-bottom-sheet.show,
+        aside.mobile-bottom-sheet.show {
             display: flex !important;
         }
         

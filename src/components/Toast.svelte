@@ -1,5 +1,5 @@
-<script>
-  import { toasts, removeToast } from '../stores/toastStore';
+  import { onMount } from 'svelte';
+  import { toasts, removeToast, addToast } from '../stores/toastStore';
   import { flip } from 'svelte/animate';
   import { fade, fly } from 'svelte/transition';
 
@@ -8,6 +8,16 @@
     error: 'bg-error',
     info: 'bg-info'
   };
+
+  onMount(() => {
+    const handleShowToast = (e) => {
+      const { message, type, duration } = e.detail;
+      addToast(message, type, duration);
+    };
+
+    window.addEventListener('showToast', handleShowToast);
+    return () => window.removeEventListener('showToast', handleShowToast);
+  });
 </script>
 
 <div class="toast-container">
@@ -60,13 +70,14 @@
     padding: 12px 16px;
     border-radius: 12px;
     color: white;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
     width: 100%;
-    backdrop-filter: blur(8px);
-    transition: transform 0.2s ease;
+    backdrop-filter: blur(12px);
+    transition: all 0.2s ease;
+    z-index: 10001;
   }
 
   .toast:hover {
