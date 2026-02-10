@@ -50,7 +50,7 @@
     <svg class="bell-icon" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
       <path d="M106.67-564q0-93.33 41.5-171.17 41.5-77.83 111.16-129.5L299-811.33q-57.33 42.66-91.5 106.66T173.33-564h-66.66Zm680 0q0-76.67-34.17-140.67-34.17-64-91.5-106.66l39.67-53.34q69.66 51.67 111.16 129.5 41.5 77.84 41.5 171.17h-66.66ZM160-200v-66.67h80v-296q0-83.66 49.67-149.5Q339.33-778 420-796v-24q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v24q80.67 18 130.33 83.83Q720-646.33 720-562.67v296h80V-200H160Zm320-301.33ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM306.67-266.67h346.66v-296q0-72-50.66-122.66Q552-736 480-736t-122.67 50.67q-50.66 50.66-50.66 122.66v296Z"></path>
     </svg>
-    <h3 class="card__title">Tetap Terhubung</h3>
+    <h4 class="card__title">Tetap Terhubung</h4>
   </div>
   <p class="card__content">
     Dapatkan inspirasi, refleksi, dan update tulisan terbaru langsung di inbox-mu.
@@ -84,11 +84,11 @@
 <style>
   .card {
     width: 100%;
-    padding: 32px 24px;
+    padding: 20px 16px;
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     background: transparent;
   }
 
@@ -96,28 +96,28 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .bell-icon {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     fill: var(--accent);
-    filter: drop-shadow(0 4px 12px rgba(255, 142, 83, 0.3));
-    margin-bottom: 4px;
+    filter: drop-shadow(0 4px 10px rgba(255, 142, 83, 0.2));
+    margin-bottom: 0;
   }
 
   .card__title {
     font-family: 'Merriweather', serif;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 900;
     margin: 0;
     color: var(--text);
   }
 
   .card__content {
-    font-size: 0.9375rem;
-    line-height: 1.6;
+    font-size: 0.85rem;
+    line-height: 1.5;
     color: var(--text-secondary);
     margin: 0;
   }
