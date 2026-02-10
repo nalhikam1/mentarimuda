@@ -236,12 +236,12 @@ const topicTags = [
     <Loader client:load transition:persist />
     <Toast client:load transition:persist />
 
-    <script is:inline>
-        // Make handlers global for View Transition resilience
+    <script>
+        // --- GLOBAL UTILITIES ---
+        // Define these every time so they point to current logic
         window.closeLayoutPanelsOnly = function() {
             const panels = document.querySelectorAll('.mobile-bottom-sheet');
             const backdrop = document.getElementById('sidebar-backdrop');
-            
             panels.forEach(p => p.classList.remove('show'));
             backdrop?.classList.remove('show');
             document.body.style.overflow = '';
@@ -252,80 +252,49 @@ const topicTags = [
             window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
         }
 
-        function initMenuHandlers() {
+        // --- PAGE INITIALIZATION ---
+        function initLayout() {
             const backdrop = document.getElementById('sidebar-backdrop');
             const closeTopicBtn = document.getElementById('close-topic-btn');
             const closeSearchBtn = document.getElementById('close-search-btn');
 
+            // Clean up and re-bind element listeners
+            backdrop?.removeEventListener('click', window.closeAllHandler);
             backdrop?.addEventListener('click', window.closeAllHandler);
+            
+            closeTopicBtn?.removeEventListener('click', window.closeAllHandler);
             closeTopicBtn?.addEventListener('click', window.closeAllHandler);
+            
+            closeSearchBtn?.removeEventListener('click', window.closeAllHandler);
             closeSearchBtn?.addEventListener('click', window.closeAllHandler);
 
-            if (!window.hasGlobalListenersAttached) {
-                window.addEventListener('toggleSearch', () => {
-                    const panel = document.getElementById('mobile-search-panel');
-                    const bd = document.getElementById('sidebar-backdrop');
-                    const isOpen = panel?.classList.contains('show');
-                    window.closeLayoutPanelsOnly();
-                    window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-                    if (!isOpen) { 
-                        panel?.classList.add('show'); 
-                        bd?.classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                        setTimeout(() => panel?.querySelector('input')?.focus(), 300);
-                    }
-                });
-
-                window.addEventListener('toggleTopicSidebar', () => {
-                    const panel = document.getElementById('topic-panel');
-                    const bd = document.getElementById('sidebar-backdrop');
-                    const isOpen = panel?.classList.contains('show');
-                    window.closeLayoutPanelsOnly();
-                    window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-                    if (!isOpen) { 
-                        panel?.classList.add('show'); 
-                        bd?.classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                    }
-                });
-
-                window.addEventListener('openSavedBookmarks', () => window.closeLayoutPanelsOnly());
-                window.addEventListener('closeTopicSidebar', () => window.closeAllHandler());
-                
-                window.hasGlobalListenersAttached = true;
-            }
-        }
-
-        document.addEventListener('astro:page-load', initMenuHandlers);
-    </script>
-    
-    <script>
-        // Reading Progress & Loader Exit
-        document.addEventListener('astro:page-load', () => {
-            // Loader handling
-            setTimeout(() => {
-                document.documentElement.classList.remove('loader-visible');
-            }, 500); 
-
-            // Toast Notif Simpan Artikel (Point to icon)
+            // Article Save Prompt (Single instance per page)
             const articleTitle = document.querySelector('h1.article-title');
             if (articleTitle) {
-                const toastId = 'toast_save_' + window.location.pathname;
+                const currentPath = window.location.pathname;
+                const toastId = 'toast_v8_' + currentPath;
                 if (!sessionStorage.getItem(toastId)) {
                     setTimeout(() => {
-                        window.dispatchEvent(new CustomEvent('showToast', {
-                            detail: { 
-                                message: 'Suka tulisan ini? Simpan biar nggak hilang ya! 👆', 
-                                type: 'info',
-                                duration: 4000 
-                            }
-                        }));
-                        sessionStorage.setItem(toastId, 'true');
+                        if (window.location.pathname === currentPath && !sessionStorage.getItem(toastId)) {
+                            window.dispatchEvent(new CustomEvent('showToast', {
+                                detail: { 
+                                    message: 'Suka tulisan ini? Simpan biar nggak hilang ya! 👆', 
+                                    type: 'info',
+                                    duration: 3500 
+                                }
+                            }));
+                            sessionStorage.setItem(toastId, 'true');
+                        }
                     }, 1500);
                 }
             }
 
-            // Reading Progress Bar
+            // Loader exit
+            setTimeout(() => {
+                document.documentElement.classList.remove('loader-visible');
+            }, 300);
+
+            // Reading Progress
             const progressBar = document.getElementById('reading-progress-bar');
             if (progressBar) {
                 let ticking = false;
@@ -342,12 +311,49 @@ const topicTags = [
                     }
                 }, { passive: true });
             }
-        });
+        }
 
+        // --- WINDOW-LEVEL LISTENERS (Once per app lifecycle) ---
+        if (!window.hasGlobalLayoutSetup) {
+            window.addEventListener('toggleSearch', () => {
+                const panel = document.getElementById('mobile-search-panel');
+                const bd = document.getElementById('sidebar-backdrop');
+                const isOpen = panel?.classList.contains('show');
+                window.closeLayoutPanelsOnly();
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                if (!isOpen && panel) { 
+                    panel.classList.add('show'); 
+                    bd?.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                    setTimeout(() => panel.querySelector('input')?.focus(), 250);
+                }
+            });
+
+            window.addEventListener('toggleTopicSidebar', () => {
+                const panel = document.getElementById('topic-panel');
+                const bd = document.getElementById('sidebar-backdrop');
+                const isOpen = panel?.classList.contains('show');
+                window.closeLayoutPanelsOnly();
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                if (!isOpen && panel) { 
+                    panel.classList.add('show'); 
+                    bd?.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            window.addEventListener('openSavedBookmarks', () => window.closeLayoutPanelsOnly());
+            window.addEventListener('closeTopicSidebar', () => window.closeAllHandler());
+            window.hasGlobalLayoutSetup = true;
+        }
+
+        document.addEventListener('astro:page-load', initLayout);
         document.addEventListener('astro:before-preparation', () => {
             document.documentElement.classList.add('loader-visible');
         });
     </script>
+    
+
 </body>
 </html>
 

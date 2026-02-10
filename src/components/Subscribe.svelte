@@ -124,25 +124,26 @@
 
   .card__form {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 8px;
     width: 100%;
-    margin-top: 8px;
-    align-items: stretch;
+    margin-top: 4px;
+    align-items: center;
   }
 
   .card__form input {
-    width: 100%;
+    flex: 1;
     background: var(--code-bg);
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-radius: 10px;
     border: 1px solid var(--border);
     color: var(--text);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     transition: all 0.2s;
     outline: none;
     box-sizing: border-box;
     display: block;
+    min-width: 0;
   }
 
   .card__form input:focus {
@@ -151,21 +152,24 @@
   }
 
   .card__form button {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
     border: 0;
     background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: #fff;
-    padding: 14px;
-    border-radius: 12px;
+    border-radius: 50%;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
   }
 
   .sign-up:hover {
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(5deg);
     filter: brightness(1.1);
   }
 
