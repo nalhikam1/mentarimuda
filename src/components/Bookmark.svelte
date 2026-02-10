@@ -67,10 +67,10 @@
     showTip = false;
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
-      addToast('Artikel dihapus dari simpanan', 'info');
+      addToast('Dihapus 👌', 'info', 3000, 'bottom');
     } else {
       bookmarks = [...bookmarks, { title: postTitle, url: postUrl }];
-      addToast('Artikel berhasil disimpan!', 'success');
+      addToast('Disimpan 🥳', 'success', 3000, 'bottom');
       localStorage.setItem('mentari_tip_shown_v3', 'true'); // Don't show tip again if already used
     }
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
@@ -80,7 +80,7 @@
   function removeBookmark(title) {
     bookmarks = bookmarks.filter(b => b.title !== title);
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
-    addToast('Bookmark berhasil dihapus', 'info');
+    addToast('Dihapus 👌', 'info', 3000, 'bottom');
     bookmarks = [...bookmarks];
   }
 </script>
