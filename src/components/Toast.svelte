@@ -28,7 +28,7 @@
       animate:flip={{ duration: 300 }}
       in:fly={{ y: 20, duration: 400, opacity: 0 }}
       out:fade={{ duration: 200 }}
-      class="toast {typeStyles[toast.type] || 'bg-info'}"
+      class="toast {typeStyles[toast.type] || 'bg-info'} {toast.type === 'bookmark' ? 'toast-bookmark' : ''}"
       on:click={() => removeToast(toast.id)}
     >
       <div class="toast-content">
@@ -57,14 +57,14 @@
 <style>
   .toast-container {
     position: fixed;
-    bottom: 24px;
+    top: 80px; /* Di bawah header */
     right: 24px;
     z-index: 10000;
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    max-width: 320px;
+    max-width: 340px;
     pointer-events: none;
   }
 
@@ -162,8 +162,25 @@
 
   @media (max-width: 640px) {
     .toast-container {
-      top: auto;
-      bottom: 80px; /* Di atas bottom nav */
+      top: 70px;
+      right: 16px;
+      left: 16px;
+      width: auto;
+      max-width: none;
     }
+    
+    .toast {
+      padding: 10px 14px;
+    }
+  }
+
+  .toast-bookmark {
+    animation: bounceInTop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  @keyframes bounceInTop {
+    0% { transform: translateY(-100%) opacity: 0; }
+    60% { transform: translateY(10%) opacity: 1; }
+    100% { transform: translateY(0); }
   }
 </style>

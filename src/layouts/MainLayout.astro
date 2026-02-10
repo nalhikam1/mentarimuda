@@ -284,9 +284,9 @@ const topicTags = [
                         if (window.location.pathname === currentPath && !sessionStorage.getItem(toastId)) {
                             window.dispatchEvent(new CustomEvent('showToast', {
                                 detail: { 
-                                    message: 'Happy Reading 😊, Simpan jika suka', 
+                                    message: 'Happy Reading 😊, Simpan di sini ↗️', 
                                     type: 'bookmark',
-                                    duration: 4500 
+                                    duration: 5000 
                                 }
                             }));
                             sessionStorage.setItem(toastId, 'true');
