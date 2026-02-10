@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
 
         // 1. Simpan ke Supabase
         const { error: supabaseError } = await supabase
-            .from('subscribers')
+            .from('subscriber')
             .insert([{ email }]);
 
         if (supabaseError) {
@@ -91,8 +91,13 @@ export const POST: APIRoute = async ({ request }) => {
 
         if (resendError) {
             console.error('Resend Error:', resendError);
-            // Kita tetap return 200 karena data sudah masuk Supabase, 
-            // tapi kita beri log agar tahu masalahnya.
+            return new Response(
+                JSON.stringify({
+                    message: 'Berhasil terdaftar di database, tapi gagal mengirim email sambutan.',
+                    error: resendError.message
+                }),
+                { status: 500 }
+            );
         }
 
         return new Response(
