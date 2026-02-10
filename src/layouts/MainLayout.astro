@@ -166,7 +166,7 @@ const topicTags = [
 
                 <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
                      <ThemeToggle client:load />
-                     <Bookmark client:load postTitle={postTitle} postUrl={postUrl} showSaveButton={!!postTitle} />
+                     <Bookmark client:load postTitle={postTitle} postUrl={postUrl} showSaveButton={false} />
                 </div>
             </header>
             
@@ -286,24 +286,9 @@ const topicTags = [
             window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
         }
 
-        // Add Global Window Listeners ONCE
-        // These persist across View Transitions
-        if (!window.hasGlobalMenuListeners) {
-            window.addEventListener('toggleSearch', toggleSearchHandler);
-            window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
-            window.addEventListener('openSavedBookmarks', () => closeLayoutPanelsOnly());
-            window.addEventListener('closeTopicSidebar', closeAllHandler);
-            window.hasGlobalMenuListeners = true;
-        }
-
-        // --- PAGE LOAD INITIALIZATION ---
-        document.addEventListener('astro:page-load', () => {
-            // Loader handling
-            setTimeout(() => {
-                document.documentElement.classList.remove('loader-visible');
-            }, 1000);
-
-            // Re-attach element listeners (since DOM is new)
+        // Initialize handlers
+        function initMenuHandlers() {
+            // Re-attach element listeners
             const backdrop = document.getElementById('sidebar-backdrop');
             const closeTopicBtn = document.getElementById('close-topic-btn');
             const closeSearchBtn = document.getElementById('close-search-btn');
@@ -311,6 +296,25 @@ const topicTags = [
             backdrop?.addEventListener('click', closeAllHandler);
             closeTopicBtn?.addEventListener('click', closeAllHandler);
             closeSearchBtn?.addEventListener('click', closeAllHandler);
+
+            // Window-level events (added once)
+            if (!window.hasGlobalMenuListeners) {
+                window.addEventListener('toggleSearch', toggleSearchHandler);
+                window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
+                window.addEventListener('openSavedBookmarks', () => closeLayoutPanelsOnly());
+                window.addEventListener('closeTopicSidebar', closeAllHandler);
+                window.hasGlobalMenuListeners = true;
+            }
+        }
+
+        // --- PAGE LOAD INITIALIZATION ---
+        document.addEventListener('astro:page-load', () => {
+            initMenuHandlers();
+            
+            // Loader handling
+            setTimeout(() => {
+                document.documentElement.classList.remove('loader-visible');
+            }, 1000);
 
             // Reading Progress Bar
             const progressBar = document.getElementById('reading-progress-bar');
