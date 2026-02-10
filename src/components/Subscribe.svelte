@@ -103,25 +103,7 @@
     border-radius: 20px;
   }
 
-  :global(.dark) .card {
-    background: transparent;
-  }
 
-  :global(.dark) .card__title,
-  :global(.dark) .card__content,
-  :global(.dark) .status-msg {
-    color: #e0e0e0;
-  }
-
-  :global(.dark) .card__form input {
-    background: #2a2a2a;
-    border-color: #444;
-    color: #fff;
-  }
-
-  :global(.dark) .card__title svg {
-    fill: #e0e0e0;
-  }
 
   .card > * {
     margin: 0;
@@ -197,11 +179,24 @@
   }
 
   @keyframes rotation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Dark Mode Overrides */
+  :global(html.dark) .card__title,
+  :global(html.dark) .card__content,
+  :global(html.dark) .status-msg {
+    color: #e0e0e0;
+  }
+
+  :global(html.dark) .card__form input {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+  }
+
+  :global(html.dark) .card__title svg {
+    fill: #e0e0e0;
   }
 </style>

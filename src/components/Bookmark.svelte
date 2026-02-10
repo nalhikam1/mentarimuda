@@ -6,22 +6,18 @@
   export let postTitle = "";
   export let postUrl = "";
   export let showSaveButton = true;
+  export let hideListOnMobile = false;
 
   let bookmarks = [];
   let showPopup = false;
-  let showTip = false;
 
   onMount(() => {
     // Load existing bookmarks
     const saved = localStorage.getItem('mentari-bookmarks');
     if (saved) bookmarks = JSON.parse(saved);
 
-    // Initial check to show tip
-    checkTip();
-
     const handleOpenBookmark = () => {
       showPopup = !showPopup; 
-      showTip = false;
     };
 
     const handleCloseBookmark = () => {
@@ -37,25 +33,6 @@
     };
   });
 
-  function checkTip() {
-    if (showSaveButton && postTitle) {
-      const tipShown = localStorage.getItem('mentari_tip_shown_v2');
-      const isAlreadySaved = bookmarks.some(b => b.title === postTitle);
-      
-      // If tip not shown yet and article not saved, show it after a delay
-      if (!tipShown && !isAlreadySaved) {
-        setTimeout(() => {
-          showTip = true;
-          // Hide automatically after 7 seconds
-          setTimeout(() => {
-            showTip = false;
-            localStorage.setItem('mentari_tip_shown_v2', 'true');
-          }, 7000);
-        }, 1500); // 1.5s delay
-      }
-    }
-  }
-
   // Update badge in BottomNav
   $: {
     if (typeof window !== 'undefined') {
@@ -68,7 +45,6 @@
   $: isSaved = bookmarks.some(b => b.title === postTitle);
 
   function toggleBookmark() {
-    showTip = false;
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
       addToast('Artikel dihapus dari simpanan', 'info');
@@ -89,13 +65,6 @@
 </script>
 
 <div class="bookmark-actions">
-  {#if showTip}
-    <div class="save-tip" in:fly={{ y: 14, duration: 600 }} out:fade>
-       <span class="tip-icon">✨</span> Simpan artikel ini yuk! (Save for later)
-       <div class="tip-arrow"></div>
-    </div>
-  {/if}
-
   {#if showSaveButton}
     <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
       <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -105,7 +74,7 @@
     </button>
   {/if}
   
-  <button on:click={() => { showPopup = !showPopup; showTip = false; }} class="btn-list" title="Bacaan Tersimpan">
+  <button on:click={() => { showPopup = !showPopup; }} class="btn-list" class:hide-mobile={hideListOnMobile} title="Bacaan Tersimpan">
     <div class="icon-wrapper">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -205,6 +174,10 @@
     background: var(--sidebar-bg);
     border-color: #ccc;
     color: var(--text);
+  }
+
+  .btn-list.hide-mobile {
+    display: flex;
   }
 
   .btn-save.active { 
@@ -339,6 +312,10 @@
       .btn-text { display: none; }
       .btn-save span { display: none; }
       .btn-save, .btn-list { padding: 8px; border-radius: 50%; width: 40px; justify-content: center; }
+      
+      .btn-list.hide-mobile {
+        display: none !important;
+      }
       
       .save-tip {
         right: -10px;
