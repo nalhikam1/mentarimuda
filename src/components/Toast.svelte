@@ -50,16 +50,14 @@
 <style>
   .toast-container {
     position: fixed;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 24px;
+    right: 24px;
     z-index: 10000;
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    max-width: 400px;
-    padding: 0 20px;
+    max-width: 320px;
     pointer-events: none;
   }
 

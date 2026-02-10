@@ -46,19 +46,12 @@
 </script>
 
 <div class="card">
-  <span class="card__title"
-    >Subscribe
-    <svg
-      fill="#333"
-      width="40px"
-      viewBox="0 -960 960 960"
-      height="40px"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M106.67-564q0-93.33 41.5-171.17 41.5-77.83 111.16-129.5L299-811.33q-57.33 42.66-91.5 106.66T173.33-564h-66.66Zm680 0q0-76.67-34.17-140.67-34.17-64-91.5-106.66l39.67-53.34q69.66 51.67 111.16 129.5 41.5 77.84 41.5 171.17h-66.66ZM160-200v-66.67h80v-296q0-83.66 49.67-149.5Q339.33-778 420-796v-24q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v24q80.67 18 130.33 83.83Q720-646.33 720-562.67v296h80V-200H160Zm320-301.33ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM306.67-266.67h346.66v-296q0-72-50.66-122.66Q552-736 480-736t-122.67 50.67q-50.66 50.66-50.66 122.66v296Z"
-      ></path></svg
-    ></span>
+  <div class="card__header">
+    <svg class="bell-icon" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
+      <path d="M106.67-564q0-93.33 41.5-171.17 41.5-77.83 111.16-129.5L299-811.33q-57.33 42.66-91.5 106.66T173.33-564h-66.66Zm680 0q0-76.67-34.17-140.67-34.17-64-91.5-106.66l39.67-53.34q69.66 51.67 111.16 129.5 41.5 77.84 41.5 171.17h-66.66ZM160-200v-66.67h80v-296q0-83.66 49.67-149.5Q339.33-778 420-796v-24q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v24q80.67 18 130.33 83.83Q720-646.33 720-562.67v296h80V-200H160Zm320-301.33ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM306.67-266.67h346.66v-296q0-72-50.66-122.66Q552-736 480-736t-122.67 50.67q-50.66 50.66-50.66 122.66v296Z"></path>
+    </svg>
+    <h3 class="card__title">Tetap Terhubung</h3>
+  </div>
   <p class="card__content">
     Dapatkan inspirasi, refleksi, dan update tulisan terbaru langsung di inbox-mu.
   </p>
@@ -91,64 +84,77 @@
 <style>
   .card {
     width: 100%;
-    max-width: 340px;
-    padding: 24px 15px;
+    padding: 32px 24px;
     text-align: center;
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     background: transparent;
-    border-radius: 20px;
   }
 
+  .card__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
 
-
-  .card > * {
-    margin: 0;
+  .bell-icon {
+    width: 48px;
+    height: 48px;
+    fill: var(--accent);
+    filter: drop-shadow(0 4px 12px rgba(255, 142, 83, 0.3));
+    margin-bottom: 4px;
   }
 
   .card__title {
-    font-size: 23px;
+    font-family: 'Merriweather', serif;
+    font-size: 1.5rem;
     font-weight: 900;
-    color: #333;
+    margin: 0;
+    color: var(--text);
   }
 
   .card__content {
-    font-size: 13px;
-    line-height: 18px;
-    color: #333;
-    margin: 10px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
   }
 
   .card__form {
     display: flex;
-    flex-direction: row;
-    gap: 10px;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
-    padding: 0 10px;
+    margin-top: 8px;
   }
 
   .card__form input {
-    flex: 1;
-    min-width: 0;
-    outline: 0;
-    background: rgb(255, 255, 255);
-    box-shadow: transparent 0px 0px 0px 1px inset;
-    padding: 0.6em;
-    border-radius: 14px;
-    border: 1px solid #333;
-    color: black;
+    width: 100%;
+    background: var(--code-bg);
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .card__form input:focus {
+    border-color: var(--accent);
+    background: var(--bg);
+    box-shadow: 0 0 0 4px rgba(255, 142, 83, 0.1);
   }
 
   .card__form button {
     border: 0;
     background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: #fff;
-    padding: 0.68em;
-    border-radius: 14px;
-    font-weight: bold;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -184,19 +190,7 @@
   }
 
   /* Dark Mode Overrides */
-  :global(html.dark) .card__title,
-  :global(html.dark) .card__content,
-  :global(html.dark) .status-msg {
-    color: #e0e0e0;
-  }
-
-  :global(html.dark) .card__form input {
-    background: #2a2a2a;
-    border-color: #444;
-    color: #fff;
-  }
-
-  :global(html.dark) .card__title svg {
-    fill: #e0e0e0;
+  :global(html.dark) .bell-icon {
+    filter: drop-shadow(0 4px 12px rgba(255, 142, 83, 0.1));
   }
 </style>

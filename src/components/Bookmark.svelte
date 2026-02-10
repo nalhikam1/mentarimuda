@@ -154,17 +154,22 @@
     position: absolute;
     top: 55px;
     right: 0;
-    background: #FF8E53;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     color: white;
     padding: 10px 18px;
     border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 600;
-    box-shadow: 0 15px 35px rgba(255, 142, 83, 0.4);
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
     z-index: 10005;
     white-space: nowrap;
-    animation: floatTip 3s ease-in-out infinite;
+    animation: floatTip 3s ease-in-out infinite, pulseTip 2s ease-in-out infinite;
     pointer-events: none;
+  }
+
+  @keyframes pulseTip {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
   }
 
   .tip-arrow {
@@ -280,7 +285,7 @@
     border: 1px solid var(--border); 
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.12); 
-    z-index: 1001;
+    z-index: 2001;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -361,9 +366,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1999;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
+    z-index: 45; /* Lower than header (50) to keep header bright */
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(2px);
     pointer-events: auto;
   }
 
@@ -410,7 +415,9 @@
         cursor: pointer;
       }
       .backdrop-blur {
-        z-index: 1999;
+        z-index: 1999; /* Maintain high z-index on mobile for panels */
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
       }
   }
 </style>
