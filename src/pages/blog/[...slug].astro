@@ -5,6 +5,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import '../../styles/article.css';
 import SocialShare from '../../components/SocialShare.astro';
 import Comments from '../../components/Comments.astro';
+import Bookmark from '../../components/Bookmark.svelte';
 import Subscribe from '../../components/Subscribe.svelte';
 
 export async function getStaticPaths() {
@@ -87,6 +88,18 @@ const relatedPosts = allPosts
         </div>
       </section>
     )}
+
+    <div class="article-footer-cta">
+      <div class="save-cta-card">
+        <div class="save-cta-content">
+          <h4>Suka dengan tulisan ini?</h4>
+          <p>Simpan artikel ini ke daftar bacaanmu agar mudah menemukannya kembali di lain waktu.</p>
+        </div>
+        <div class="save-cta-action">
+          <Bookmark client:visible postTitle={title} postUrl={`/blog/${entry.slug}`} showSaveButton={true} variant="footer" />
+        </div>
+      </div>
+    </div>
 
     <SocialShare title={title} url={Astro.url.href} />
     

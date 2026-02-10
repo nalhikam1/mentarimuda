@@ -61,7 +61,6 @@ const encodedTitle = encodeURIComponent(title);
       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
     </svg>
   </button>
-  <span id="copyFeedback" class="copy-feedback">Tersalin!</span>
 </div>
 
 <script>
@@ -72,10 +71,9 @@ const encodedTitle = encodeURIComponent(title);
     copyBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
-        feedback.classList.add('show');
-        setTimeout(() => {
-          feedback.classList.remove('show');
-        }, 2000);
+        window.dispatchEvent(new CustomEvent('showToast', {
+          detail: { message: 'Link berhasil disalin!', type: 'success' }
+        }));
       } catch (err) {
         console.error('Gagal menyalin link:', err);
       }
@@ -135,25 +133,4 @@ const encodedTitle = encodeURIComponent(title);
   /* Dark Mode Adjustments */
   :global(html.dark) .threads:hover { background: #ffffff; color: #000; }
 
-  /* Feedback Tooltip */
-  .copy-feedback {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: var(--text);
-    color: var(--bg);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.2s;
-    pointer-events: none;
-  }
-
-  .copy-feedback.show {
-    opacity: 1;
-    transform: translateY(30px); /* Muncul di sebelah tombol copy */
-  }
 </style>

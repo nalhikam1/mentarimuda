@@ -1,8 +1,9 @@
-<script>
   import { onMount } from 'svelte';
+  import { addToast } from '../stores/toastStore';
   export let postTitle = "";
   export let postUrl = "";
   export let showSaveButton = true; // Kontrol apakah tombol simpan ditampilkan
+  export let variant = "default"; // default | footer
 
   let bookmarks = [];
   let showPopup = false;
@@ -49,8 +50,10 @@
   function toggleBookmark() {
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
+      addToast('Artikel dihapus dari simpanan', 'info');
     } else {
       bookmarks = [...bookmarks, { title: postTitle, url: postUrl }];
+      addToast('Artikel berhasil disimpan!', 'success');
     }
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
   }
@@ -58,20 +61,33 @@
   function removeBookmark(title) {
     bookmarks = bookmarks.filter(b => b.title !== title);
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
+    addToast('Hapus bookmark berhasil', 'info');
   }
 </script>
 
 <div class="bookmark-actions">
   {#if showSaveButton}
-    <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-      </svg>
-      <span>{isSaved ? 'Tersimpan' : 'Simpan'}</span>
+    <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} class:btn-footer={variant === 'footer'} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
+      {#if isSaved}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+      {:else if variant === 'footer'}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      {:else}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+      {/if}
+      <span>{isSaved ? 'Tersimpan' : (variant === 'footer' ? 'Simpan Sekarang' : 'Simpan')}</span>
     </button>
   {/if}
   
-  <button on:click={() => showPopup = !showPopup} class="btn-list" title="Bacaan Tersimpan">
+  {#if variant !== 'footer'}
+    <button on:click={() => showPopup = !showPopup} class="btn-list" title="Bacaan Tersimpan">
     <div class="icon-wrapper">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -83,6 +99,7 @@
     </div>
     <span class="btn-text">Bacaan</span>
   </button>
+  {/if}
 
   {#if showPopup}
     <div class="bookmark-dropdown">
@@ -174,8 +191,32 @@
   /* Responsive Text Hide */
   @media (max-width: 768px) {
       .btn-text { display: none; }
-      .btn-save span { display: none; }
-      .btn-save, .btn-list { padding: 8px; border-radius: 50%; width: 40px; justify-content: center; }
+      .btn-save:not(.btn-footer) span { display: none; }
+      .btn-save:not(.btn-footer), .btn-list { padding: 8px; border-radius: 50%; width: 40px; justify-content: center; }
+      
+      .btn-save.btn-footer {
+          width: 100%;
+          justify-content: center;
+          height: 48px;
+          border-radius: 12px;
+          font-size: 1rem;
+      }
+  }
+
+  .btn-save.btn-footer {
+      padding: 10px 24px;
+      height: 48px;
+      border-radius: 24px;
+      font-size: 1rem;
+      background: var(--bg);
+      border-color: var(--accent);
+      color: var(--accent);
+  }
+
+  .btn-save.btn-footer.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
   }
   
   /* Dropdown / Modal Style */

@@ -238,3 +238,53 @@
         font-size: 0.85rem;
     }
 }
+
+/* --- ARTICLE FOOTER CTA --- */
+.article-footer-cta {
+    margin: 4rem 0 2rem 0;
+}
+
+.save-cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--sidebar-bg) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    gap: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.save-cta-content h4 {
+    font-family: 'Merriweather', serif;
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin: 0 0 8px 0;
+    color: var(--text);
+}
+
+.save-cta-content p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.save-cta-action {
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .save-cta-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+
+    .save-cta-action {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}

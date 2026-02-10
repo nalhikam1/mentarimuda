@@ -1,16 +1,15 @@
 <script>
+  import { addToast } from '../stores/toastStore';
   let email = '';
-  let status = '';
   let loading = false;
 
   async function handleSubscribe() {
     if (!email) {
-      status = 'Email harus diisi ya!';
+      addToast('Email harus diisi ya!', 'error');
       return;
     }
 
     loading = true;
-    status = '';
 
     try {
       const response = await fetch('/api/subscribe', {
@@ -24,7 +23,7 @@
       const data = await response.json();
 
       if (response.ok) {
-        status = 'YAY! Berhasil subscribe! Cek email kamu ya. 🚀';
+        addToast('YAY! Berhasil subscribe! Cek email kamu ya. 🚀', 'success');
         email = '';
         
         // PETASAN MELEDAK (Import dinamis agar aman saat SSR/Build)
@@ -36,10 +35,10 @@
           colors: ['#FF6B6B', '#FF8E53', '#FFD93D', '#6BCB77']
         });
       } else {
-        status = data.message || 'Gagal subscribe. Coba lagi ya.';
+        addToast(data.message || 'Gagal subscribe. Coba lagi ya.', 'error');
       }
     } catch (error) {
-      status = 'Waduh, ada masalah koneksi. Coba lagi nanti.';
+      addToast('Waduh, ada masalah koneksi. Coba lagi nanti.', 'error');
     } finally {
       loading = false;
     }
@@ -87,9 +86,6 @@
       {/if}
     </button>
   </form>
-  {#if status}
-    <p class="status-msg">{status}</p>
-  {/if}
 </div>
 
 <style>
