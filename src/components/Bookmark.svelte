@@ -142,7 +142,7 @@
         </ul>
       {/if}
     </div>
-    <!-- Backdrop for mobile -->
+    <!-- Backdrop for mobile ONLY -->
     <div class="backdrop-blur" on:click={() => showPopup = false} in:fade={{duration: 200}} out:fade={{duration: 200}}></div>
   {/if}
 </div>
@@ -361,15 +361,7 @@
   .empty-state .subtitle { font-weight: 400; color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; }
 
   .backdrop-blur {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 45; /* Lower than header (50) to keep header bright */
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(2px);
-    pointer-events: auto;
+    display: none; 
   }
 
   .close-btn-mobile { display: none; }
@@ -415,7 +407,10 @@
         cursor: pointer;
       }
       .backdrop-blur {
-        z-index: 1999; /* Maintain high z-index on mobile for panels */
+        display: block;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 1999; 
         background: rgba(0,0,0,0.5);
         backdrop-filter: blur(4px);
       }

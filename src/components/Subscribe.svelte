@@ -128,24 +128,26 @@
     gap: 12px;
     width: 100%;
     margin-top: 8px;
+    align-items: stretch;
   }
 
   .card__form input {
     width: 100%;
     background: var(--code-bg);
-    padding: 14px 18px;
-    border-radius: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
     border: 1px solid var(--border);
     color: var(--text);
     font-size: 0.95rem;
     transition: all 0.2s;
     outline: none;
+    box-sizing: border-box;
+    display: block;
   }
 
   .card__form input:focus {
     border-color: var(--accent);
-    background: var(--bg);
-    box-shadow: 0 0 0 4px rgba(255, 142, 83, 0.1);
+    box-shadow: 0 0 0 3px rgba(255, 142, 83, 0.15);
   }
 
   .card__form button {

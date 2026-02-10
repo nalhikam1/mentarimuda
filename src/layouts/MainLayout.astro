@@ -228,7 +228,7 @@ const topicTags = [
             </div>
         </div>
 
-        <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+        <div id="sidebar-backdrop" class="sidebar-backdrop" style="z-index: 999;"></div>
 
         <BottomNav />
     </div>
@@ -236,49 +236,15 @@ const topicTags = [
     <Loader client:load transition:persist />
     <Toast client:load transition:persist />
 
-    <script>
-        // --- MOBILE MENU & PANEL HANDLERS ---
-        // Defined outside to keep reference stable across View Transitions
-        
+    <script is:inline>
+        // Make handlers global for View Transition resilience
         window.closeLayoutPanelsOnly = function() {
             const panels = document.querySelectorAll('.mobile-bottom-sheet');
             const backdrop = document.getElementById('sidebar-backdrop');
             
             panels.forEach(p => p.classList.remove('show'));
             backdrop?.classList.remove('show');
-            document.body.style.overflow = ''; // Restore scroll
-        }
-
-        window.toggleSearchHandler = function() {
-            const searchPanel = document.getElementById('mobile-search-panel');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            const isOpen = searchPanel?.classList.contains('show');
-            const input = searchPanel?.querySelector('input');
-
-            window.closeLayoutPanelsOnly();
-            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-
-            if (!isOpen) {
-                searchPanel?.classList.add('show');
-                backdrop?.classList.add('show');
-                document.body.style.overflow = 'hidden'; 
-                setTimeout(() => input?.focus(), 300);
-            }
-        }
-
-        window.toggleTopicHandler = function() {
-            const topicPanel = document.getElementById('topic-panel');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            const isOpen = topicPanel?.classList.contains('show');
-
-            window.closeLayoutPanelsOnly();
-            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-
-            if (!isOpen) {
-                topicPanel?.classList.add('show');
-                backdrop?.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
+            document.body.style.overflow = '';
         }
 
         window.closeAllHandler = function() {
@@ -286,48 +252,60 @@ const topicTags = [
             window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
         }
 
-        // Initialize handlers
         function initMenuHandlers() {
-            // Re-attach element listeners
             const backdrop = document.getElementById('sidebar-backdrop');
             const closeTopicBtn = document.getElementById('close-topic-btn');
             const closeSearchBtn = document.getElementById('close-search-btn');
 
-            // Remove existing to avoid duplicates if any
-            backdrop?.replaceWith(backdrop.cloneNode(true));
-            const newBackdrop = document.getElementById('sidebar-backdrop');
-            newBackdrop?.addEventListener('click', window.closeAllHandler);
+            backdrop?.addEventListener('click', window.closeAllHandler);
+            closeTopicBtn?.addEventListener('click', window.closeAllHandler);
+            closeSearchBtn?.addEventListener('click', window.closeAllHandler);
 
-            closeTopicBtn?.replaceWith(closeTopicBtn.cloneNode(true));
-            const newCloseTopicBtn = document.getElementById('close-topic-btn');
-            newCloseTopicBtn?.addEventListener('click', window.closeAllHandler);
-
-            closeSearchBtn?.replaceWith(closeSearchBtn.cloneNode(true));
-            const newCloseSearchBtn = document.getElementById('close-search-btn');
-            newCloseSearchBtn?.addEventListener('click', window.closeAllHandler);
-
-            // Window-level events (added once)
-            if (!window.hasGlobalMenuListeners) {
-                window.addEventListener('toggleSearch', window.toggleSearchHandler);
-                window.addEventListener('toggleTopicSidebar', window.toggleTopicHandler);
-                window.addEventListener('openSavedBookmarks', () => {
+            if (!window.hasGlobalListenersAttached) {
+                window.addEventListener('toggleSearch', () => {
+                    const panel = document.getElementById('mobile-search-panel');
+                    const bd = document.getElementById('sidebar-backdrop');
+                    const isOpen = panel?.classList.contains('show');
                     window.closeLayoutPanelsOnly();
+                    window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                    if (!isOpen) { 
+                        panel?.classList.add('show'); 
+                        bd?.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                        setTimeout(() => panel?.querySelector('input')?.focus(), 300);
+                    }
                 });
-                window.addEventListener('closeTopicSidebar', window.closeAllHandler);
-                window.hasGlobalMenuListeners = true;
+
+                window.addEventListener('toggleTopicSidebar', () => {
+                    const panel = document.getElementById('topic-panel');
+                    const bd = document.getElementById('sidebar-backdrop');
+                    const isOpen = panel?.classList.contains('show');
+                    window.closeLayoutPanelsOnly();
+                    window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                    if (!isOpen) { 
+                        panel?.classList.add('show'); 
+                        bd?.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+
+                window.addEventListener('openSavedBookmarks', () => window.closeLayoutPanelsOnly());
+                window.addEventListener('closeTopicSidebar', () => window.closeAllHandler());
+                
+                window.hasGlobalListenersAttached = true;
             }
         }
 
-        // --- PAGE LOAD INITIALIZATION ---
+        document.addEventListener('astro:page-load', initMenuHandlers);
+    </script>
+    
+    <script>
+        // Reading Progress & Loader Exit
         document.addEventListener('astro:page-load', () => {
-            initMenuHandlers();
-            
-            // Loader handling
             setTimeout(() => {
                 document.documentElement.classList.remove('loader-visible');
-            }, 500); // Faster loader exit
+            }, 500); 
 
-            // Reading Progress Bar
             const progressBar = document.getElementById('reading-progress-bar');
             if (progressBar) {
                 let ticking = false;
@@ -346,7 +324,6 @@ const topicTags = [
             }
         });
 
-        // Ensure loader is shown before navigation starts
         document.addEventListener('astro:before-preparation', () => {
             document.documentElement.classList.add('loader-visible');
         });
@@ -575,10 +552,10 @@ const topicTags = [
     .sidebar-subscribe-sidebar {
         margin-top: 24px;
         width: 100%;
-        background: var(--bg); /* Same as body bg to avoid double layering */
+        background: var(--bg);
         border: 1px solid var(--border);
         border-radius: 20px;
-        overflow: hidden;
+        /* Hapus overflow hidden agar input ga kepotong */
     }
 
     @media (max-width: 968px) {
