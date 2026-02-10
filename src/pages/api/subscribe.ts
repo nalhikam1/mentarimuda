@@ -38,20 +38,54 @@ export const POST: APIRoute = async ({ request }) => {
             throw supabaseError;
         }
 
-        // 2. Kirim email konfirmasi
+        // 2. Kirim email konfirmasi (Desain Premium Mentari Muda)
         const { data: resendData, error: resendError } = await resend.emails.send({
-            from: 'Mentari Muda <halo@mail.mentarimuda.com>',
+            from: 'Mentari Muda <halo@mentarimuda.com>',
             to: email,
-            subject: 'Selamat Datang di Mentari Muda!',
+            subject: 'Selamat Datang di Mentari Muda! ✨',
             html: `
-        <div style="font-family: sans-serif; padding: 20px; color: #333;">
-            <h1 style="color: #FF8E53;">Halo!</h1>
-            <p>Terima kasih banyak sudah berlangganan newsletter <strong>Mentari Muda</strong>.</p>
-            <p>Kamu akan mendapatkan update tulisan terbaru, refleksi, dan inspirasi langsung di inbox-mu.</p>
-            <br>
-            <p>Salam hangat,</p>
-            <p><strong>Naufal Muhammad Al Hikam</strong></p>
-        </div>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                .container { font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f0f0f0; border-radius: 16px; overflow: hidden; }
+                .header { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); padding: 40px 20px; text-align: center; color: white; }
+                .content { padding: 40px 30px; line-height: 1.6; color: #333; }
+                .button { display: inline-block; padding: 14px 28px; background: #FF8E53; color: white !important; text-decoration: none; border-radius: 50px; font-weight: bold; margin: 20px 0; box-shadow: 0 4px 15px rgba(255, 142, 83, 0.3); }
+                .footer { padding: 30px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #f0f0f0; }
+                .links { margin-top: 20px; }
+                .links a { color: #FF8E53; text-decoration: none; margin: 0 10px; font-weight: 500; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1 style="margin:0; font-size: 28px;">Mentari Muda</h1>
+                    <p style="margin-top:10px; opacity:0.9;">Ruang Tumbuh & Refleksi Digital</p>
+                </div>
+                <div class="content">
+                    <h2 style="color: #FF8E53; margin-top: 0;">Halo, Sahabat Bertumbuh! 👋</h2>
+                    <p>Terima kasih sudah memilih bergabung di perjalanan kontemplasi **Mentari Muda**. Senang sekali bisa membagi hikmah dan perjalanan belajar bersama kamu.</p>
+                    <p>Mulai sekarang, kamu akan menjadi orang pertama yang mendapatkan notifikasi ketika ada tulisan baru tentang pengembangan diri, filosofi hidup, hingga eksplorasi teknologi.</p>
+                    
+                    <div style="text-align: center;">
+                        <a href="https://mentarimuda.com" class="button">Mari Mulai Membaca</a>
+                    </div>
+
+                    <div class="links" style="text-align: center;">
+                        <p style="margin-bottom: 10px; font-weight: bold; color: #555;">Eksplorasi Lebih Jauh:</p>
+                        <a href="https://mentarimuda.com/tulisan">Semua Tulisan</a> • 
+                        <a href="https://mentarimuda.com">Beranda</a>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>&copy; 2026 Mentari Muda. Dibuat dengan hati oleh Naufal Muhammad Al Hikam.</p>
+                    <p>Jika kamu merasa tidak pernah mendaftar, silakan abaikan email ini.</p>
+                </div>
+            </div>
+        </body>
+        </html>
       `,
         });
 
