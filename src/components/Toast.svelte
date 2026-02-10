@@ -34,7 +34,9 @@
       <div class="toast-content">
         {#if toast.type === 'bookmark'}
           <div class="icon-circle">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
           </div>
         {:else if toast.type === 'success'}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -111,15 +113,11 @@
   }
 
   .bg-bookmark {
-    background: #ffffff;
-    color: #111111 !important;
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 30px rgba(255, 142, 83, 0.2);
-  }
-
-  :global(html.dark) .bg-bookmark {
-    background: #1e1e1e;
-    color: #ffffff !important;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    border-radius: 16px;
   }
 
   .bg-bookmark .icon-circle {
@@ -128,14 +126,18 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-    color: white;
+    background: white;
+    color: #FF6B6B;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
   .bg-bookmark .close-btn {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .bg-bookmark .close-btn:hover {
+    color: white;
   }
 
   .message {
