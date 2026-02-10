@@ -1,3 +1,4 @@
+<script>
   import { onMount } from 'svelte';
   import { toasts, removeToast, addToast } from '../stores/toastStore';
   import { flip } from 'svelte/animate';
