@@ -237,119 +237,103 @@ const topicTags = [
     <Toast client:load transition:persist />
 
     <script>
-        // --- GLOBAL LOADER HANDLER ---
-        document.addEventListener('astro:before-preparation', () => {
-            document.documentElement.classList.add('loader-visible');
-        });
-
-        document.addEventListener('astro:page-load', () => {
-            // Beri jeda 2 detik agar animasi loader jam pasir terlihat sangat mantap dan smooth
-            setTimeout(() => {
-                document.documentElement.classList.remove('loader-visible');
-            }, 2000);
-
-            // --- HANDLER FUNCTIONS ---
+        // --- MOBILE MENU & PANEL HANDLERS ---
+        // Defined outside to keep reference stable across View Transitions
+        
+        function closeLayoutPanelsOnly() {
+            const panels = document.querySelectorAll('.mobile-bottom-sheet');
+            const backdrop = document.getElementById('sidebar-backdrop');
             
-            // Fungsi menutup Panel Layout (Search & Topik) saja
-            function closeLayoutPanelsOnly() {
-                 const panels = document.querySelectorAll('.mobile-bottom-sheet');
-                 const backdrop = document.getElementById('sidebar-backdrop');
-                 
-                 panels.forEach(p => p.classList.remove('show'));
-                 backdrop?.classList.remove('show');
+            panels.forEach(p => p.classList.remove('show'));
+            backdrop?.classList.remove('show');
+            document.body.style.overflow = ''; // Restore scroll
+        }
+
+        function toggleSearchHandler() {
+            const searchPanel = document.getElementById('mobile-search-panel');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const isOpen = searchPanel?.classList.contains('show');
+            const input = searchPanel?.querySelector('input');
+
+            closeLayoutPanelsOnly();
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+
+            if (!isOpen) {
+                searchPanel?.classList.add('show');
+                backdrop?.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
+                setTimeout(() => input?.focus(), 300);
             }
+        }
 
-            // Fungsi toggle Search
-            function toggleSearchHandler() {
-                const searchPanel = document.getElementById('mobile-search-panel');
-                const backdrop = document.getElementById('sidebar-backdrop');
-                const isOpen = searchPanel?.classList.contains('show');
-                const input = searchPanel?.querySelector('input');
+        function toggleTopicHandler() {
+            const topicPanel = document.getElementById('topic-panel');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const isOpen = topicPanel?.classList.contains('show');
 
-                // 1. Tutup panel layout lain (Topik)
-                closeLayoutPanelsOnly();
-                // 2. Tutup Bookmark (jika terbuka)
-                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+            closeLayoutPanelsOnly();
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
 
-                // 3. Toggle Search Panel
-                if (!isOpen) {
-                    searchPanel?.classList.add('show');
-                    backdrop?.classList.add('show');
-                    setTimeout(() => input?.focus(), 300);
-                }
+            if (!isOpen) {
+                topicPanel?.classList.add('show');
+                backdrop?.classList.add('show');
+                document.body.style.overflow = 'hidden';
             }
+        }
 
-            // Fungsi toggle Topik
-            function toggleTopicHandler() {
-                const topicPanel = document.getElementById('topic-panel');
-                const backdrop = document.getElementById('sidebar-backdrop');
-                const isOpen = topicPanel?.classList.contains('show');
+        function closeAllHandler() {
+            closeLayoutPanelsOnly();
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+        }
 
-                // 1. Tutup panel layout lain (Search)
-                closeLayoutPanelsOnly();
-                // 2. Tutup Bookmark
-                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-
-                // 3. Toggle Topic Panel
-                if (!isOpen) {
-                    topicPanel?.classList.add('show');
-                    backdrop?.classList.add('show');
-                }
-            }
-
-            // Handler saat tombol Bookmark di-klik
-            function openBookmarksHandler() {
-                // Cukup tutup panel layout (Search & Topik)
-                // JANGAN dispatch 'closeSavedBookmarks' karena akan menutup bookmark yang baru mau dibuka!
-                closeLayoutPanelsOnly();
-            }
-
-            // Handler tombol Close (X) dan Backdrop
-            function closeAllHandler() {
-                closeLayoutPanelsOnly();
-                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-            }
-
-            // --- GLOBAL LISTENERS ---
-            // Remove existing listeners to prevent duplicates on subsequent page loads (View Transitions)
-            window.removeEventListener('toggleSearch', toggleSearchHandler);
-            window.removeEventListener('toggleTopicSidebar', toggleTopicHandler);
-            window.removeEventListener('openSavedBookmarks', openBookmarksHandler);
-            window.removeEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
-
-            // Add listeners
+        // Add Global Window Listeners ONCE
+        // These persist across View Transitions
+        if (!window.hasGlobalMenuListeners) {
             window.addEventListener('toggleSearch', toggleSearchHandler);
             window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
-            window.addEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
-            window.addEventListener('openSavedBookmarks', openBookmarksHandler);
+            window.addEventListener('openSavedBookmarks', () => closeLayoutPanelsOnly());
+            window.addEventListener('closeTopicSidebar', closeAllHandler);
+            window.hasGlobalMenuListeners = true;
+        }
 
+        // --- PAGE LOAD INITIALIZATION ---
+        document.addEventListener('astro:page-load', () => {
+            // Loader handling
+            setTimeout(() => {
+                document.documentElement.classList.remove('loader-visible');
+            }, 1000);
+
+            // Re-attach element listeners (since DOM is new)
             const backdrop = document.getElementById('sidebar-backdrop');
             const closeTopicBtn = document.getElementById('close-topic-btn');
             const closeSearchBtn = document.getElementById('close-search-btn');
 
-            // Listener elemen manual
+            backdrop?.addEventListener('click', closeAllHandler);
             closeTopicBtn?.addEventListener('click', closeAllHandler);
             closeSearchBtn?.addEventListener('click', closeAllHandler);
-            backdrop?.addEventListener('click', closeAllHandler);
 
-            // Reading Progress Bar - Optimized to avoid Forced Reflow
+            // Reading Progress Bar
             const progressBar = document.getElementById('reading-progress-bar');
             if (progressBar) {
                 let ticking = false;
-                const scrollHandler = () => {
+                window.addEventListener('scroll', () => {
                     if (!ticking) {
                         window.requestAnimationFrame(() => {
                             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                             const scrollPercent = (scrollTop / scrollHeight) * 100;
-                            if(progressBar) progressBar.style.width = scrollPercent + '%';
+                            if (progressBar) progressBar.style.width = scrollPercent + '%';
                             ticking = false;
                         });
                         ticking = true;
                     }
-                };
-                window.addEventListener('scroll', scrollHandler, { passive: true });
+                }, { passive: true });
             }
+        });
+
+        // Ensure loader is shown before navigation starts
+        document.addEventListener('astro:before-preparation', () => {
+            document.documentElement.classList.add('loader-visible');
         });
     </script>
 </body>

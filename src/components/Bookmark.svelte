@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { addToast } from '../stores/toastStore';
   import { fade, fly } from 'svelte/transition';
+  
   export let postTitle = "";
   export let postUrl = "";
   export let showSaveButton = true;
@@ -11,25 +12,12 @@
   let showTip = false;
 
   onMount(() => {
+    // Load existing bookmarks
     const saved = localStorage.getItem('mentari-bookmarks');
     if (saved) bookmarks = JSON.parse(saved);
 
-    // Tip B: Muncul otomatis saat masuk artikel (hanya jika belum pernah disimpan)
-    if (showSaveButton && postTitle) {
-      const tipShown = localStorage.getItem('mentari_tip_shown');
-      const alreadySaved = bookmarks.some(b => b.title === postTitle);
-      
-      if (!tipShown && !alreadySaved) {
-        setTimeout(() => {
-          showTip = true;
-          // Sembunyikan otomatis setelah 7 detik
-          setTimeout(() => {
-            showTip = false;
-            localStorage.setItem('mentari_tip_shown', 'true');
-          }, 7000);
-        }, 1500);
-      }
-    }
+    // Initial check to show tip
+    checkTip();
 
     const handleOpenBookmark = () => {
       showPopup = !showPopup; 
@@ -49,6 +37,26 @@
     };
   });
 
+  function checkTip() {
+    if (showSaveButton && postTitle) {
+      const tipShown = localStorage.getItem('mentari_tip_shown_v2');
+      const isAlreadySaved = bookmarks.some(b => b.title === postTitle);
+      
+      // If tip not shown yet and article not saved, show it after a delay
+      if (!tipShown && !isAlreadySaved) {
+        setTimeout(() => {
+          showTip = true;
+          // Hide automatically after 7 seconds
+          setTimeout(() => {
+            showTip = false;
+            localStorage.setItem('mentari_tip_shown_v2', 'true');
+          }, 7000);
+        }, 1500); // 1.5s delay
+      }
+    }
+  }
+
+  // Update badge in BottomNav
   $: {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('bookmarksChanged', { 
@@ -69,12 +77,14 @@
       addToast('Artikel berhasil disimpan!', 'success');
     }
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
+    bookmarks = [...bookmarks]; // Force Svelte update
   }
 
   function removeBookmark(title) {
     bookmarks = bookmarks.filter(b => b.title !== title);
     localStorage.setItem('mentari-bookmarks', JSON.stringify(bookmarks));
     addToast('Hapus bookmark berhasil', 'info');
+    bookmarks = [...bookmarks]; // Force Svelte update
   }
 </script>
 
