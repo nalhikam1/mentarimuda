@@ -1,42 +1,41 @@
-  import { onMount } from 'svelte';
+<script>
+  import { onMount, onDestroy } from 'svelte';
   import { addToast } from '../stores/toastStore';
-  import { fade } from 'svelte/transition';
+  import { fade, fly } from 'svelte/transition';
   export let postTitle = "";
   export let postUrl = "";
-  export let showSaveButton = true; // Kontrol apakah tombol simpan ditampilkan
-  export let variant = "default"; // default | footer
+  export let showSaveButton = true;
 
   let bookmarks = [];
   let showPopup = false;
   let showTip = false;
 
-  // Mengambil data saat pertama kali komponen muncul
   onMount(() => {
     const saved = localStorage.getItem('mentari-bookmarks');
     if (saved) bookmarks = JSON.parse(saved);
 
-    // Tip untuk pengguna baru (hanya muncul di artikel)
-    if (variant === 'default' && postTitle) {
+    // Tip B: Muncul otomatis saat masuk artikel (hanya jika belum pernah disimpan)
+    if (showSaveButton && postTitle) {
       const tipShown = localStorage.getItem('mentari_tip_shown');
-      if (!tipShown) {
+      const alreadySaved = bookmarks.some(b => b.title === postTitle);
+      
+      if (!tipShown && !alreadySaved) {
         setTimeout(() => {
           showTip = true;
+          // Sembunyikan otomatis setelah 7 detik
           setTimeout(() => {
             showTip = false;
-            // Set shown after first successful view
             localStorage.setItem('mentari_tip_shown', 'true');
-          }, 6000);
-        }, 2000);
+          }, 7000);
+        }, 1500);
       }
     }
 
-    // Listen to custom event from BottomNav
     const handleOpenBookmark = () => {
       showPopup = !showPopup; 
-      showTip = false; // Close tip if opening bookmarks
+      showTip = false;
     };
 
-    // Listen to event to close bookmarks (e.g. when Topic Sidebar opens)
     const handleCloseBookmark = () => {
       showPopup = false;
     };
@@ -44,14 +43,12 @@
     window.addEventListener('openSavedBookmarks', handleOpenBookmark);
     window.addEventListener('closeSavedBookmarks', handleCloseBookmark);
     
-    // Cleanup listener on destroy
     return () => {
       window.removeEventListener('openSavedBookmarks', handleOpenBookmark);
       window.removeEventListener('closeSavedBookmarks', handleCloseBookmark);
     };
   });
 
-  // Sinkronisasi ke BottomNav (Mobile) via Custom Event
   $: {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('bookmarksChanged', { 
@@ -60,12 +57,10 @@
     }
   }
 
-  // LOGIKA PENTING: Svelte akan mengecek ulang status ini 
-  // setiap kali postTitle atau bookmarks berubah.
   $: isSaved = bookmarks.some(b => b.title === postTitle);
 
   function toggleBookmark() {
-    showTip = false; // Tutup tip saat tombol diklik
+    showTip = false;
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
       addToast('Artikel dihapus dari simpanan', 'info');
@@ -83,36 +78,24 @@
   }
 </script>
 
-<div class="bookmark-actions" class:is-footer={variant === 'footer'}>
-  {#if showTip && variant === 'default'}
-    <div class="save-tip" in:fade={{ duration: 400 }} out:fade={{ duration: 300 }}>
-       Simpan artikel ini yuk! 👆
+<div class="bookmark-actions">
+  {#if showTip}
+    <div class="save-tip" in:fly={{ y: 14, duration: 600 }} out:fade>
+       <span class="tip-icon">✨</span> Simpan artikel ini yuk! (Save for later)
        <div class="tip-arrow"></div>
     </div>
   {/if}
 
   {#if showSaveButton}
-    <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} class:btn-footer={variant === 'footer'} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
-      {#if isSaved}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-        </svg>
-      {:else if variant === 'footer'}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-      {:else}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-        </svg>
-      {/if}
-      <span>{isSaved ? 'Tersimpan' : (variant === 'footer' ? 'Simpan Sekarang' : 'Simpan')}</span>
+    <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>{isSaved ? 'Tersimpan' : 'Simpan'}</span>
     </button>
   {/if}
   
-  {#if variant !== 'footer'}
-    <button on:click={() => showPopup = !showPopup} class="btn-list" title="Bacaan Tersimpan">
+  <button on:click={() => { showPopup = !showPopup; showTip = false; }} class="btn-list" title="Bacaan Tersimpan">
     <div class="icon-wrapper">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -124,13 +107,12 @@
     </div>
     <span class="btn-text">Bacaan</span>
   </button>
-  {/if}
 
   {#if showPopup}
     <div class="bookmark-dropdown">
       <div class="dropdown-header">
         <h4>Daftar Bacaan</h4>
-        <button class="close-btn" on:click={() => showPopup = false}>
+        <button class="close-btn-mobile" on:click={() => showPopup = false}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
@@ -145,7 +127,7 @@
           {#each bookmarks as item}
             <li>
               <a href={item.url} class="bookmark-link">{item.title}</a>
-              <button on:click={() => removeBookmark(item.title)} class="delete-btn" aria-label="Hapus">
+              <button on:click={() => removeBookmark(item.title)} class="delete-item-btn" aria-label="Hapus">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </li>
@@ -154,19 +136,18 @@
       {/if}
     </div>
     <!-- Backdrop for mobile -->
-    <div class="backdrop" on:click={() => showPopup = false}></div>
+    <div class="backdrop-blur" on:click={() => showPopup = false}></div>
   {/if}
 </div>
 
 <style>
   .bookmark-actions { display: flex; gap: 8px; position: relative; align-items: center; }
-  .bookmark-actions.is-footer { width: 100%; }
   
   .btn-save, .btn-list { 
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--card-bg); /* Use var */
+    background: var(--card-bg);
     border: 1px solid var(--border); 
     padding: 8px 16px; 
     border-radius: 20px; 
@@ -192,7 +173,7 @@
     box-shadow: 0 10px 25px rgba(255, 142, 83, 0.3);
     z-index: 1002;
     white-space: nowrap;
-    animation: float 3s ease-in-out infinite;
+    animation: floatTip 3s ease-in-out infinite;
   }
 
   .tip-arrow {
@@ -205,7 +186,7 @@
     transform: rotate(45deg);
   }
 
-  @keyframes float {
+  @keyframes floatTip {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
   }
@@ -243,96 +224,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid white;
+      border: 2px solid var(--card-bg);
   }
 
-  /* Responsive Text Hide */
-  @media (max-width: 768px) {
-      .btn-text { display: none; }
-      .btn-save:not(.btn-footer) span { display: none; }
-      .btn-save:not(.btn-footer), .btn-list { padding: 8px; border-radius: 50%; width: 40px; justify-content: center; }
-      
-      .btn-save.btn-footer {
-          width: 100%;
-          justify-content: center;
-          height: 48px;
-          border-radius: 12px;
-          font-size: 1rem;
-      }
-  }
-
-  .btn-save.btn-footer {
-      padding: 10px 24px;
-      height: 48px;
-      border-radius: 24px;
-      font-size: 1rem;
-      background: var(--bg);
-      border-color: var(--accent);
-      color: var(--accent);
-  }
-
-  .btn-save.btn-footer.active {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-  }
-  
-  @media (max-width: 640px) {
-    .save-tip {
-      right: -20px;
-      left: auto;
-      font-size: 0.75rem;
-      padding: 8px 12px;
-    }
-    
-    .tip-arrow {
-      right: 32px;
-    }
-  }
-
-  /* Dropdown / Modal Style */
+  /* Dropdown Style */
   .bookmark-dropdown {
     position: absolute; 
     right: 0; 
     top: 55px; 
-    width: 340px;
+    width: 320px;
     background: var(--card-bg); 
     border: 1px solid var(--border); 
     border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12); 
     z-index: 1001;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: fadeIn 0.2s ease-out;
   }
 
   .dropdown-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 14px 20px;
     border-bottom: 1px solid var(--border);
-    background: var(--card-bg);
   }
 
   .dropdown-header h4 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--text);
   }
 
-  .close-btn {
-    background: none;
-    border: none;
-    font-size: 1.25rem;
-    cursor: pointer;
-    color: var(--text-secondary);
-    padding: 4px;
-    display: none; /* Hidden on desktop usually */
-  }
-
+  /* List Style */
   .bookmark-list {
     list-style: none; 
     padding: 0; 
@@ -344,10 +270,9 @@
   .bookmark-list li { 
     display: flex; 
     justify-content: space-between; 
-    padding: 14px 20px; 
+    padding: 12px 20px; 
     border-bottom: 1px solid var(--border); 
     align-items: center; 
-    transition: background 0.2s;
   }
 
   .bookmark-list li:hover {
@@ -355,198 +280,87 @@
   }
 
   .bookmark-link { 
-    font-size: 0.9rem; 
+    font-size: 0.875rem; 
     text-decoration: none; 
     color: var(--text); 
     line-height: 1.4;
-    margin-right: 12px;
     font-weight: 500;
+    flex: 1;
+    margin-right: 12px;
   }
 
-  .bookmark-link:hover {
-    color: var(--text);
-    text-decoration: underline;
-  }
-
-  .delete-btn { 
+  .delete-item-btn { 
     background: none; 
     border: none; 
     cursor: pointer; 
-    font-size: 1rem;
     color: #bbb;
     padding: 4px;
     border-radius: 4px;
+    flex-shrink: 0;
   }
 
-  .delete-btn:hover {
+  .delete-item-btn:hover {
     color: #ff4444;
     background: #fff0f0;
   }
 
   .empty-state {
-    padding: 40px 20px;
+    padding: 30px 20px;
     text-align: center;
   }
 
-  .empty-state p {
-    margin: 0;
-    color: var(--text);
-    font-weight: 600;
+  .empty-state p { margin: 0; font-size: 0.9rem; color: var(--text); font-weight: 600; }
+  .empty-state .subtitle { font-weight: 400; color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; }
+
+  .backdrop-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.05);
   }
 
-  .empty-state .subtitle {
-    font-weight: 400;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    margin-top: 6px;
-  }
+  .close-btn-mobile { display: none; }
 
-  .backdrop {
-    display: none;
-  }
+  /* Responsive Text Hide */
+  @media (max-width: 768px) {
+      .btn-text { display: none; }
+      .btn-save span { display: none; }
+      .btn-save, .btn-list { padding: 8px; border-radius: 50%; width: 40px; justify-content: center; }
+      
+      .save-tip {
+        right: -10px;
+        font-size: 0.75rem;
+        padding: 8px 12px;
+      }
+      .tip-arrow {
+        right: 24px;
+      }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Mobile Responsive Dropdown & Button */
-  @media (max-width: 640px) {
-    .btn-list {
-      display: none; 
-    }
-
-    .btn-save {
-      padding: 8px 12px;
-      font-size: 0.8rem;
-    }
-
-    /* Modal Fullscreen (Sama seperti Search Panel) */
-    .bookmark-dropdown {
-      position: fixed;
-      top: 0;       
-      bottom: 0;    
-      left: 0;
-      right: 0;
-      height: 100vh; 
-      max-height: 100vh;
-      border-radius: 0; 
-      border: none;
-      background: var(--bg); /* Gunakan bg utama agar solid */
-      box-shadow: none;
-      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 2000; 
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-      overflow: hidden;
-      overflow-x: hidden;
-    }
-
-    .dropdown-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg); /* Solid bg */
-      z-index: 10;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .dropdown-header h4 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin: 0;
-    }
-    
-    /* Tombol close di header */
-    .close-btn {
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: var(--sidebar-bg);
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      color: var(--text);
-      cursor: pointer;
-    }
-    
-    /* List Style */
-    .bookmark-list {
-      padding: 10px 0 100px 0; /* Padding bawah extra untuk bottom nav */
-      margin: 0;
-      display: block; 
-      overflow-y: auto;
-      flex: 1;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .bookmark-list li {
-      background: transparent;
-      border-bottom: 1px solid var(--border);
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .bookmark-link {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text);
-      text-decoration: none;
-      flex: 1;
-      line-height: 1.5;
-    }
-    
-    .delete-btn {
-      background: var(--sidebar-bg);
-      border: 1px solid var(--border);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      flex-shrink: 0;
-    }
-
-    .delete-btn:hover {
-      background: #ff4444;
-      color: white;
-      border-color: #ff4444;
-    }
-    
-    /* Empty state */
-    .empty-state {
-      padding: 60px 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .backdrop {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(2px);
-      z-index: 1500;
-    }
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+      /* Mobile Fullscreen Bookmark List */
+      .bookmark-dropdown {
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        width: 100%; height: 100%;
+        max-height: none;
+        border-radius: 0;
+        z-index: 2000;
+        background: var(--bg);
+      }
+      .close-btn-mobile {
+        display: flex;
+        background: var(--sidebar-bg);
+        border: 1px solid var(--border);
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        align-items: center; justify-content: center;
+        cursor: pointer;
+      }
+      .backdrop-blur {
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+      }
   }
 </style>

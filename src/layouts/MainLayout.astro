@@ -233,8 +233,8 @@ const topicTags = [
         <BottomNav />
     </div>
 
-    <Loader client:load />
-    <Toast client:load />
+    <Loader client:load transition:persist />
+    <Toast client:load transition:persist />
 
     <script>
         // --- GLOBAL LOADER HANDLER ---
@@ -247,78 +247,82 @@ const topicTags = [
             setTimeout(() => {
                 document.documentElement.classList.remove('loader-visible');
             }, 2000);
-        });
 
-        // --- HANDLER FUNCTIONS ---
-        
-        // Fungsi menutup Panel Layout (Search & Topik) saja
-        function closeLayoutPanelsOnly() {
-             const panels = document.querySelectorAll('.mobile-bottom-sheet');
-             const backdrop = document.getElementById('sidebar-backdrop');
-             
-             panels.forEach(p => p.classList.remove('show'));
-             backdrop?.classList.remove('show');
-        }
-
-        // Fungsi toggle Search
-        function toggleSearchHandler() {
-            const searchPanel = document.getElementById('mobile-search-panel');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            const isOpen = searchPanel?.classList.contains('show');
-            const input = searchPanel?.querySelector('input');
-
-            // 1. Tutup panel layout lain (Topik)
-            closeLayoutPanelsOnly();
-            // 2. Tutup Bookmark (jika terbuka)
-            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-
-            // 3. Toggle Search Panel
-            if (!isOpen) {
-                searchPanel?.classList.add('show');
-                backdrop?.classList.add('show');
-                setTimeout(() => input?.focus(), 300);
+            // --- HANDLER FUNCTIONS ---
+            
+            // Fungsi menutup Panel Layout (Search & Topik) saja
+            function closeLayoutPanelsOnly() {
+                 const panels = document.querySelectorAll('.mobile-bottom-sheet');
+                 const backdrop = document.getElementById('sidebar-backdrop');
+                 
+                 panels.forEach(p => p.classList.remove('show'));
+                 backdrop?.classList.remove('show');
             }
-        }
 
-        // Fungsi toggle Topik
-        function toggleTopicHandler() {
-            const topicPanel = document.getElementById('topic-panel');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            const isOpen = topicPanel?.classList.contains('show');
+            // Fungsi toggle Search
+            function toggleSearchHandler() {
+                const searchPanel = document.getElementById('mobile-search-panel');
+                const backdrop = document.getElementById('sidebar-backdrop');
+                const isOpen = searchPanel?.classList.contains('show');
+                const input = searchPanel?.querySelector('input');
 
-            // 1. Tutup panel layout lain (Search)
-            closeLayoutPanelsOnly();
-            // 2. Tutup Bookmark
-            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                // 1. Tutup panel layout lain (Topik)
+                closeLayoutPanelsOnly();
+                // 2. Tutup Bookmark (jika terbuka)
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
 
-            // 3. Toggle Topic Panel
-            if (!isOpen) {
-                topicPanel?.classList.add('show');
-                backdrop?.classList.add('show');
+                // 3. Toggle Search Panel
+                if (!isOpen) {
+                    searchPanel?.classList.add('show');
+                    backdrop?.classList.add('show');
+                    setTimeout(() => input?.focus(), 300);
+                }
             }
-        }
 
-        // Handler saat tombol Bookmark di-klik
-        function openBookmarksHandler() {
-            // Cukup tutup panel layout (Search & Topik)
-            // JANGAN dispatch 'closeSavedBookmarks' karena akan menutup bookmark yang baru mau dibuka!
-            closeLayoutPanelsOnly();
-        }
+            // Fungsi toggle Topik
+            function toggleTopicHandler() {
+                const topicPanel = document.getElementById('topic-panel');
+                const backdrop = document.getElementById('sidebar-backdrop');
+                const isOpen = topicPanel?.classList.contains('show');
 
-        // Handler tombol Close (X) dan Backdrop
-        function closeAllHandler() {
-            closeLayoutPanelsOnly();
-            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
-        }
+                // 1. Tutup panel layout lain (Search)
+                closeLayoutPanelsOnly();
+                // 2. Tutup Bookmark
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
 
-        // --- GLOBAL LISTENERS ---
-        window.addEventListener('toggleSearch', toggleSearchHandler);
-        window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
-        window.addEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
-        window.addEventListener('openSavedBookmarks', openBookmarksHandler);
+                // 3. Toggle Topic Panel
+                if (!isOpen) {
+                    topicPanel?.classList.add('show');
+                    backdrop?.classList.add('show');
+                }
+            }
 
-        // --- PAGE LOAD LISTENERS ---
-        document.addEventListener('astro:page-load', () => {
+            // Handler saat tombol Bookmark di-klik
+            function openBookmarksHandler() {
+                // Cukup tutup panel layout (Search & Topik)
+                // JANGAN dispatch 'closeSavedBookmarks' karena akan menutup bookmark yang baru mau dibuka!
+                closeLayoutPanelsOnly();
+            }
+
+            // Handler tombol Close (X) dan Backdrop
+            function closeAllHandler() {
+                closeLayoutPanelsOnly();
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+            }
+
+            // --- GLOBAL LISTENERS ---
+            // Remove existing listeners to prevent duplicates on subsequent page loads (View Transitions)
+            window.removeEventListener('toggleSearch', toggleSearchHandler);
+            window.removeEventListener('toggleTopicSidebar', toggleTopicHandler);
+            window.removeEventListener('openSavedBookmarks', openBookmarksHandler);
+            window.removeEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
+
+            // Add listeners
+            window.addEventListener('toggleSearch', toggleSearchHandler);
+            window.addEventListener('toggleTopicSidebar', toggleTopicHandler);
+            window.addEventListener('closeTopicSidebar', closeAllHandler); // Tombol X
+            window.addEventListener('openSavedBookmarks', openBookmarksHandler);
+
             const backdrop = document.getElementById('sidebar-backdrop');
             const closeTopicBtn = document.getElementById('close-topic-btn');
             const closeSearchBtn = document.getElementById('close-search-btn');
