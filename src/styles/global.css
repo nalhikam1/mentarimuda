@@ -40,6 +40,7 @@ html.dark {
 html {
     scroll-behavior: smooth;
     background: var(--bg);
+    font-size: 15px;
 }
 
 body {
@@ -245,7 +246,7 @@ body {
 
 .hero-title {
     font-family: 'Merriweather', serif;
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: 900;
     margin-bottom: 16px;
     line-height: 1.2;
@@ -254,7 +255,7 @@ body {
 }
 
 .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: var(--text-secondary);
     line-height: 1.6;
 }
@@ -273,7 +274,7 @@ body {
 
 .section-title {
     font-family: 'Merriweather', serif;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 900;
     letter-spacing: -0.5px;
     color: var(--text);
@@ -409,7 +410,7 @@ body {
 
 .post-title {
     font-family: 'Merriweather', serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     line-height: 1.4;
     margin: 0;
     font-weight: 900;
@@ -500,7 +501,7 @@ body {
     }
 
     .hero-title {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
 
     .hero-subtitle {
@@ -508,7 +509,7 @@ body {
     }
 
     .section-title {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
     }
 
     .post-container {
@@ -536,7 +537,7 @@ body {
     }
 
     .hero-title {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
         letter-spacing: -0.5px;
     }
 
@@ -550,7 +551,7 @@ body {
     }
 
     .section-title {
-        font-size: 1.125rem;
+        font-size: 1.05rem;
     }
 
     .post-card {
@@ -559,7 +560,7 @@ body {
     }
 
     .post-title {
-        font-size: 1.125rem;
+        font-size: 1.05rem;
     }
 
     .post-category {
