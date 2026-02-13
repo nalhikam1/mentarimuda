@@ -1,8 +1,8 @@
 /* Clean & Balanced Readability - Anti-Lebay Version */
 
 .article-content {
-    max-width: 680px;
-    /* Classic readability standard */
+    max-width: 95%;
+    /* Optimal readability width */
     margin: 0 auto;
 }
 
