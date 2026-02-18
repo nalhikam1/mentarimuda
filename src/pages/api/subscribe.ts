@@ -13,7 +13,16 @@ const resend = new Resend(resendApiKey);
 
 export const POST: APIRoute = async ({ request }) => {
     try {
-        const { email } = await request.json();
+        const { email, honey } = await request.json();
+
+        // Honeypot check: Jika bot mengisi field tersembunyi, blokir secara diam-diam
+        if (honey) {
+            console.warn('Bot detected by honeypot!');
+            return new Response(
+                JSON.stringify({ message: 'Akses ditolak.' }),
+                { status: 403 }
+            );
+        }
 
         if (!email || !email.includes('@')) {
             return new Response(

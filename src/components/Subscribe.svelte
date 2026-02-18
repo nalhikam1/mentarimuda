@@ -1,6 +1,7 @@
 <script>
   import { addToast } from '../stores/toastStore';
   let email = '';
+  let honeypot = '';
   let loading = false;
 
   async function handleSubscribe() {
@@ -17,7 +18,7 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, honey: honeypot }),
       });
 
       const data = await response.json();
@@ -56,6 +57,14 @@
     Dapatkan inspirasi, refleksi, dan update tulisan terbaru langsung di inbox-mu.
   </p>
   <form class="card__form" on:submit|preventDefault={handleSubscribe}>
+    <input 
+      type="text" 
+      name="full_name"
+      style="display:none !important" 
+      tabindex="-1" 
+      autocomplete="off" 
+      bind:value={honeypot}
+    />
     <input 
       type="email" 
       placeholder="Email kamu..." 
