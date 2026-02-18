@@ -31,7 +31,7 @@
     
     // Show tip if applicable
     if (showSaveButton && postTitle) {
-      const tipShown = localStorage.getItem('mentari_tip_shown_v4');
+      const tipShown = localStorage.getItem('mentari_tip_shown_final');
       const isAlreadySaved = bookmarks.some(b => b.title === postTitle);
       
       if (!tipShown && !isAlreadySaved) {
@@ -40,7 +40,7 @@
           // Auto hide after 8s
           setTimeout(() => {
             showTip = false;
-            localStorage.setItem('mentari_tip_shown_v4', 'true');
+            localStorage.setItem('mentari_tip_shown_final', 'true');
           }, 8000);
         }, 1500);
       }
@@ -202,7 +202,7 @@
   .tip-arrow {
     position: absolute;
     top: -6px;
-    right: 105px; /* Points to 'Simpan' button */
+    right: 130px; /* Aligned with 'Simpan' button */
     width: 12px;
     height: 12px;
     background: #FF6B6B;
@@ -222,7 +222,7 @@
       padding: 8px 12px;
     }
     .tip-arrow {
-      right: 62px; /* Adjusted for mobile circular buttons */
+      right: 78px; /* Adjusted for mobile circular button */
     }
   }
   
