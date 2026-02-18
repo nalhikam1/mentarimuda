@@ -10,6 +10,7 @@
 
   let bookmarks = [];
   let showPopup = false;
+  let showTip = false;
 
   onMount(() => {
     // Load existing bookmarks
@@ -27,6 +28,23 @@
 
     window.addEventListener('openSavedBookmarks', handleOpenBookmark);
     window.addEventListener('closeSavedBookmarks', handleCloseBookmark);
+    
+    // Show tip if applicable
+    if (showSaveButton && postTitle) {
+      const tipShown = localStorage.getItem('mentari_tip_shown_v4');
+      const isAlreadySaved = bookmarks.some(b => b.title === postTitle);
+      
+      if (!tipShown && !isAlreadySaved) {
+        setTimeout(() => {
+          showTip = true;
+          // Auto hide after 8s
+          setTimeout(() => {
+            showTip = false;
+            localStorage.setItem('mentari_tip_shown_v4', 'true');
+          }, 8000);
+        }, 1500);
+      }
+    }
     
 
 
@@ -48,6 +66,7 @@
   $: isSaved = bookmarks.some(b => b.title === postTitle);
 
   function toggleBookmark() {
+    showTip = false;
 
     if (isSaved) {
       bookmarks = bookmarks.filter(b => b.title !== postTitle);
@@ -70,6 +89,15 @@
 </script>
 
 <div class="bookmark-actions">
+  {#if showTip && showSaveButton}
+    <div class="save-tip" in:fly={{ y: 10, duration: 500 }} out:fade>
+       <div class="tip-content">
+         <span class="tip-icon">✨</span> Simpan jika Suka ya 😊
+       </div>
+       <button class="tip-close" on:click={() => showTip = false}>✕</button>
+       <div class="tip-arrow"></div>
+    </div>
+  {/if}
   {#if showSaveButton}
     <button on:click={toggleBookmark} class="btn-save" class:active={isSaved} title={isSaved ? 'Hapus dari simpanan' : 'Simpan artikel'}>
       <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -79,7 +107,7 @@
     </button>
   {/if}
   
-  <button on:click={() => { showPopup = !showPopup; }} class="btn-list" class:hide-mobile={hideListOnMobile} title="Bacaan Tersimpan">
+  <button on:click={() => { showPopup = !showPopup; showTip = false; }} class="btn-list" class:hide-mobile={hideListOnMobile} title="Bacaan Tersimpan">
     <div class="icon-wrapper">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -126,6 +154,77 @@
 
 <style>
   .bookmark-actions { display: flex; gap: 8px; position: relative; align-items: center; }
+  
+  .save-tip {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+    z-index: 10005;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: floatTip 3s ease-in-out infinite;
+  }
+
+  .tip-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tip-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .tip-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .tip-arrow {
+    position: absolute;
+    top: -6px;
+    right: 105px; /* Points to 'Simpan' button */
+    width: 12px;
+    height: 12px;
+    background: #FF6B6B;
+    transform: rotate(45deg);
+  }
+
+  @keyframes floatTip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  @media (max-width: 768px) {
+    .save-tip {
+      top: 55px;
+      right: -10px;
+      font-size: 0.8rem;
+      padding: 8px 12px;
+    }
+    .tip-arrow {
+      right: 62px; /* Adjusted for mobile circular buttons */
+    }
+  }
   
 
 

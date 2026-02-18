@@ -268,33 +268,7 @@ const topicTags = [
             closeSearchBtn?.removeEventListener('click', window.closeAllHandler);
             closeSearchBtn?.addEventListener('click', window.closeAllHandler);
 
-            // Article Save Prompt (Single instance per page)
-            const articleTitle = document.querySelector('h1.article-title');
-            if (articleTitle) {
-                const currentPath = window.location.pathname;
-                const toastId = 'toast_v_ciamik_' + currentPath;
-                
-                // Prevent multiple executions on same page load
-                if (!sessionStorage.getItem(toastId)) {
-                    // Clear any existing timeout from previous navigation within same page lifecycle
-                    if (window.toastTimeout) clearTimeout(window.toastTimeout);
-                    
-                    window.toastTimeout = setTimeout(() => {
-                        // Re-check sessionStorage and current path inside timeout
-                        if (window.location.pathname === currentPath && !sessionStorage.getItem(toastId)) {
-                            window.dispatchEvent(new CustomEvent('showToast', {
-                                detail: { 
-                                    message: 'Simpan jika Suka ya😊', 
-                                    type: 'bookmark',
-                                    duration: 5000,
-                                    position: 'top'
-                                }
-                            }));
-                            sessionStorage.setItem(toastId, 'true');
-                        }
-                    }, 1500);
-                }
-            }
+
 
             // Loader exit
             setTimeout(() => {
