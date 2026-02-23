@@ -7,14 +7,12 @@
 }
 
 .article-title {
-    font-family: 'Merriweather', serif;
-    font-size: 1.85rem;
-    /* Down from 2rem */
-    /* Compact premium title */
-    font-weight: 900;
-    line-height: 1.2;
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.1;
     margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
     color: var(--text);
 }
 
@@ -40,12 +38,13 @@
 }
 
 .article-body {
-    font-family: 'Merriweather Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1.05rem;
     /* Down from 1.125rem (18px+) to ~16.8px */
     line-height: 1.7;
     color: var(--text);
     font-weight: 400;
+    letter-spacing: -0.011em;
 }
 
 .lead {
@@ -59,25 +58,24 @@
 /* --- BALANCED PROXIMITY --- */
 
 .article-body h2 {
-    font-family: 'Merriweather', serif;
-    font-size: 1.5rem;
-    /* Down from 1.65rem */
-    font-weight: 900;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
     margin-top: 2.5rem;
     margin-bottom: 0.5rem;
     line-height: 1.2;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.03em;
     color: var(--text);
 }
 
 .article-body h3 {
-    font-family: 'Merriweather', serif;
-    font-size: 1.15rem;
-    /* Down from 1.25rem */
-    font-weight: 900;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
     margin-top: 2rem;
     margin-bottom: 0.4rem;
     line-height: 1.25;
+    letter-spacing: -0.02em;
     color: var(--text);
 }
 
