@@ -1,0 +1,47 @@
+---
+import { Code } from 'astro:components';
+import CodeTabs from './CodeTabs.svelte';
+
+interface Props {
+  files: {
+    name: string;
+    code: string;
+    lang: any;
+    id: string;
+  }[];
+  title?: string;
+}
+
+const { files, title } = Astro.props;
+const tabs = files.map(f => ({ id: f.id, label: f.name }));
+---
+
+<div class="code-group-wrapper">
+  {title && <div class="group-label">{title}</div>}
+  <CodeTabs client:load tabs={tabs}>
+    {files.map(file => (
+      <div data-panel={file.id} class="shiki-container">
+        <Code code={file.code} lang={file.lang} theme="github-dark" />
+      </div>
+    ))}
+  </CodeTabs>
+</div>
+
+<style>
+  .code-group-wrapper {
+    margin: 2.5rem 0;
+  }
+  .group-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    padding-left: 4px;
+    border-left: 3px solid var(--accent);
+  }
+  .shiki-container {
+    background: #0d1117;
+  }
+</style>

@@ -40,8 +40,14 @@ html.dark {
 html {
     scroll-behavior: smooth;
     background: var(--bg);
-    /* Font size responsive: 14px on small, up to 15.5px on large screens */
-    font-size: clamp(16px, 0.4vw + 12px, 18px);
+    /* Font size standard: 15px di mobile, 16px di desktop - Lebih rapi & pro */
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 15px;
+    }
 }
 
 body {
@@ -50,7 +56,8 @@ body {
     background: var(--bg);
     width: 100%;
     transition: background 0.3s ease, color 0.3s ease;
-    line-height: 1.6;
+    line-height: 1.5;
+    /* Lebih rapat dari 1.6 */
 }
 
 /* Layout 3 Kolom */
@@ -228,8 +235,8 @@ body {
 
 /* Hero */
 .hero-section {
-    margin-bottom: 60px;
-    padding-bottom: 40px;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
     border-bottom: 1px solid var(--border);
 }
 
@@ -270,8 +277,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 28px;
-    padding-bottom: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
     border-bottom: 2px solid var(--border);
     flex-wrap: wrap;
     gap: 16px;
@@ -358,7 +365,8 @@ body {
 
 /* Post Card */
 .post-card {
-    padding: 20px;
+    padding: 16px;
+    /* Down from 20px */
     border: 1px solid var(--card-border);
     border-radius: 12px;
     transition: all 0.3s ease;
@@ -370,8 +378,8 @@ body {
 
 .post-card:hover {
     border-color: var(--text-secondary);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
 }
 
 .post-header {

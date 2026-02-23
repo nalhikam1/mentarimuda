@@ -7,6 +7,7 @@ import SocialShare from '../../components/SocialShare.astro';
 import Comments from '../../components/Comments.astro';
 import Bookmark from '../../components/Bookmark.svelte';
 import Subscribe from '../../components/Subscribe.svelte';
+import CodeBlockEnhancer from '../../components/CodeBlockEnhancer.svelte';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -49,6 +50,7 @@ const relatedPosts = allPosts
 >
   <article class="article-content">
     <h1 class="article-title">{title}</h1>
+    <CodeBlockEnhancer client:load />
     
     <div class="article-meta">
       <span class="meta-item">

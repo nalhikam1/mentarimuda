@@ -8,10 +8,11 @@
 
 .article-title {
     font-family: 'Merriweather', serif;
-    font-size: 2rem;
+    font-size: 1.85rem;
+    /* Down from 2rem */
     /* Compact premium title */
     font-weight: 900;
-    line-height: 1.15;
+    line-height: 1.2;
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
     color: var(--text);
@@ -40,9 +41,9 @@
 
 .article-body {
     font-family: 'Merriweather Sans', sans-serif;
-    font-size: 1.125rem;
-    /* 15px - Compact yet legible */
-    line-height: 1.65;
+    font-size: 1.05rem;
+    /* Down from 1.125rem (18px+) to ~16.8px */
+    line-height: 1.7;
     color: var(--text);
     font-weight: 400;
 }
@@ -59,7 +60,8 @@
 
 .article-body h2 {
     font-family: 'Merriweather', serif;
-    font-size: 1.65rem;
+    font-size: 1.5rem;
+    /* Down from 1.65rem */
     font-weight: 900;
     margin-top: 2.5rem;
     margin-bottom: 0.5rem;
@@ -70,7 +72,8 @@
 
 .article-body h3 {
     font-family: 'Merriweather', serif;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+    /* Down from 1.25rem */
     font-weight: 900;
     margin-top: 2rem;
     margin-bottom: 0.4rem;
@@ -104,6 +107,64 @@
 .article-body li {
     margin-bottom: 0.5rem;
     line-height: 1.6;
+}
+
+/* --- PREMIUM CODE BLOCKS --- */
+.article-body pre {
+    position: relative;
+    padding: 24px !important;
+    border-radius: 12px;
+    margin: 2rem 0;
+    overflow-x: auto;
+    background: #0d1117 !important;
+    /* Slate Dark */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.article-body code {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+}
+
+.article-body pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.875rem;
+}
+
+/* Copy Button Styling */
+.copy-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #8b949e;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.copy-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.copy-button.copied {
+    color: #4ade80;
+    border-color: #4ade80;
 }
 
 .article-body img {
