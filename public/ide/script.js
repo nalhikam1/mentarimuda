@@ -19,6 +19,9 @@ function switchAuthTab(tab) {
     document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
     document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
     clearAuthError();
+
+    if (tab === 'login') setTimeout(() => document.getElementById('loginEmail').focus(), 50);
+    if (tab === 'register') setTimeout(() => document.getElementById('regName').focus(), 50);
 }
 
 function showAuthError(msg) { const e = document.getElementById('authError'); e.textContent = msg; e.classList.add('show'); }
