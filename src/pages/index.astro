@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import ViewToggle from '../components/ViewToggle.svelte';
+import { slugify } from '../utils/slugify';
+
+// Ambil semua artikel
+const allPosts = await getCollection('blog');
+
+// Fungsi pembantu untuk mengelompokkan (case-insensitive)
+const getPostsByCategory = (catName) => {
+    return allPosts
+        .filter(post => {
+            const postTags = post.data.tags?.map(t => t.toLowerCase()) || [];
+            const postCat = post.data.category?.toLowerCase() || "";
+            const searchCat = catName.toLowerCase();
+            return postTags.includes(searchCat) || postCat === searchCat;
+        })
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+        .map(post => ({
+            title: post.data.title,
+            date: post.data.pubDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
+            read: `${Math.ceil(post.body.split(' ').length / 200)} min read`,
+            slug: `blog/${post.slug}`,
+            author: post.data.author
+        }));
+};
+
+// Buat struktur data kategori lengkap sesuai request
+const categories = [
+  "Tutorial",
+  "Teknologi", 
+  "Inspirasi",
+  "Review", 
+  "Tips dan Trik", 
+  "Kebijaksanaan", 
+  "Nasional", 
+  "Internasional", 
+  "Pengembangan Diri", 
+  "Kreativitas",
+  "Mindful Writing"
+];
+
+// Map categories ke artikel dan filter yang kosong
+const articles = categories.map(cat => ({
+    category: cat,
+    slug: slugify(cat),
+    items: getPostsByCategory(cat).slice(0, 6) // Demo: 6 artikel per kategori
+})).filter(section => section.items.length > 0);
+---
+
+<MainLayout title="Beranda">
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Mentari Muda: Ruang Tumbuh, Refleksi, dan Inspirasi</h1>
+        <p class="hero-subtitle">Menghadirkan narasi bermakna untuk menemanimu belajar dan bertumbuh. Jelajahi kumpulan tulisan tentang kebijaksanaan hidup, pengembangan diri, hingga seni memaknai hari.</p>
+      </div>
+      <div class="hero-actions">
+        <ViewToggle client:load />
+      </div>
+    </div>
+  </div>
+
+  {articles.map(section => (
+    <section class="category-section">
+      <div class="section-header">
+        <h2 class="section-title">{section.category}</h2>
+        <a href={`/kategori/${section.slug}`} class="see-all">Lihat Semua →</a>
+      </div>
+      
+      <div class="post-container" data-view-container>
+        {section.items.map(post => (
+          <article class="post-card">
+            <a href={`/${post.slug}`} class="post-link">
+              <h3 class="post-title">{post.title}</h3>
+            </a>
+            <div class="post-header">
+              <a href={`/kategori/${section.slug}`} class="post-category">{section.category}</a>
+              <span class="post-meta">{post.date} · {post.read}</span>
+            </div>
+            <div class="post-footer">
+              <span class="post-author">Oleh <a href="/naufalmuhammadalhikam">{post.author}</a></span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))}
+
+</MainLayout>
+
+<script>
+  import { initViewMode } from '../utils/viewMode.js';
+  initViewMode();
+</script>
+
+<style>
+  /* Page-specific styles untuk index.astro */
+  .category-section {
+    margin-bottom: 60px;
+  }
+</style>
+

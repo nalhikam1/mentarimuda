@@ -1,0 +1,78 @@
+---
+---
+
+<section class="comments-section">
+  <div class="giscus"></div>
+</section>
+
+<script>
+  function loadGiscus() {
+    const commentsDiv = document.querySelector('.giscus');
+    if (!commentsDiv) return;
+
+    // Cek apakah sudah ada script agar tidak double
+    if (commentsDiv.querySelector('script')) return;
+
+    // Konfigurasi Giscus
+    const giscusAttributes = {
+      "src": "https://giscus.app/client.js",
+      "data-repo": "nalhikam1/mentarimuda",
+      "data-repo-id": "R_kgDORLXSAw",
+      "data-category": "General",
+      "data-category-id": "DIC_kwDORLXSA84C2C1X",
+      "data-mapping": "pathname",
+      "data-strict": "0",
+      "data-reactions-enabled": "1",
+      "data-emit-metadata": "0",
+      "data-input-position": "bottom",
+      "data-theme": document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+      "data-lang": "id",
+      "crossorigin": "anonymous",
+      "async": ""
+    };
+
+    // Inject script
+    const giscusScript = document.createElement("script");
+    Object.entries(giscusAttributes).forEach(([key, value]) => giscusScript.setAttribute(key, value));
+    commentsDiv.appendChild(giscusScript);
+  }
+
+  // Load awal
+  loadGiscus();
+
+  // Load saat navigasi View Transitions
+  document.addEventListener('astro:page-load', loadGiscus);
+
+  // Fungsi update tema Giscus secara real-time
+  const updateGiscusTheme = () => {
+    const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    
+    // Type casting dihapus karena ini script Astro biasa
+    iframe.contentWindow?.postMessage({ 
+      giscus: { 
+        setConfig: { theme: theme } 
+      } 
+    }, 'https://giscus.app');
+  };
+
+  // Pantau perubahan class 'dark' pada elemen <html>
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        updateGiscusTheme();
+      }
+    });
+  });
+
+  observer.observe(document.documentElement, { attributes: true });
+</script>
+
+<style>
+  .comments-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+</style>

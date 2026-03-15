@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+        "astro-docs": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@astrojs/mcp-server-docs"
+            ]
+        },
+        "svelte-docs": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@sveltejs/mcp"
+            ]
+        }
+    }
+}

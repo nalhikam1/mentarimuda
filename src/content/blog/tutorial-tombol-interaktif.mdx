@@ -1,0 +1,76 @@
+---
+title: "Membangun Tombol Reaktif dengan Svelte 5"
+description: "Panduan lengkap membuat komponen tombol modern menggunakan state terbaru di Svelte 5 (Runes)."
+pubDate: 2026-02-23
+author: "Naufal Muhammad Al Hikam"
+category: "Tutorial"
+tags: ["svelte", "frontend", "javascript"]
+---
+import CodeGroup from '../../components/CodeGroup.astro';
+import Playground from '../../components/Playground.svelte';
+import CardFlip from '../../components/CardFlip.svelte';
+
+Selamat datang di jurnal belajar **Mentari Muda**! Hari ini kita akan membedah salah satu fitur paling revolusioner di Svelte 5, yaitu **Runes**. Kita akan belajar membuat sebuah tombol yang bisa menghitung klik secara reaktif.
+
+### 1. Perbandingan: Svelte vs Vanilla JS
+Svelte memangkas kode yang membosankan. Cukup fokus pada data, layar akan mengikuti.
+
+#### Cara Svelte 5 (Otomatis)
+```javascript
+let count = $state(0);
+function handleClick() {
+  count += 1;
+}
+```
+
+#### Cara Biasa (Manual)
+```javascript
+let count = 0;
+const element = document.getElementById('count');
+function handleClick() {
+  count += 1;
+  element.innerText = count;
+}
+```
+
+<CardFlip 
+  client:load 
+  frontTitle="Psst... Tahu tidak?" 
+  frontText="Apakah kita masih butuh let biasa untuk reaktivitas?" 
+  backTitle="Jawabannya" 
+  backText="Tidak! Wajib gunakan $state agar tampilannya update." 
+/>
+
+### 2. Implementasi File Komponen
+Buatlah file bernama `CounterButton.svelte`.
+
+<CodeGroup 
+  title="CounterButton.svelte"
+  files={[
+    {
+      id: 'full',
+      name: 'Full File 📁',
+      lang: 'svelte',
+      code: `<script>\n  let count = $state(0);\n\n  function handleClick() {\n    count += 1;\n  }\n</script>\n\n<button onclick={handleClick}>\n  Klik Saya: {count}\n</button>\n\n<style>\n  button {\n    background: linear-gradient(135deg, #FF6B6B, #FF8E53);\n    color: white;\n    border: none;\n    padding: 12px 24px;\n    border-radius: 50px;\n    cursor: pointer;\n    font-weight: bold;\n    box-shadow: 0 4px 15px rgba(255,107,107,0.3);\n  }\n</style>`
+    }
+  ]}
+/>
+
+### 3. Simulasi Interaktif
+Coba edit kode di bawah ini untuk melihat hasil kodingan di atas.
+
+<Playground 
+  client:load
+  title="Svelte 5 Simulation"
+  html={`<button onclick="handleClick()">\n  Klik Saya: <span id="count">{count}</span>\n</button>`}
+  css={`button {\n  background: linear-gradient(135deg, #FF6B6B, #FF8E53);\n  color: white;\n  border: none;\n  padding: 12px 24px;\n  border-radius: 50px;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 1.1rem;\n  transition: transform 0.2s;\n}\n\nbutton:active { transform: scale(0.95); }`}
+  js={`// Simulasi Logika Svelte 5\nlet count = 0;\nconst display = document.getElementById('count');\ndisplay.innerText = count;\n\nwindow.handleClick = () => {\n  count++;\n  display.innerText = count;\n};`}
+/>
+
+### 4. Dibalik Layar: Svelte & Astro
+Astro bertugas mengambil komponen Svelte kamu, lalu mengubahnya menjadi file statis yang super kencang. `client:load` di atas memberitahu Astro: *"Jalankan JavaScript komponen ini saat halaman selesai dimuat"*.
+
+### Kesimpulan
+Svelte membuat pengembangan web jadi seru lagi. Kamu bisa membuat tutorial interaktif seperti ini dengan sangat mudah menggunakan **MDX**.
+
+Sudah siap membagikan tutorial ini ke teman-temanmu?

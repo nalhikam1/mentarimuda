@@ -1,0 +1,153 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+    const allPosts = await getCollection('blog');
+    
+    // Ambil semua kategori unik dari field category dan tags
+    const categories = new Set();
+    allPosts.forEach(post => {
+        if (post.data.category) categories.add(post.data.category);
+        if (post.data.tags) {
+            post.data.tags.forEach(tag => categories.add(tag));
+        }
+    });
+
+    return Array.from(categories).map(cat => ({
+        params: { category: slugify(cat) },
+        props: { categoryName: cat }
+    }));
+}
+
+const { category: slug } = Astro.params;
+const { categoryName } = Astro.props;
+
+const allPosts = await getCollection('blog');
+
+// Filter artikel berdasarkan kategori/tag
+const filteredPosts = allPosts
+    .filter(post => {
+        const postTags = post.data.tags?.map(t => slugify(t)) || [];
+        const postCat = post.data.category ? slugify(post.data.category) : "";
+        return postCat === slug || postTags.includes(slug);
+    })
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const displayPosts = filteredPosts.map(post => ({
+    title: post.data.title,
+    description: post.data.description,
+    date: post.data.pubDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+    read: `${Math.ceil(post.body.split(' ').length / 200)} min read`,
+    slug: `blog/${post.slug}`,
+    author: post.data.author,
+    category: post.data.category || (post.data.tags && post.data.tags[0]) || 'Umum'
+}));
+---
+
+<MainLayout 
+  title={`Kategori ${categoryName}`}
+  description={`Kumpulan tulisan dan inspirasi seputar topik ${categoryName} di Mentari Muda.`}
+  keywords={`${categoryName}, blog ${categoryName}, mentari muda`}
+>
+  <div class="category-header">
+    <a href="/" class="back-link">← Kembali ke Beranda</a>
+    <h1 class="category-title">Topik: <span>{categoryName}</span></h1>
+    <p class="category-count">{displayPosts.length} Tulisan ditemukan</p>
+  </div>
+
+  <div class="post-container grid-view">
+    {displayPosts.map(post => (
+      <article class="post-card">
+        <a href={`/${post.slug}`} class="post-link">
+          <h2 class="post-title">{post.title}</h2>
+        </a>
+        <div class="post-header">
+          <span class="post-category">{categoryName}</span>
+          <span class="post-meta">{post.date} · {post.read}</span>
+        </div>
+        <div class="post-footer">
+          <span class="post-author">Oleh <a href="/naufalmuhammadalhikam">{post.author}</a></span>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  {displayPosts.length === 0 && (
+    <div class="empty-state">
+      <p>Belum ada tulisan di kategori ini.</p>
+    </div>
+  )}
+</MainLayout>
+
+<style>
+  .category-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .category-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.8px;
+    color: var(--text);
+  }
+
+  .category-title span {
+      background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+  }
+
+  .category-count {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .post-description {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .category-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+    }
+
+    .category-title {
+      font-size: 1.75rem;
+    }
+    
+    .post-card {
+      padding: 20px;
+    }
+  }
+</style>

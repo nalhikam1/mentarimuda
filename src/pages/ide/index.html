@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IdeaSpace</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link href="/ide/style.css" rel="stylesheet" />
+  <script src="/ide/script.js" defer></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+      signInWithPopup, GoogleAuthProvider, signOut, updateProfile, sendPasswordResetEmail, sendEmailVerification
+    }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, orderBy }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDRxIcvQmkx_ZfdBBFatazJuyolDk66J6M",
+  authDomain: "idea-space-56983.firebaseapp.com",
+  projectId: "idea-space-56983",
+  storageBucket: "idea-space-56983.firebasestorage.app",
+  messagingSenderId: "253014849882",
+  appId: "1:253014849882:web:a0258f742f467fae1f1b63",
+  measurementId: "G-H6TTX4PZYE"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window._fb = {
+      auth, db, doc, getDoc, setDoc, onSnapshot,
+      collection, query, orderBy, signInWithEmailAndPassword,
+      createUserWithEmailAndPassword, signInWithPopup,
+      GoogleAuthProvider, signOut, updateProfile, sendPasswordResetEmail, sendEmailVerification, onAuthStateChanged
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user && !window._registering) {
+        window._fbUser = user;
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('appShell').style.display = 'block';
+        await window.initApp(user);
+      } else if (!window._registering) {
+        window._fbUser = null;
+        document.getElementById('authScreen').style.display = 'flex';
+        document.getElementById('appShell').style.display = 'none';
+      }
+    });
+  </script>
+  <script src="/ide/script.js" defer></script>
+
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════ -->
+  <div id="authScreen" style="display:flex">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"
+          stroke-linecap="round">
+          <path
+            d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" />
+          <path d="M10 21h4" />
+        </svg>
+      </div>
+      <div class="auth-title">IdeaSpace</div>
+      <div class="auth-sub">Login untuk akses ide dari semua device</div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Masuk</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Daftar</button>
+      </div>
+
+      <div id="authError" class="auth-error"></div>
+
+      <div id="loginForm">
+        <div class="auth-field">
+          <label>Email</label>
+          <input class="auth-input" id="loginEmail" type="email" placeholder="nama@email.com" autocomplete="email" />
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <div style="position: relative;">
+            <input class="auth-input" id="loginPass" type="password" placeholder="••••••••"
+              autocomplete="current-password" onkeydown="if(event.key==='Enter')doEmailLogin()"
+              style="padding-right: 40px;" />
+            <button type="button" onclick="togglePasswordVisibility('loginPass', this)"
+              style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#94A3B8; display:flex; padding:0; outline:none;"
+              tabindex="-1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button class="auth-btn auth-btn-primary" id="loginBtn" onclick="doEmailLogin()">Masuk</button>
+        <div style="text-align:center;margin-top:10px">
+          <button onclick="showForgotForm()"
+            style="background:none;border:none;font-size:12.5px;color:#94A3B8;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:2px">Lupa
+            password?</button>
+        </div>
+      </div>
+
+      <div id="forgotForm" style="display:none">
+        <div style="text-align:center;font-size:13px;color:#555;margin-bottom:14px;line-height:1.6">
+          Masukkan email akunmu — kami akan kirim link reset password.
+        </div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input class="auth-input" id="forgotEmail" type="email" placeholder="nama@email.com"
+            onkeydown="if(event.key==='Enter')doResetPassword()" />
+        </div>
+        <button class="auth-btn auth-btn-primary" id="forgotBtn" onclick="doResetPassword()">Kirim Link Reset</button>
+        <div style="text-align:center;margin-top:10px">
+          <button onclick="showForgotForm(false)"
+            style="background:none;border:none;font-size:12.5px;color:#94A3B8;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:2px">←
+            Kembali ke login</button>
+        </div>
+      </div>
+
+      <div id="registerForm" style="display:none">
+        <div class="auth-field">
+          <label>Nama</label>
+          <input class="auth-input" id="regName" type="text" placeholder="Nama kamu" autocomplete="name" />
+        </div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input class="auth-input" id="regEmail" type="email" placeholder="nama@email.com" autocomplete="email" />
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <div style="position: relative;">
+            <input class="auth-input" id="regPass" type="password" placeholder="Min. 6 karakter"
+              autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"
+              style="padding-right: 40px;" />
+            <button type="button" onclick="togglePasswordVisibility('regPass', this)"
+              style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#94A3B8; display:flex; padding:0; outline:none;"
+              tabindex="-1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button class="auth-btn auth-btn-primary" id="registerBtn" onclick="doRegister()">Buat Akun</button>
+      </div>
+
+      <div class="auth-divider">atau</div>
+      <button class="auth-btn auth-btn-google" onclick="doGoogleLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            fill="#4285F4" />
+          <path
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            fill="#34A853" />
+          <path
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            fill="#FBBC05" />
+          <path
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            fill="#EA4335" />
+        </svg>
+        Lanjutkan dengan Google
+      </button>
+
+      <div class="auth-loading" id="authLoading">
+        <div class="spin"></div>
+        <span>Memproses...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+     APP SHELL (hidden until logged in)
+══════════════════════════════════ -->
+  <div id="appShell" style="display:none">
+
+    <!-- SIDEBAR (Desktop Only) -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"
+            stroke-linecap="round">
+            <path
+              d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" />
+            <path d="M10 21h4" />
+            <path d="M12 21v-4" />
+          </svg>
+        </div>
+        IdeaSpace
+      </div>
+      <div class="sidebar-menu">
+        <button class="smenu-item" onclick="openManageProfile()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+          </svg>
+          Manajemen Profil
+        </button>
+        <button class="smenu-item" onclick="openCatManager()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+            <line x1="7" y1="7" x2="7.01" y2="7" />
+          </svg>
+          Kelola Kategori
+        </button>
+        <button class="smenu-item" onclick="openModal('modalIO')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Impor / Ekspor
+        </button>
+        <button class="smenu-item" onclick="openModal('modalContact')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          Bantuan & Kontak
+        </button>
+      </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-inner">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="head-logo"
+            style="width:32px;height:32px;background:#111;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"
+              stroke-linecap="round">
+              <path
+                d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" />
+              <path d="M10 21h4" />
+              <path d="M12 21v-4" />
+            </svg>
+          </div>
+          <div>
+            <div class="head-logo" style="font-weight:600;font-size:15px;letter-spacing:-.3px">IdeaSpace</div>
+            <div class="mono" id="clock" style="font-size:10.5px;color:#94A3B8"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="syncStatus"><span class="sync-dot" id="syncDot"></span><span id="syncText">Tersimpan</span></div>
+          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+            <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e"
+              stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+            <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00ff87"
+              stroke-width="2" stroke-linecap="round" style="display:none">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+          <!-- User chip -->
+          <button class="user-chip" onclick="openModal('modalUser')">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <span id="userName"
+              style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">User</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- PROFILE BAR -->
+    <div class="profile-bar">
+      <div class="profile-bar-inner" id="profileBar"></div>
+    </div>
+
+    <!-- MAIN -->
+    <main>
+      <div class="stat-grid" id="stats"></div>
+
+      <div class="capture-box">
+        <div class="section-label">Tangkap Ide Baru</div>
+        <div class="capture-row">
+          <div class="inp-wrap" style="flex:1 1 220px">
+            <input class="inp" id="ideaTitle" placeholder="Tulis idenya sekarang..."
+              onkeydown="if(event.key==='Enter')addIdea()" />
+          </div>
+          <div class="inp-wrap" style="flex:0 1 180px">
+            <select class="inp" id="ideaCat"></select>
+          </div>
+          <button class="btn btn-dark" onclick="addIdea()" style="flex-shrink:0;height:42px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Simpan
+          </button>
+        </div>
+        <div style="font-size:11.5px;color:#CBD5E1;margin-top:8px">Tekan Enter untuk menyimpan cepat</div>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button id="catFilterBtn" class="filter-trigger-btn" onclick="openFilterModal('cat')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+            <span id="catFilterLabel">Semua Kategori</span>
+            <span class="ftb-badge" id="catFilterBadge">▾</span>
+          </button>
+          <button id="statusFilterBtn" class="filter-trigger-btn" onclick="openFilterModal('status')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+            </svg>
+            <span id="statusFilterLabel">Semua Status</span>
+            <span class="ftb-badge" id="statusFilterBadge">▾</span>
+          </button>
+          <div class="search-wrap" style="position:relative; flex:1; min-width:130px; max-width:220px;">
+            <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%)" width="13" height="13"
+              viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input class="inp" id="searchInput" placeholder="Cari ide..."
+              style="padding-left:32px;font-size:13px;height:38px" oninput="renderIdeas()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Modals -->
+      <div class="modal-bg sheet" id="modalFilterCat" onclick="closeModalBg(event,'modalFilterCat')">
+        <div class="smodal">
+          <div class="smodal-handle"></div>
+          <div class="smodal-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <div class="section-label" style="margin:0">Filter Kategori</div>
+              <button class="btn btn-light" style="padding:5px 8px" onclick="closeModal('modalFilterCat')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div class="fmodal-pills" id="fmodalCatPills"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-bg sheet" id="modalFilterStatus" onclick="closeModalBg(event,'modalFilterStatus')">
+        <div class="smodal">
+          <div class="smodal-handle"></div>
+          <div class="smodal-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <div class="section-label" style="margin:0">Filter Status</div>
+              <button class="btn btn-light" style="padding:5px 8px" onclick="closeModal('modalFilterStatus')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div class="fmodal-pills" id="fmodalStatusPills"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Count + active filters -->
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+        <div id="ideaCount" class="idea-count-lbl"></div>
+        <div id="activeFiltersBar" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+
+      <div class="ideas-grid" id="ideasGrid"></div>
+    </main>
+
+    <!-- NAV -->
+    <nav class="bot-nav">
+      <div class="bot-nav-inner">
+        <button class="bnav" onclick="openManageProfile()" id="bnavProfile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+          </svg>
+          <span id="bnavProfileLbl">Profil</span>
+        </button>
+        <button class="bnav" onclick="openNewProfile()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="8" r="4" />
+            <line x1="19" y1="19" x2="19" y2="13" />
+            <line x1="16" y1="16" x2="22" y2="16" />
+          </svg>
+          <span>+ Profil</span>
+        </button>
+        <button class="bnav" onclick="openCatManager()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+            <line x1="7" y1="7" x2="7.01" y2="7" />
+          </svg>
+          <span>Kategori</span>
+        </button>
+        <button class="bnav" onclick="openModal('modalIO')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>Impor/Ekspor</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MODAL: User Account -->
+    <div class="modal-bg sheet" id="modalUser" onclick="closeModalBg(event,'modalUser')">
+      <div class="smodal">
+        <div class="smodal-handle"></div>
+        <div class="smodal-body">
+          <div class="section-label">Akun Saya</div>
+          <div
+            style="display:flex;align-items:center;gap:12px;padding:12px;background:#F4F4F0;border-radius:12px;margin-bottom:16px"
+            id="userInfoBlock">
+            <div
+              style="width:42px;height:42px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0"
+              id="userAvatarBig">?</div>
+            <div>
+              <div style="font-size:14px;font-weight:600" id="userNameBig">—</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#333;margin-bottom:16px;line-height:1.6">
+            Halo <strong id="userNameGreeting" style="color:#111">Pengguna</strong> 👋, selamat mengumpulkan ide keren yang kamu punya ya. Enjoy your IdeaSpace 😊❤️<br><br>
+            <span style="font-size:12px;color:#94A3B8">Data tersinkronisasi otomatis ke semua device dengan akun <span id="userEmailBig" style="font-weight:500">—</span>.</span>
+          </div>
+          <button class="btn btn-light" onclick="closeModal('modalUser'); openModal('modalContact')" style="width:100%;justify-content:center;margin-bottom:8px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Bantuan & Kontak
+          </button>
+          <button class="btn btn-danger" onclick="doLogout()" style="width:100%;justify-content:center">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Keluar dari Akun
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Buat Profil Baru -->
+    <div class="modal-bg sheet" id="modalNewProfile" onclick="closeModalBg(event,'modalNewProfile')">
+      <div class="smodal">
+        <div class="smodal-handle"></div>
+        <div class="smodal-body">
+          <div class="section-label">Profil Baru</div>
+          <input class="inp" id="newProfileName" placeholder="Nama profil..." maxlength="32"
+            onkeydown="if(event.key==='Enter')createProfile()" style="margin-bottom:10px" />
+          <button class="btn btn-dark" onclick="createProfile()" style="width:100%;justify-content:center">Buat
+            Profil</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Kelola Profil -->
+    <div class="modal-bg sheet" id="modalManageProfile" onclick="closeModalBg(event,'modalManageProfile')">
+      <div class="smodal">
+        <div class="smodal-handle"></div>
+        <div class="smodal-body">
+          <div class="section-label" id="manageProfileTitle">Kelola Profil</div>
+          <div id="profileListManage" style="margin-bottom:12px"></div>
+          <div class="danger-zone">
+            <div style="font-size:12px;font-weight:600;color:#EF4444;margin-bottom:8px">⚠️ Danger Zone</div>
+            <button class="btn btn-danger" onclick="clearCurrentProfile()"
+              style="width:100%;justify-content:center;margin-bottom:6px">
+              🗑 Kosongkan data profil aktif
+            </button>
+            <button class="btn btn-danger" onclick="deleteCurrentProfile()" style="width:100%;justify-content:center">
+              ✕ Hapus profil aktif
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Detail Ide -->
+    <div class="modal-bg" id="detailModal" onclick="closeModalBg(event,'detailModal')">
+      <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="section-label" style="margin:0">Detail Ide</div>
+          <button class="btn btn-light" style="padding:5px 8px" onclick="closeModal('detailModal')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div id="detailContent"></div>
+      </div>
+    </div>
+
+    <!-- MODAL: Kategori Manager -->
+    <div class="modal-bg" id="catModal" onclick="closeModalBg(event,'catModal')">
+      <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="section-label" style="margin:0">Kelola Kategori</div>
+          <button class="btn btn-light" style="padding:5px 8px" onclick="closeModal('catModal')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div id="catList"></div>
+        <hr class="divider" />
+        <div class="section-label">Tambah Kategori Baru</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="inp" id="newCatName" placeholder="Nama kategori..." style="flex:1"
+            onkeydown="if(event.key==='Enter')addCategory()" />
+          <div style="position:relative;flex-shrink:0">
+            <div id="newCatSwatch" class="color-swatch" style="background:#2563EB"
+              onclick="document.getElementById('newCatColor').click()"></div>
+            <input type="color" id="newCatColor" value="#2563EB"
+              oninput="document.getElementById('newCatSwatch').style.background=this.value" />
+          </div>
+          <button class="btn btn-dark" onclick="addCategory()" style="flex-shrink:0">Tambah</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Kontak & Bantuan -->
+    <div class="modal-bg sheet" id="modalContact" onclick="closeModalBg(event,'modalContact')">
+      <div class="smodal">
+        <div class="smodal-handle"></div>
+        <div class="smodal-body">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="section-label" style="margin:0">Bantuan & Kontak</div>
+            <button class="btn btn-light" style="padding:5px 8px" onclick="closeModal('modalContact')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+            </button>
+          </div>
+          <div style="text-align:center;padding:12px 0 20px">
+            <div style="width:50px;height:50px;background:#111;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:4px">Butuh Bantuan?</div>
+            <div style="font-size:13px;color:#94A3B8;line-height:1.5;margin-bottom:18px">Untuk bertanya seputar aplikasi ini hubungi kontak di bawah.</div>
+            
+            <div style="display:flex;gap:8px;flex-direction:column">
+                <a href="mailto:admin@mentarimuda.com" class="btn btn-light" style="display:flex;justify-content:center;width:100%;text-decoration:none;padding:12px">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Email Admin
+                </a>
+                <a href="https://wa.me/6281221595292" target="_blank" class="btn btn-dark" style="display:flex;justify-content:center;width:100%;text-decoration:none;padding:12px">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    WhatsApp Kami
+                </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Import/Export -->
+    <div class="modal-bg sheet" id="modalIO" onclick="closeModalBg(event,'modalIO')">
+      <div class="smodal">
+        <div class="smodal-handle"></div>
+        <div class="smodal-body">
+          <div class="section-label">Impor & Ekspor</div>
+          <p style="font-size:13px;color:#94A3B8;margin-bottom:12px">Kelola data — simpan cadangan atau muat dari file.
+          </p>
+          <div class="io-grid">
+            <label class="io-btn">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Impor JSON
+              <input type="file" accept=".json" style="display:none"
+                onchange="importData(event);closeModal('modalIO')" />
+            </label>
+            <button class="io-btn" onclick="exportData();closeModal('modalIO')">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Ekspor JSON
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Fix: paksa body padding-left = 0 saat auth screen tampil
+    // Ini mengatasi sidebar media query yang dorong konten ke kanan
+    (function() {
+      function fixAuthLayout() {
+        var auth = document.getElementById('authScreen');
+        if (!auth) return;
+        var isVisible = auth.style.display !== 'none' && auth.style.display !== '';
+        if (isVisible) {
+          document.body.style.paddingLeft = '0';
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.paddingLeft = '';
+          document.body.style.overflow = '';
+        }
+      }
+      // Jalankan setiap kali display authScreen berubah
+      var auth = document.getElementById('authScreen');
+      if (auth) {
+        var obs = new MutationObserver(fixAuthLayout);
+        obs.observe(auth, { attributes: true, attributeFilter: ['style'] });
+      }
+      // Jalankan juga saat load
+      document.addEventListener('DOMContentLoaded', fixAuthLayout);
+    })();
+  </script>
+
+</body>
+
+</html>

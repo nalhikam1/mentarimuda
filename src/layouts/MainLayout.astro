@@ -1,0 +1,856 @@
+---
+import "../styles/global.css";
+import Bookmark from '../components/Bookmark.svelte';
+import Breadcrumb from '../components/Breadcrumb.astro'; 
+import ThemeToggle from '../components/ThemeToggle.svelte';
+import Search from '../components/Search.svelte'; 
+import BottomNav from '../components/BottomNav.astro';
+import SEO from '../components/SEO.astro';
+import Loader from '../components/Loader.svelte';
+import Toast from '../components/Toast.svelte';
+import Subscribe from '../components/Subscribe.svelte';
+import { slugify } from '../utils/slugify';
+
+import { ViewTransitions } from 'astro:transitions';
+
+const { title, postTitle, postUrl, category, description, keywords, hideRightSidebar = false } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
+
+// SEO Title Logic
+const seoTitle = isHome 
+    ? "Mentari Muda: Ruang Tumbuh, Refleksi, dan Inspirasi" 
+    : `${title} - Mentari Muda`;
+
+// Deskripsi default jika tidak ada konten spesifik
+const defaultDesc = "Mentari Muda adalah jurnal kontemplasi digital yang merangkai hikmah dari setiap perjalanan belajar. Temukan inspirasi pengembangan diri, refleksi filosofis, dan eksplorasi teknologi untuk menemanimu bertumbuh.";
+
+const topicTags = [
+    "Mindful Writing",
+    "Teknologi", 
+    "Review", 
+    "Tips dan Trik", 
+    "Kebijaksanaan", 
+    "Nasional", 
+    "Internasional", 
+    "Inspirasi",
+    "Pengembangan Diri",
+    "Kreativitas"
+];
+---
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{seoTitle}</title>
+    <meta name="title" content={seoTitle} />
+    <meta name="description" content={description || defaultDesc} />
+    {keywords && <meta name="keywords" content={keywords} />}
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={!!postTitle ? 'article' : 'website'} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:title" content={seoTitle} />
+    <meta property="og:description" content={description || defaultDesc} />
+    <meta property="og:image" content={Astro.url.origin + '/social-card.png'} />
+    <meta property="og:site_name" content="Mentari Muda" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url.href} />
+    <meta property="twitter:title" content={seoTitle} />
+    <meta property="twitter:description" content={description || defaultDesc} />
+    <meta property="twitter:image" content={Astro.url.origin + '/social-card.png'} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme Color untuk berbagai mode -->
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+
+    <!-- Apple Touch Icon & PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- Inline Critical CSS untuk mengurangi render-blocking -->
+    <style is:inline>
+        /* Critical CSS - Layout & Colors */
+        :root{--bg:#fff;--text:#292929;--text-secondary:#757575;--border:#f0f0f0;--sidebar-bg:#fafafa;--header-bg:rgba(255,255,255,.95);--card-bg:#fff;--card-border:#f0f0f0;--accent:#FF8E53;--code-bg:#f5f5f5}
+        html.dark{--bg:#121212;--text:#e0e0e0;--text-secondary:#a0a0a0;--border:#2a2a2a;--sidebar-bg:#181818;--header-bg:rgba(18,18,18,.95);--card-bg:#1e1e1e;--card-border:#333;--code-bg:#2a2a2a}
+        *{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth;background:var(--bg);font-size:16px}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;width:100%}
+        .app-container{display:grid;grid-template-columns:240px 1fr 350px;min-height:100vh;width:100%;max-width:100%}
+        .app-container.no-right-sidebar{grid-template-columns:240px 1fr}
+        @media(max-width:968px){.app-container,.app-container.no-right-sidebar{grid-template-columns:1fr!important}.left-sidebar{display:none!important}.right-sidebar:not(.show){display:none!important}}
+    </style>
+    
+    <ViewTransitions />
+
+    <!-- Script Anti-Kilatan (No-Flash) -->
+    <script is:inline>
+        function applyTheme() {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme();
+        // Jalankan ulang saat navigasi View Transitions
+        document.addEventListener('astro:after-swap', applyTheme);
+    </script>
+</head>
+<body>
+    <!-- Reading Progress Bar (Hanya muncul jika ada postTitle / Artikel) -->
+    {postTitle && (
+        <div id="reading-progress-container">
+            <div id="reading-progress-bar"></div>
+        </div>
+    )}
+
+    <div class={`app-container ${hideRightSidebar ? 'no-right-sidebar' : ''}`}>
+        <aside class="left-sidebar">
+            <div class="sticky-wrapper">
+                <div class="sidebar-header">
+                    <div class="logo">Mentari Muda</div>
+                    <p class="site-description">
+                        Ruang tumbuh untuk jiwa yang ingin belajar, menulis, dan memaknai hidup dengan lebih sadar.
+                    </p>
+                </div>
+                
+                <nav class="nav-menu">
+                    <a href="/" class={`nav-link ${currentPath === '/' ? 'active' : ''}`}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Beranda</span>
+                    </a>
+                    <a href="/naufalmuhammadalhikam" class={`nav-link ${currentPath.startsWith('/naufalmuhammadalhikam') ? 'active' : ''}`}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Tentang Saya</span>
+                    </a>
+                    <a href="/tulisan" class={`nav-link ${currentPath.startsWith('/tulisan') ? 'active' : ''}`}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span>Semua Tulisan</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    &copy; 2026 <a href="/" class="footer-link">Mentari Muda</a> 
+                    <div class="made-with">Made with <span class="heart"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></span></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <!-- Mobile Logo Link -->
+                <a href="/" class="mobile-logo-header">
+                    Mentari Muda
+                </a>
+
+                <!-- Search Component Desktop Only -->
+                <div class="search-wrapper desktop-search">
+                    <Search client:idle />
+                </div>
+
+                <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
+                     <ThemeToggle client:load />
+                     <Bookmark client:load postTitle={postTitle} postUrl={postUrl} showSaveButton={!!postTitle} hideListOnMobile={true} />
+                </div>
+            </header>
+            
+            <div class={`content-wrapper ${hideRightSidebar ? 'wide-content' : ''}`}>
+                {category && postTitle && (
+                    <Breadcrumb category={category} title={postTitle} />
+                )}
+                <slot />
+            </div>
+        </main>
+
+        <!-- Sidebar Topik (Desktop & Mobile Unified) -->
+        <aside class={`right-sidebar mobile-bottom-sheet ${hideRightSidebar ? 'wide-layout-hidden' : ''}`} id="topic-panel">
+            <div class="sticky-wrapper">
+                <div class="sidebar-header-mobile">
+                    <h3 class="sidebar-title">Topik Populer</h3>
+                    <button class="close-btn-mobile" id="close-topic-btn">✕</button>
+                </div>
+                <div class="sidebar-header-desktop">
+                    <h3 class="sidebar-title">Topik Populer</h3>
+                </div>
+                <div class="topic-tags">
+                    <a 
+                        href="/tulisan" 
+                        class={`tag ${currentPath === '/tulisan' || currentPath === '/tulisan/' ? 'active active-all' : ''}`}
+                    >
+                        Semua
+                    </a>
+                    {topicTags.map(tag => {
+                        const tagUrl = `/kategori/${slugify(tag)}`;
+                        // Aktif jika di halaman kategori tersebut ATAU jika sedang membaca artikel dengan kategori tersebut
+                        const isActive = (currentPath === tagUrl || currentPath === tagUrl + '/') || (category === tag);
+                        return (
+                            <a 
+                                href={tagUrl} 
+                                class={`tag ${isActive ? 'active' : ''}`}
+                                data-tag={tag}
+                            >
+                                {tag}
+                            </a>
+                        );
+                    })}
+                </div>
+
+                <div class="sidebar-subscribe-sidebar">
+                    <Subscribe client:load />
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Search Panel (Bottom Sheet) -->
+        <div id="mobile-search-panel" class="mobile-bottom-sheet search-panel">
+            <div class="sidebar-header-mobile">
+                <h3 class="sidebar-title">Pencarian</h3>
+                <button class="close-btn-mobile" id="close-search-btn">✕</button>
+            </div>
+            <div class="mobile-search-content">
+                <Search client:idle />
+            </div>
+        </div>
+
+        <div id="sidebar-backdrop" class="sidebar-backdrop" style="z-index: 999;"></div>
+
+        <BottomNav />
+    </div>
+
+    <Loader client:load transition:persist />
+    <Toast client:load transition:persist />
+
+    <script>
+        // --- GLOBAL UTILITIES ---
+        // Define these every time so they point to current logic
+        window.closeLayoutPanelsOnly = function() {
+            const panels = document.querySelectorAll('.mobile-bottom-sheet');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            panels.forEach(p => p.classList.remove('show'));
+            backdrop?.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        window.closeAllHandler = function() {
+            window.closeLayoutPanelsOnly();
+            window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+        }
+
+        // --- PAGE INITIALIZATION ---
+        function initLayout() {
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const closeTopicBtn = document.getElementById('close-topic-btn');
+            const closeSearchBtn = document.getElementById('close-search-btn');
+
+            // Clean up and re-bind element listeners
+            backdrop?.removeEventListener('click', window.closeAllHandler);
+            backdrop?.addEventListener('click', window.closeAllHandler);
+            
+            closeTopicBtn?.removeEventListener('click', window.closeAllHandler);
+            closeTopicBtn?.addEventListener('click', window.closeAllHandler);
+            
+            closeSearchBtn?.removeEventListener('click', window.closeAllHandler);
+            closeSearchBtn?.addEventListener('click', window.closeAllHandler);
+
+
+
+            // Loader exit
+            setTimeout(() => {
+                document.documentElement.classList.remove('loader-visible');
+            }, 300);
+
+            // Reading Progress
+            const progressBar = document.getElementById('reading-progress-bar');
+            if (progressBar) {
+                let ticking = false;
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                            const scrollPercent = (scrollTop / scrollHeight) * 100;
+                            if (progressBar) progressBar.style.width = scrollPercent + '%';
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, { passive: true });
+            }
+        }
+
+        // --- WINDOW-LEVEL LISTENERS (Once per app lifecycle) ---
+        if (!window.hasGlobalLayoutSetup) {
+            window.addEventListener('toggleSearch', () => {
+                const panel = document.getElementById('mobile-search-panel');
+                const bd = document.getElementById('sidebar-backdrop');
+                const isOpen = panel?.classList.contains('show');
+                window.closeLayoutPanelsOnly();
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                if (!isOpen && panel) { 
+                    panel.classList.add('show'); 
+                    bd?.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                    setTimeout(() => panel.querySelector('input')?.focus(), 250);
+                }
+            });
+
+            window.addEventListener('toggleTopicSidebar', () => {
+                const panel = document.getElementById('topic-panel');
+                const bd = document.getElementById('sidebar-backdrop');
+                const isOpen = panel?.classList.contains('show');
+                window.closeLayoutPanelsOnly();
+                window.dispatchEvent(new CustomEvent('closeSavedBookmarks'));
+                if (!isOpen && panel) { 
+                    panel.classList.add('show'); 
+                    bd?.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            window.addEventListener('openSavedBookmarks', () => window.closeLayoutPanelsOnly());
+            window.addEventListener('closeTopicSidebar', () => window.closeAllHandler());
+            window.hasGlobalLayoutSetup = true;
+        }
+
+        document.addEventListener('astro:page-load', initLayout);
+        document.addEventListener('astro:before-preparation', () => {
+            document.documentElement.classList.add('loader-visible');
+        });
+    </script>
+    
+
+</body>
+</html>
+
+<style>
+    /* Global Sidebar/Nav Link Styles */
+    .left-sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .sidebar-header {
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.35rem;
+        margin-bottom: 12px;
+        letter-spacing: -0.03em;
+        color: #111;
+        background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    :global(html.dark) .logo {
+        /* Gradient remains */
+    }
+
+    .site-description {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        padding: 12px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+    }
+    
+    .nav-link svg {
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+
+    .nav-link:hover {
+        background: var(--sidebar-bg);
+        color: var(--text);
+    }
+    
+    .nav-link:hover svg {
+        opacity: 1;
+    }
+
+    .nav-link.active {
+        background: rgba(255, 107, 107, 0.08);
+        color: #d32f2f;
+        border-left-color: #d32f2f;
+        font-weight: 600;
+    }
+
+    :global(html.dark) .nav-link.active {
+        background: rgba(255, 142, 83, 0.15);
+        color: #FF8E53;
+        border-left-color: #FF8E53;
+    }
+
+    .nav-link.active svg {
+        opacity: 1;
+        stroke: currentColor;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .footer-link {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+        color: #FF6B6B;
+    }
+
+    .made-with {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        opacity: 0.8;
+    }
+
+    .heart {
+        display: inline-block;
+        color: #FF6B6B;
+        animation: heartBeat 1.5s ease infinite;
+        font-size: 0.875rem;
+    }
+
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        14% { transform: scale(1.1); }
+        28% { transform: scale(1); }
+        42% { transform: scale(1.1); }
+        70% { transform: scale(1); }
+    }
+
+    /* Content Area */
+    .content-wrapper {
+        padding: 40px 48px;
+        max-width: 880px;
+        margin: 0 auto;
+    }
+
+    .content-wrapper.wide-content {
+        max-width: 1200px;
+    }
+
+    .sidebar-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.01em;
+    }
+
+    .topic-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        background: var(--card-bg);
+        border: 1px solid var(--border); 
+        border-radius: 20px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        white-space: nowrap;
+    }
+
+    .tag.tag-all {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+    }
+
+    .tag.tag-all:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+    }
+
+    .tag:hover {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-header-desktop {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .simple-cta-link {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .simple-cta-link:hover {
+        opacity: 0.8;
+        transform: translateX(2px);
+    }
+
+    /* Unified Active Tag Color (Orange) */
+    .tag.active {
+        background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%) !important;
+        color: white !important;
+        border-color: transparent !important;
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
+    }
+
+    .sidebar-subscribe-sidebar {
+        margin-top: 16px;
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+    }
+
+    @media (max-width: 968px) {
+        .sidebar-subscribe-sidebar {
+            display: none;
+        }
+    }
+
+    .cta-link-all:hover {
+        opacity: 0.9;
+    }
+
+    /* Reading Progress CSS */
+    #reading-progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        z-index: 9999;
+        background: transparent;
+        pointer-events: none;
+    }
+
+    #reading-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+        width: 0%;
+        transition: width 0.1s linear;
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+
+    /* --- DESKTOP SPECIFIC --- */
+    .desktop-search {
+        display: block;
+        position: relative !important; /* Pastikan tidak fixed */
+    }
+    
+    /* Pastikan search container tidak muncul di tempat yang salah */
+    .search-container {
+        position: relative !important;
+    }
+    
+    .mobile-logo-header {
+        display: none;
+    }
+    
+    .mobile-bottom-sheet {
+         display: none; /* Sembunyikan default di desktop */
+    }
+
+    /* Di desktop, sidebar topik harus tetap muncul */
+    .right-sidebar.mobile-bottom-sheet {
+        display: block;
+    }
+
+    @media (min-width: 969px) {
+        .right-sidebar.wide-layout-hidden {
+            display: none !important;
+        }
+    }
+
+    /* --- MOBILE RESPONSIVE --- */
+    @media (max-width: 968px) {
+        .top-bar {
+            padding: 12px 20px;
+        }
+
+        .desktop-search {
+            display: none !important;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+            padding-bottom: 80px;
+            max-width: 100%;
+        }
+
+        /* Unified Mobile Bottom Sheet */
+        .mobile-bottom-sheet {
+            display: none; /* Hidden default */
+            position: fixed;
+            bottom: 60px; /* Di atas Bottom Nav */
+            left: 0; 
+            right: 0;
+            height: auto;
+            max-height: 80vh;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            z-index: 1001; 
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Override penting untuk Topic Panel yang punya class right-sidebar */
+        .right-sidebar.mobile-bottom-sheet {
+            top: auto;
+            height: auto;
+            border: none;
+            display: none; /* Override display flex dari desktop */
+        }
+
+        div.mobile-bottom-sheet.show,
+        aside.mobile-bottom-sheet.show {
+            display: flex !important;
+        }
+        
+        /* Reset wrapper di dalam mobile sheet agar tidak ketinggian */
+        .mobile-bottom-sheet .sticky-wrapper {
+            height: auto !important;
+            padding: 0 !important;
+            position: static;
+            display: block;
+        }
+        
+        .sidebar-header-desktop {
+            display: none;
+        }
+
+        .sidebar-header-mobile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .close-btn-mobile {
+            display: flex !important; /* Override global.css display: none */
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .close-btn-mobile:hover {
+            background: var(--sidebar-bg);
+            border-color: var(--text);
+            transform: scale(1.05);
+        }
+        
+        .close-btn-mobile:active {
+            transform: scale(0.95);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .top-bar {
+            padding: 12px 16px;
+            flex-wrap: nowrap; 
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center; 
+            background: var(--header-bg);
+            backdrop-filter: none; 
+            -webkit-backdrop-filter: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .mobile-logo-header {
+            display: block;
+            margin-right: auto;
+            font-family: 'Merriweather', serif;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        
+        /* Search Box di dalam panel mobile */
+        .search-box input {
+            width: 100%;
+            max-width: 100%;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            height: 40px;
+            background: var(--code-bg);
+        }
+
+        .content-wrapper {
+            padding: 20px 16px; 
+            padding-bottom: 90px;
+            max-width: 100% !important;
+        }
+
+        /* MODIFIKASI: Search Panel Fullscreen di Mobile */
+        #mobile-search-panel.mobile-bottom-sheet {
+            top: 0;       
+            bottom: 0;    
+            height: 100vh; 
+            max-height: 100vh; 
+            border-radius: 0; 
+            z-index: 2000;    
+            padding: 0; 
+            background: var(--bg);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+
+        #mobile-search-panel .sidebar-header-mobile {
+            padding: 16px 20px;
+            margin-bottom: 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        #mobile-search-panel .mobile-search-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 100px; 
+            -webkit-overflow-scrolling: touch;
+        }
+
+        :global(#mobile-search-panel .search-container) {
+            max-width: 100% !important;
+            padding: 20px;
+        }
+
+        :global(#mobile-search-panel .search-results) {
+            position: static !important;
+            width: 100% !important;
+            box-shadow: none !important;
+            border: none !important;
+            background: transparent !important;
+            max-height: none !important;
+            margin-top: 20px;
+            padding: 0 !important;
+        }
+
+        :global(#mobile-search-panel .search-item) {
+            padding: 16px 20px !important;
+            border-bottom: 2px solid var(--border) !important;
+            border-radius: 12px !important;
+            background: var(--card-bg) !important;
+            margin-bottom: 12px;
+            display: block !important;
+            border-left: 4px solid transparent !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+        }
+
+        :global(#mobile-search-panel .search-item:active) {
+            background: var(--sidebar-bg) !important;
+            border-left-color: var(--accent) !important;
+            transform: scale(0.97);
+            box-shadow: none !important;
+        }
+
+        :global(#mobile-search-panel .search-item-title) {
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            color: var(--text) !important;
+        }
+        
+        :global(#mobile-search-panel .search-box input) {
+            background: var(--sidebar-bg) !important;
+            border: 1px solid var(--border) !important;
+            height: 48px !important;
+            font-size: 1rem !important;
+            border-radius: 12px !important;
+        }
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+</style>

@@ -1,0 +1,78 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Playground from '../../components/Playground.svelte';
+import CodeGroup from '../../components/CodeGroup.astro';
+
+const exampleCode = [
+  { 
+    id: 'astro', 
+    name: 'Card.astro', 
+    lang: 'astro', 
+    code: `---\nconst { title } = Astro.props;\n---\n<div class="card">\n  <h1>{title}</h1>\n</div>` 
+  },
+  { 
+    id: 'css', 
+    name: 'styles.css', 
+    lang: 'css', 
+    code: `.card {\n  padding: 20px;\n  background: gold;\n  border-radius: 8px;\n}` 
+  }
+];
+
+const initialHTML = `<div class="box">\n  <h1>Halo Dunia!</h1>\n  <p>Coba ubah teks ini di tab HTML</p>\n  <button id="klik">Klik Saya</button>\n</div>`;
+const initialCSS = `.box {\n  padding: 40px;\n  text-align: center;\n  background: linear-gradient(135deg, #FF6B6B, #FF8E53);\n  color: white;\n  border-radius: 20px;\n  font-family: sans-serif;\n  box-shadow: 0 10px 20px rgba(0,0,0,0.1);\n}\n\nbutton {\n  padding: 10px 20px;\n  border: none;\n  border-radius: 10px;\n  background: white;\n  color: #FF6B6B;\n  font-weight: bold;\n  cursor: pointer;\n  margin-top: 20px;\n}`;
+const initialJS = `document.getElementById('klik').onclick = () => {\n  alert('Mantap! Kamu baru saja belajar Astro & Svelte!');\n};`;
+---
+
+<MainLayout title="Laboratorium Belajar">
+  <div class="lab-container">
+    <header class="lab-header">
+      <h1>Laboratorium Perjuangan 🚀</h1>
+      <p>Ini adalah tempat saya mendokumentasikan setiap baris kode yang saya pelajari.</p>
+    </header>
+
+    <section>
+      <h2>1. Static Multi-Tab Code</h2>
+      <p>Cocok untuk menjelaskan struktur folder atau banyak file sekaligus tanpa membebani browser.</p>
+      <CodeGroup files={exampleCode} title="Contoh Struktur Komponen Astro" />
+    </section>
+
+    <section style="margin-top: 4rem;">
+      <h2>2. Live Interactive Playground</h2>
+      <p>Klik tab <strong>Result ✨</strong> untuk melihat hasilnya secara langsung. Kamu juga bisa mengedit kodenya!</p>
+      <Playground 
+        client:load 
+        html={initialHTML} 
+        css={initialCSS} 
+        js={initialJS}
+        title="Eksperimen Pertama Svelte"
+      />
+    </section>
+  </div>
+</MainLayout>
+
+<style>
+  .lab-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .lab-header {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  .lab-header h1 {
+    font-family: 'Merriweather', serif;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  section p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+</style>

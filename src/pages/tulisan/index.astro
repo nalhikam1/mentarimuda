@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import ViewToggle from '../../components/ViewToggle.svelte';
+import { slugify } from '../../utils/slugify';
+
+// Ambil semua artikel
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// List kategori unik untuk filtering
+const categories = [
+  "Mindful Writing",
+  "Teknologi", 
+  "Review", 
+  "Tips dan Trik", 
+  "Kebijaksanaan", 
+  "Nasional", 
+  "Internasional", 
+  "Inspirasi",
+  "Pengembangan Diri",
+  "Kreativitas"
+];
+
+const totalPosts = sortedPosts.length;
+---
+
+<MainLayout 
+  title="Semua Tulisan" 
+  description="Kumpulan seluruh tulisan di Mentari Muda. Jelajahi berbagai topik mulai dari mindfulness hingga teknologi."
+  hideRightSidebar={true}
+>
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Semua Tulisan</h1>
+        <p class="hero-subtitle">Menampilkan {totalPosts} artikel pilihan untuk menemani proses bertumbuhmu.</p>
+      </div>
+      <div class="hero-actions">
+        <ViewToggle client:load />
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtering Section -->
+  <div class="filter-section">
+    <div class="filter-label">Filter:</div>
+    <div class="filter-tags">
+      <a href="/tulisan" class="filter-tag active">Semua</a>
+      {categories.map(cat => (
+        <a href={`/kategori/${slugify(cat)}`} class="filter-tag">{cat}</a>
+      ))}
+    </div>
+  </div>
+
+  <div class="post-container grid-view" data-view-container>
+    {sortedPosts.map(post => {
+      const category = post.data.category || (post.data.tags && post.data.tags[0]) || 'Umum';
+      const readTime = Math.ceil(post.body.split(' ').length / 200);
+      const dateStr = post.data.pubDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      
+      return (
+        <article class="post-card">
+          <a href={`/blog/${post.slug}`} class="post-link">
+            <h3 class="post-title">{post.data.title}</h3>
+          </a>
+          <div class="post-header">
+            <a href={`/kategori/${slugify(category)}`} class="post-category">{category}</a>
+            <span class="post-meta">
+              {dateStr} · {readTime} min read
+            </span>
+          </div>
+          <div class="post-footer">
+            <span class="post-author">Oleh <a href="/naufalmuhammadalhikam">{post.data.author}</a></span>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</MainLayout>
+
+<script>
+  import { initViewMode } from '../../utils/viewMode.js';
+  initViewMode();
+</script>
+
