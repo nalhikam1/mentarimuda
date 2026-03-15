@@ -13,9 +13,15 @@ function togglePasswordVisibility(inputId, btn) {
 function switchAuthTab(tab) {
     document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+    const forgotForm = document.getElementById('forgotForm');
+    if (forgotForm) forgotForm.style.display = 'none';
+    
     document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
     document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
     clearAuthError();
+
+    if (tab === 'login') setTimeout(() => document.getElementById('loginEmail').focus(), 50);
+    if (tab === 'register') setTimeout(() => document.getElementById('regName').focus(), 50);
 }
 
 function showAuthError(msg) { const e = document.getElementById('authError'); e.textContent = msg; e.classList.add('show'); }
@@ -32,7 +38,18 @@ async function doEmailLogin() {
     if (!email || !pass) { showAuthError('Isi email dan password dulu.'); return; }
     clearAuthError(); setAuthLoading(true); setAuthBtnDisabled(true);
     try {
-        await window._fb.signInWithEmailAndPassword(window._fb.auth, email, pass);
+        const cred = await window._fb.signInWithEmailAndPassword(window._fb.auth, email, pass);
+        if (!cred.user.emailVerified) {
+            await window._fb.signOut(window._fb.auth);
+            const errEl = document.getElementById('authError');
+            errEl.innerHTML = 'Email belum diverifikasi. Cek inbox atau folder spam.' +
+                '<br/><button onclick="resendVerifEmail(\'' + email + '\',\'' + pass + '\')" ' +
+                'style="background:none;border:none;color:#3B82F6;cursor:pointer;font-size:12px;' +
+                'font-family:inherit;text-decoration:underline;padding:4px 0;margin-top:4px">' +
+                'Kirim ulang email verifikasi</button>';
+            errEl.classList.add('show');
+            return;
+        }
     } catch (e) {
         const msgs = {
             'auth/user-not-found': 'Akun tidak ditemukan.',
@@ -45,6 +62,21 @@ async function doEmailLogin() {
     } finally { setAuthLoading(false); setAuthBtnDisabled(false); }
 }
 
+async function resendVerifEmail(email, pass) {
+    try {
+        const cred = await window._fb.signInWithEmailAndPassword(window._fb.auth, email, pass);
+        await window._fb.sendEmailVerification(cred.user);
+        await new Promise(r => setTimeout(r, 1500));
+        await window._fb.signOut(window._fb.auth);
+        const errEl = document.getElementById('authError');
+        errEl.innerHTML = '✅ Email verifikasi dikirim ulang. Cek inbox kamu.';
+        errEl.style.background = '#f0fdf4';
+        errEl.style.color = '#10b981';
+    } catch(e) {
+        showAuthError('Gagal kirim ulang: ' + e.message);
+    }
+}
+
 async function doRegister() {
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
@@ -52,10 +84,28 @@ async function doRegister() {
     if (!name || !email || !pass) { showAuthError('Semua kolom wajib diisi.'); return; }
     if (pass.length < 6) { showAuthError('Password minimal 6 karakter.'); return; }
     clearAuthError(); setAuthLoading(true); setAuthBtnDisabled(true);
+    window._registering = true;
     try {
         const cred = await window._fb.createUserWithEmailAndPassword(window._fb.auth, email, pass);
         await window._fb.updateProfile(cred.user, { displayName: name });
-        cred.user.displayName = name; // update local ref
+        // Kirim verifikasi dulu, tunggu selesai sebelum signOut
+        await window._fb.sendEmailVerification(cred.user);
+        // Jeda 1.5 detik supaya Firebase sempat dispatch email
+        await new Promise(r => setTimeout(r, 1500));
+        await window._fb.signOut(window._fb.auth);
+        // Tampilkan pesan sukses
+        document.getElementById('registerForm').innerHTML = `
+        <div style="text-align:center;padding:10px 0">
+            <div style="font-size:36px;margin-bottom:12px">📬</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:8px">Akun berhasil dibuat!</div>
+            <div style="font-size:12.5px;color:#94A3B8;line-height:1.6;margin-bottom:16px">
+                Cek inbox <strong style="color:#333">${email}</strong> dan klik link verifikasi sebelum login.<br/>
+                Cek folder <strong>spam</strong> jika tidak muncul.
+            </div>
+            <button onclick="switchAuthTab('login')" style="background:#111;color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+                ← Ke Halaman Login
+            </button>
+        </div>`;
     } catch (e) {
         const msgs = {
             'auth/email-already-in-use': 'Email sudah dipakai akun lain.',
@@ -63,7 +113,11 @@ async function doRegister() {
             'auth/weak-password': 'Password terlalu lemah.'
         };
         showAuthError(msgs[e.code] || 'Gagal daftar: ' + e.message);
-    } finally { setAuthLoading(false); setAuthBtnDisabled(false); }
+    } finally {
+        window._registering = false;
+        setAuthLoading(false);
+        setAuthBtnDisabled(false);
+    }
 }
 
 function showForgotForm(show = true) {
